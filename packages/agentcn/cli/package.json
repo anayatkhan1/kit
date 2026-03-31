@@ -1,0 +1,28 @@
+{
+  "name": "@kit/agentcn",
+  "version": "0.1.0",
+  "description": "CLI to install AI agents into your project",
+  "bin": {
+    "agentcn": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepare": "pnpm run build"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "path-exists": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

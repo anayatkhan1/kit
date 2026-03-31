@@ -16,6 +16,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@kit/source"]
+    "customConditions": ["@kit/source"],
+    "types": ["node"]
   }
 }

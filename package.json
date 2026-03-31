@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
+    "agentcn:registry:build": "pnpm exec tsx scripts/build-agent-registry.mts",
+    "agentcn:build": "pnpm --filter @kit/agentcn build",
     "web": "npx nx run @kit/web:dev ",
     "web:build": "npx nx run @kit/web:build",
     "web:lint": "npx nx run @kit/web:lint",
@@ -18,9 +20,15 @@
   },
   "private": true,
   "devDependencies": {
-    "nx": "22.6.0"
+    "@kit/agentcn": "workspace:*",
+    "@types/node": "^20.17.0",
+    "nx": "22.6.0",
+    "tsx": "^4.19.3",
+    "typescript": "~5.9.2"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*",
+    "packages/*/*"
   ]
 }

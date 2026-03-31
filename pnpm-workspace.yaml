@@ -2,3 +2,5 @@ packages:
   # specify a package in a direct subdir of the root
   # all packages in direct subdirs of packages/
   - 'apps/*'
+  - 'packages/*'
+  - 'packages/*/*'
