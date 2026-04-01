@@ -11,6 +11,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { agents } = require("../registry/registry-agents.ts");
+const REGISTRY_SCHEMA_VERSION = 1;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
@@ -24,6 +25,7 @@ interface RegistryFile {
 }
 
 interface RegistryItemJson {
+  schemaVersion: number;
   name: string;
   type: string;
   description: string;
@@ -73,6 +75,7 @@ async function buildRegistry() {
     }
 
     const item: RegistryItemJson = {
+      schemaVersion: REGISTRY_SCHEMA_VERSION,
       name: agent.name,
       type: agent.type,
       description: agent.description,
@@ -98,6 +101,7 @@ async function buildRegistry() {
   }
 
   const index = {
+    schemaVersion: REGISTRY_SCHEMA_VERSION,
     name: "agentcn",
     homepage: "https://agentcn.dev",
     items: indexItems,

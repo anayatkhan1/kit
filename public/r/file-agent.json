@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 1,
   "name": "file-agent",
   "type": "registry:agent",
   "description": "File system agent with read, write, delete, list, create, exists, and search tools. Uses a sandboxed directory.",

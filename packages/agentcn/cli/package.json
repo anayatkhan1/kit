@@ -12,11 +12,16 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "prepare": "pnpm run build"
+    "test": "pnpm run build && node --test dist/tests/**/*.test.js",
+    "pack:smoke": "pnpm run build && pnpm pack --pack-destination ./.artifacts",
+    "prepare": "pnpm run build",
+    "prepublishOnly": "pnpm run test"
   },
   "dependencies": {
     "commander": "^12.1.0",
-    "path-exists": "^5.0.0"
+    "ora": "^8.2.0",
+    "path-exists": "^5.0.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",
