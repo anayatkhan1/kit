@@ -6,5 +6,15 @@
     {
       "path": "./apps/web"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/agents/*": [
+        "./ai/agents/*"
+      ],
+      "@/tools/*": [
+        "./ai/tools/*"
+      ]
+    }
+  }
 }

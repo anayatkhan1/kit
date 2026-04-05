@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "agentcn",
+  "homepage": "https://agentcn.dev",
+  "items": [
+    {
+      "name": "file-agent",
+      "description": "File system agent with read, write, delete, list, create, exists, and search tools. Uses a sandboxed directory.",
+      "categories": [
+        "file-system",
+        "productivity"
+      ]
+    }
+  ]
+}
