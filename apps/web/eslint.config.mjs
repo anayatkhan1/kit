@@ -19,6 +19,8 @@ export default [
     ...nextPlugin.configs["core-web-vitals"].rules,
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    // styled-jsx (<style jsx>) uses non-DOM props on <style>
+    "react/no-unknown-property": ["error", { ignore: ["jsx", "global"] }],
   },
   },
   // TypeScript
