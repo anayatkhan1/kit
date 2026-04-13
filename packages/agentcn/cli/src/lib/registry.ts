@@ -42,10 +42,18 @@ export function resolveRegistrySource(
     const resolved = path.resolve(cwd, registryPath);
     if (pathExistsSync(resolved)) return resolved;
   }
+
+  const envRegistry = process.env.AGENTCN_REGISTRY_URL?.trim();
+  if (envRegistry) {
+    if (isHttpUrl(envRegistry)) return envRegistry;
+    const resolved = path.resolve(cwd, envRegistry);
+    if (pathExistsSync(resolved)) return resolved;
+  }
+
   const scriptDir = path.dirname(process.argv[1] || cwd);
-  const localRegistry = path.resolve(scriptDir, "../../../public/r");
+  const localRegistry = path.resolve(scriptDir, "../../../../apps/web/public/r");
   if (pathExistsSync(localRegistry)) return localRegistry;
-  return "http://localhost:3000/r";
+  return "https://agentcn.dev/r";
 }
 
 async function loadJson(source: string): Promise<unknown> {

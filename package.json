@@ -16,6 +16,7 @@
     "web:registry:capture": "npx nx run @kit/web:registry:capture",
     "web:registry:build": "npx nx run @kit/web:registry:build",
     "web:postinstall": "npx nx run @kit/web:postinstall",
+    "deploy:build": "pnpm agentcn:registry:build && pnpm web:build",
     "clean": "rm -rf node_modules"
   },
   "private": true,

@@ -1,7 +1,7 @@
 /**
  * Registry definitions for installable agents.
  * Each entry describes an agent: files, dependencies, env vars.
- * Used by scripts/build-agent-registry.mts to produce public/r/*.json
+ * Used by scripts/build-agent-registry.mts to produce apps/web/public/r/*.json
  */
 
 export type RegistryAgentItem = {
