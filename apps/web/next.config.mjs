@@ -36,6 +36,11 @@ const nextConfig = {
   redirects() {
     return [
       {
+        source: "/r/styles/:path*",
+        destination: "/ui-r/styles/:path*",
+        permanent: false,
+      },
+      {
         source: "/components",
         destination: "/docs/components",
         permanent: true,

@@ -3,6 +3,25 @@ import { execSync } from "child_process";
 import { pathExistsSync } from "path-exists";
 import { logger } from "../utils/logger.js";
 
+type ExecErrorLike = {
+  stdout?: unknown;
+  stderr?: unknown;
+  message?: unknown;
+};
+
+export function getExecErrorOutput(error: unknown): string {
+  if (!error || typeof error !== "object") {
+    return String(error ?? "");
+  }
+
+  const execError = error as ExecErrorLike;
+  const message = String(execError.message ?? "");
+  const stdout = String(execError.stdout ?? "");
+  const stderr = String(execError.stderr ?? "");
+
+  return [message, stdout, stderr].filter(Boolean).join("\n");
+}
+
 export function detectPackageManager(cwd: string): "npm" | "pnpm" | "yarn" {
   if (pathExistsSync(path.join(cwd, "pnpm-lock.yaml"))) return "pnpm";
   if (pathExistsSync(path.join(cwd, "yarn.lock"))) return "yarn";
@@ -36,12 +55,7 @@ export function installDependencies(
   try {
     runInstall(cmd);
   } catch (error) {
-    const message =
-      error && typeof error === "object" && "stderr" in error
-        ? String((error as { stderr?: unknown }).stderr ?? "")
-        : error instanceof Error
-          ? error.message
-          : String(error);
+    const message = getExecErrorOutput(error);
 
     if (pm === "pnpm" && message.includes("ERR_PNPM_ADDING_TO_ROOT")) {
       // When target cwd is a workspace root, pnpm requires explicit -w.
@@ -49,10 +63,7 @@ export function installDependencies(
         runInstall(`pnpm add -w ${depString}`);
       } catch (fallbackError) {
         if (!options.verbose) {
-          const fallbackMsg =
-            fallbackError && typeof fallbackError === "object" && "stderr" in fallbackError
-              ? String((fallbackError as { stderr?: unknown }).stderr ?? "")
-              : String(fallbackError);
+          const fallbackMsg = getExecErrorOutput(fallbackError);
           if (fallbackMsg.trim().length > 0) logger.error(fallbackMsg);
         }
         throw fallbackError;

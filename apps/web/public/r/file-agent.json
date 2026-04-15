@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "name": "file-agent",
+  "type": "registry:agent",
+  "description": "File system agent with read, write, delete, list, create, exists, and search tools. Uses a sandboxed directory.",
+  "title": "File Agent",
+  "categories": [
+    "file-system",
+    "productivity"
+  ],
+  "dependencies": [
+    "ai",
+    "@ai-sdk/anthropic",
+    "zod"
+  ],
+  "envVars": {
+    "ANTHROPIC_API_KEY": ""
+  },
+  "files": [
+    {
+      "path": "ai/agents/file-agent/index.ts",
+      "type": "registry:agent",
+      "target": "ai/agents/file-agent/index.ts",
+      "content": "export { fileAgent } from \"./agent\";\n"
+    },
+    {
+      "path": "ai/agents/file-agent/agent.ts",
+      "type": "registry:agent",
+      "target": "ai/agents/file-agent/agent.ts",
+      "content": "import { anthropic } from \"@ai-sdk/anthropic\";\nimport { streamText, type ModelMessage, stepCountIs } from \"ai\";\nimport { fileSystemToolset } from \"@/tools/file-system\";\nimport { SYSTEM_PROMPT } from \"./prompt\";\n\nexport function fileAgent(messages: ModelMessage[]) {\n  return streamText({\n    model: anthropic(\"claude-sonnet-4-5-20250929\"),\n    system: SYSTEM_PROMPT,\n    messages,\n    tools: fileSystemToolset,\n    stopWhen: [stepCountIs(10)],\n  });\n}\n"
+    },
+    {
+      "path": "ai/agents/file-agent/prompt.ts",
+      "type": "registry:agent",
+      "target": "ai/agents/file-agent/prompt.ts",
+      "content": "export const SYSTEM_PROMPT = `You are a helpful assistant that can use a sandboxed file system to create, edit and delete files.\n\n      You have access to the following tools:\n      - writeFile\n      - readFile\n      - deletePath\n      - listDirectory\n      - createDirectory\n      - exists\n      - searchFiles\n\n      Use these tools to record notes, create todo lists, and edit documents for the user.\n\n      Use markdown files to store information.\n\n      `;\n"
+    },
+    {
+      "path": "ai/tools/file-system/index.ts",
+      "type": "registry:lib",
+      "target": "ai/tools/file-system/index.ts",
+      "content": "export { fileSystemToolset } from \"./toolset\";\n"
+    },
+    {
+      "path": "ai/tools/file-system/toolset.ts",
+      "type": "registry:lib",
+      "target": "ai/tools/file-system/toolset.ts",
+      "content": "import { tool, ToolSet } from \"ai\";\nimport * as fs from \"./core\";\nimport {\n  writeFileSchema,\n  readFileSchema,\n  deleteFileSchema,\n  listDirectorySchema,\n  createDirectorySchema,\n  existsSchema,\n  searchFilesSchema,\n} from \"./schema\";\n\nexport const fileSystemToolset = {\n  writeFile: tool({\n    description: \"Write content to a file\",\n    inputSchema: writeFileSchema,\n    execute: ({ path, content }) => fs.writeFile(path, content),\n  }),\n\n  readFile: tool({\n    description: \"Read content from a file\",\n    inputSchema: readFileSchema,\n    execute: ({ path }) => fs.readFile(path),\n  }),\n\n  deletePath: tool({\n    description: \"Delete a file or directory\",\n    inputSchema: deleteFileSchema,\n    execute: ({ path }) => fs.deletePath(path),\n  }),\n\n  listDirectory: tool({\n    description: \"List directory contents\",\n    inputSchema: listDirectorySchema,\n    execute: ({ path }) => fs.listDirectory(path),\n  }),\n\n  createDirectory: tool({\n    description: \"Create a directory\",\n    inputSchema: createDirectorySchema,\n    execute: ({ path }) => fs.createDirectory(path),\n  }),\n\n  exists: tool({\n    description: \"Check if path exists\",\n    inputSchema: existsSchema,\n    execute: ({ path }) => fs.exists(path),\n  }),\n\n  searchFiles: tool({\n    description: \"Search files by pattern\",\n    inputSchema: searchFilesSchema,\n    execute: ({ pattern }) => fs.searchFiles(pattern),\n  }),\n} as ToolSet;\n"
+    },
+    {
+      "path": "ai/tools/file-system/schema.ts",
+      "type": "registry:lib",
+      "target": "ai/tools/file-system/schema.ts",
+      "content": "import { z } from \"zod\";\n\nconst writeFileSchema = z.object({\n  path: z.string().describe(\"The path to the file to create\"),\n  content: z.string().describe(\"The content of the file to create\"),\n});\n\nconst readFileSchema = z.object({\n  path: z.string().describe(\"The path to the file to read\"),\n});\n\nconst deleteFileSchema = z.object({\n  path: z.string().describe(\"The path to the file or directory to delete\"),\n});\n\nconst listDirectorySchema = z.object({\n  path: z.string().describe(\"The path to the directory to list\"),\n});\n\nconst createDirectorySchema = z.object({\n  path: z.string().describe(\"The path to the directory to create\"),\n});\n\nconst existsSchema = z.object({\n  path: z.string().describe(\"The path to the file or directory to check\"),\n});\n\nconst searchFilesSchema = z.object({\n  pattern: z.string().describe(\"The pattern to search for\"),\n});\n\nexport {\n  writeFileSchema,\n  readFileSchema,\n  deleteFileSchema,\n  listDirectorySchema,\n  createDirectorySchema,\n  existsSchema,\n  searchFilesSchema,\n};\n"
+    },
+    {
+      "path": "ai/tools/file-system/core.ts",
+      "type": "registry:lib",
+      "target": "ai/tools/file-system/core.ts",
+      "content": "import * as fs from \"fs\";\nimport * as path from \"path\";\n\n// Base directory for all file system operations\nconst BASE_DIR = path.join(process.cwd(), \"data\", \"file-system-db.local\");\n\n// Ensure the base directory exists\nfunction ensureBaseDir(): void {\n  if (!fs.existsSync(BASE_DIR)) {\n    fs.mkdirSync(BASE_DIR, { recursive: true });\n  }\n}\n\n// Validate that a path is within the allowed directory\nfunction validatePath(filePath: string): string {\n  const normalizedPath = path.normalize(filePath);\n  const fullPath = path.resolve(BASE_DIR, normalizedPath);\n  const baseDirResolved = path.resolve(BASE_DIR);\n\n  if (!fullPath.startsWith(baseDirResolved)) {\n    throw new Error(\n      `Access denied: Path \"${filePath}\" is outside the allowed directory`\n    );\n  }\n\n  return fullPath;\n}\n\n// Get relative path from base directory\nfunction getRelativePath(fullPath: string): string {\n  const baseDirResolved = path.resolve(BASE_DIR);\n  return path.relative(baseDirResolved, fullPath);\n}\n\n/**\n * Write content to a file\n */\nexport function writeFile(\n  filePath: string,\n  content: string\n): { success: boolean; message: string; path: string } {\n  try {\n    ensureBaseDir();\n    const fullPath = validatePath(filePath);\n\n    // Ensure the directory exists\n    const dir = path.dirname(fullPath);\n    if (!fs.existsSync(dir)) {\n      fs.mkdirSync(dir, { recursive: true });\n    }\n\n    fs.writeFileSync(fullPath, content, \"utf8\");\n\n    return {\n      success: true,\n      message: `File written successfully: ${getRelativePath(fullPath)}`,\n      path: getRelativePath(fullPath),\n    };\n  } catch (error) {\n    return {\n      success: false,\n      message: `Error writing file: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      path: filePath,\n    };\n  }\n}\n\n/**\n * Read content from a file\n */\nexport function readFile(filePath: string): {\n  success: boolean;\n  content?: string;\n  message: string;\n  path: string;\n} {\n  try {\n    ensureBaseDir();\n    const fullPath = validatePath(filePath);\n\n    if (!fs.existsSync(fullPath)) {\n      return {\n        success: false,\n        message: `File not found: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    }\n\n    const content = fs.readFileSync(fullPath, \"utf8\");\n\n    return {\n      success: true,\n      content,\n      message: `File read successfully: ${getRelativePath(fullPath)}`,\n      path: getRelativePath(fullPath),\n    };\n  } catch (error) {\n    return {\n      success: false,\n      message: `Error reading file: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      path: filePath,\n    };\n  }\n}\n\n/**\n * Delete a file or directory\n */\nexport function deletePath(pathToDelete: string): {\n  success: boolean;\n  message: string;\n  path: string;\n} {\n  try {\n    ensureBaseDir();\n    const fullPath = validatePath(pathToDelete);\n\n    if (!fs.existsSync(fullPath)) {\n      return {\n        success: false,\n        message: `Path not found: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    }\n\n    const stats = fs.statSync(fullPath);\n\n    if (stats.isDirectory()) {\n      fs.rmSync(fullPath, { recursive: true, force: true });\n      return {\n        success: true,\n        message: `Directory deleted successfully: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    } else if (stats.isFile()) {\n      fs.unlinkSync(fullPath);\n      return {\n        success: true,\n        message: `File deleted successfully: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    } else {\n      return {\n        success: false,\n        message: `Path is neither a file nor directory: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    }\n  } catch (error) {\n    return {\n      success: false,\n      message: `Error deleting path: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      path: pathToDelete,\n    };\n  }\n}\n\n/**\n * List contents of a directory\n */\nexport function listDirectory(dirPath: string = \".\"): {\n  success: boolean;\n  items?: Array<{\n    name: string;\n    type: \"file\" | \"directory\";\n    size?: number;\n  }>;\n  message: string;\n  path: string;\n} {\n  try {\n    ensureBaseDir();\n    const fullPath = validatePath(dirPath);\n\n    if (!fs.existsSync(fullPath)) {\n      return {\n        success: false,\n        message: `Directory not found: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    }\n\n    const stats = fs.statSync(fullPath);\n    if (!stats.isDirectory()) {\n      return {\n        success: false,\n        message: `Path is not a directory: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    }\n\n    const items = fs.readdirSync(fullPath).map((item) => {\n      const itemPath = path.join(fullPath, item);\n      const itemStats = fs.statSync(itemPath);\n      return {\n        name: item,\n        type: itemStats.isDirectory()\n          ? (\"directory\" as const)\n          : (\"file\" as const),\n        size: itemStats.isFile() ? itemStats.size : undefined,\n      };\n    });\n\n    return {\n      success: true,\n      items,\n      message: `Directory listed successfully: ${getRelativePath(fullPath)}`,\n      path: getRelativePath(fullPath),\n    };\n  } catch (error) {\n    return {\n      success: false,\n      message: `Error listing directory: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      path: dirPath,\n    };\n  }\n}\n\n/**\n * Create a directory\n */\nexport function createDirectory(dirPath: string): {\n  success: boolean;\n  message: string;\n  path: string;\n} {\n  try {\n    ensureBaseDir();\n    const fullPath = validatePath(dirPath);\n\n    if (fs.existsSync(fullPath)) {\n      return {\n        success: false,\n        message: `Directory already exists: ${getRelativePath(fullPath)}`,\n        path: getRelativePath(fullPath),\n      };\n    }\n\n    fs.mkdirSync(fullPath, { recursive: true });\n\n    return {\n      success: true,\n      message: `Directory created successfully: ${getRelativePath(fullPath)}`,\n      path: getRelativePath(fullPath),\n    };\n  } catch (error) {\n    return {\n      success: false,\n      message: `Error creating directory: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      path: dirPath,\n    };\n  }\n}\n\n/**\n * Check if a file or directory exists\n */\nexport function exists(pathToCheck: string): {\n  success: boolean;\n  exists: boolean;\n  message: string;\n  path: string;\n} {\n  try {\n    ensureBaseDir();\n    const fullPath = validatePath(pathToCheck);\n\n    const exists = fs.existsSync(fullPath);\n\n    return {\n      success: true,\n      exists,\n      message: `Path ${exists ? \"exists\" : \"does not exist\"}: ${getRelativePath(fullPath)}`,\n      path: getRelativePath(fullPath),\n    };\n  } catch (error) {\n    return {\n      success: false,\n      exists: false,\n      message: `Error checking path: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      path: pathToCheck,\n    };\n  }\n}\n\n/**\n * Search for files by pattern (simple glob-like search)\n */\nexport function searchFiles(\n  pattern: string,\n  searchDir: string = \".\"\n): {\n  success: boolean;\n  files?: string[];\n  message: string;\n  pattern: string;\n  searchDir: string;\n} {\n  try {\n    ensureBaseDir();\n    const fullSearchDir = validatePath(searchDir);\n\n    if (!fs.existsSync(fullSearchDir)) {\n      return {\n        success: false,\n        message: `Search directory not found: ${getRelativePath(fullSearchDir)}`,\n        pattern,\n        searchDir: getRelativePath(fullSearchDir),\n      };\n    }\n\n    const stats = fs.statSync(fullSearchDir);\n    if (!stats.isDirectory()) {\n      return {\n        success: false,\n        message: `Search path is not a directory: ${getRelativePath(fullSearchDir)}`,\n        pattern,\n        searchDir: getRelativePath(fullSearchDir),\n      };\n    }\n\n    const foundFiles: string[] = [];\n\n    function searchRecursively(currentDir: string): void {\n      const items = fs.readdirSync(currentDir);\n\n      for (const item of items) {\n        const itemPath = path.join(currentDir, item);\n        const relativeItemPath = getRelativePath(itemPath);\n        const itemStats = fs.statSync(itemPath);\n\n        if (itemStats.isDirectory()) {\n          searchRecursively(itemPath);\n        } else if (itemStats.isFile()) {\n          // Simple pattern matching (supports * wildcard)\n          const regexPattern = pattern.replace(/\\*/g, \".*\");\n          const regex = new RegExp(regexPattern);\n\n          if (regex.test(item) || regex.test(relativeItemPath)) {\n            foundFiles.push(relativeItemPath);\n          }\n        }\n      }\n    }\n\n    searchRecursively(fullSearchDir);\n\n    return {\n      success: true,\n      files: foundFiles,\n      message: `Found ${foundFiles.length} files matching pattern \"${pattern}\"`,\n      pattern,\n      searchDir: getRelativePath(fullSearchDir),\n    };\n  } catch (error) {\n    return {\n      success: false,\n      message: `Error searching files: ${error instanceof Error ? error.message : \"Unknown error\"}`,\n      pattern,\n      searchDir,\n    };\n  }\n}\n"
+    },
+    {
+      "path": "ai/tools/file-system/types.ts",
+      "type": "registry:lib",
+      "target": "ai/tools/file-system/types.ts",
+      "content": "import { InferUITools, UIMessage } from \"ai\";\nimport { fileSystemToolset } from \"./toolset\";\n\ntype MyTools = InferUITools<typeof fileSystemToolset>;\n\nexport type MyUIMessage = UIMessage<never, never, MyTools>;\n"
+    }
+  ],
+  "meta": {
+    "hasMockMode": false,
+    "providers": [
+      "anthropic"
+    ]
+  }
+}

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack --port 3000",
-    "build": "pnpm registry:build && next build",
+    "build": "next build",
     "start": "next start --port 3000",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -15,7 +15,7 @@
     "registry:build": "shadcn build",
     "build-registry": "npx tsx --tsconfig ./tsconfig.scripts.json ./scripts/build-registry.mts && npx prettier --log-level silent --write \"registry/**/*.{ts,tsx,json,mdx}\" --cache",
     "registry:capture": "tsx --tsconfig ./tsconfig.scripts.json ./scripts/capture-registry.mts",
-    "postinstall": "prisma generate && fumadocs-mdx && pnpm registry:build"
+    "postinstall": "prisma generate && fumadocs-mdx"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

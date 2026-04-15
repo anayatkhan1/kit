@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
 /**
- * Build agent registry: reads agent source files, injects content, writes public/r/*.json
+ * Build agent registry: reads agent source files and writes apps/web/public/r/*.json
  * Run: pnpm agentcn:registry:build
  */
 import { promises as fs } from "fs";
@@ -15,7 +15,7 @@ const REGISTRY_SCHEMA_VERSION = 1;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
-const publicRDir = path.join(rootDir, "public", "r");
+const publicRDir = path.join(rootDir, "apps", "web", "public", "r");
 
 interface RegistryFile {
   path: string;
@@ -113,7 +113,7 @@ async function buildRegistry() {
     "utf-8"
   );
   console.log(`  ✓ index.json\n`);
-  console.log(`Done. ${agents.length} agent(s) built to public/r/`);
+  console.log(`Done. ${agents.length} agent(s) built to apps/web/public/r/`);
 }
 
 buildRegistry().catch((err) => {
