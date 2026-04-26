@@ -22,7 +22,7 @@
   "private": true,
   "devDependencies": {
     "@kit/agentcn": "workspace:*",
-    "@types/node": "^20.17.0",
+    "@types/node": "^20.19.37",
     "nx": "22.6.0",
     "tsx": "^4.19.3",
     "typescript": "~5.9.2"
@@ -35,6 +35,9 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
     "ai": "^6.0.161",
+    "anchorbrowser": "^0.16.3",
+    "exa-js": "^1.8.27",
+    "playwright-core": "^1.59.1",
     "zod": "^4.3.6"
   }
 }
