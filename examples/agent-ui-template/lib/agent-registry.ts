@@ -1,12 +1,12 @@
 import "server-only";
-import { SYSTEM_PROMPT as FILE_AGENT_PROMPT } from "@/agents/file-agent/prompt";
-import { SYSTEM_PROMPT as WEB_AGENT_PROMPT } from "@/agents/web/prompt";
-import { webToolset } from "@/agents/web/tools/toolset";
-import { fileSystemToolset } from "@/tools/file-system/toolset";
 import { anthropic } from "@ai-sdk/anthropic";
-import { experimental_createMCPClient as createMCPClient } from "ai";
+import { createMCPClient } from "@ai-sdk/mcp";
+import { Experimental_StdioMCPTransport as StdioMCPTransport } from "@ai-sdk/mcp/mcp-stdio";
+import { SYSTEM_PROMPT as FILE_AGENT_PROMPT } from "@kit-ai/agents/file-agent/prompt";
+import { SYSTEM_PROMPT as WEB_AGENT_PROMPT } from "@kit-ai/agents/web/prompt";
+import { webToolset } from "@kit-ai/agents/web/tools/toolset";
+import { fileSystemToolset } from "@kit-ai/tools/file-system/toolset";
 import { type ToolSet, stepCountIs } from "ai";
-import { Experimental_StdioMCPTransport as StdioMCPTransport } from "ai/mcp-stdio";
 import { type AgentId } from "./agent-profiles";
 
 type McpContext = {
@@ -52,7 +52,7 @@ async function createGithubMcpContext(): Promise<McpContext> {
 		}),
 	});
 
-	const tools = await mcpClient.tools();
+	const tools = (await mcpClient.tools()) as ToolSet;
 
 	return {
 		tools,

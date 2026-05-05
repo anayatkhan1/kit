@@ -21,8 +21,7 @@
 		],
 		"paths": {
 			"@/*": ["./*"],
-			"@/agents/*": ["./ai/agents/*"],
-			"@/tools/*": ["./ai/tools/*"]
+			"@kit-ai/*": ["../../ai/*"]
 		}
 	},
 	"include": [

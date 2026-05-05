@@ -56,6 +56,7 @@ pnpm dev
 
 ## Key Files
 
+- `tsconfig.json` - `@kit-ai/*` maps to `kit/ai/*` (shared prompts and toolsets; no copied `ai/` tree in this app).
 - `app/api/chat/route.ts` - generic streaming route using selected agent config.
 - `lib/agent-registry.ts` - profile registry (model, prompt, toolsets, env needs, MCP context).
 - `components/message.tsx` - shared chat + tool activity rendering.
@@ -71,9 +72,10 @@ pnpm dev
 
 Use this flow whenever you add another agent to this template.
 
-1. Add agent source files:
-   - `ai/agents/<your-agent>/...`
+1. Add or extend agent source in the shared kit package (single source of truth):
+   - `kit/ai/agents/<your-agent>/...`
    - include prompt + tools (and services if needed)
+   - import those modules from `lib/agent-registry.ts` using the `@kit-ai/*` path alias (see existing `file-agent` / `web-agent` imports)
 
 2. Register server runtime config in:
    - `lib/agent-registry.ts`

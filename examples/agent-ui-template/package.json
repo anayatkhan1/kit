@@ -14,6 +14,7 @@
 	"dependencies": {
 		"@ai-sdk/anthropic": "^2.0.53",
 		"@ai-sdk/google": "^2.0.44",
+		"@ai-sdk/mcp": "^1.0.39",
 		"@ai-sdk/openai": "^2.0.58",
 		"@ai-sdk/react": "^2.0.82",
 		"@clerk/nextjs": "^6.34.1",
@@ -32,8 +33,7 @@
 		"@tsparticles/engine": "^3.5.0",
 		"@tsparticles/react": "^3.0.0",
 		"@tsparticles/slim": "^3.5.0",
-		"ai": "5.0.76",
-		"ai-sdk-tool-code-execution": "^0.0.2",
+		"ai": "6.0.161",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cobe": "^0.6.3",

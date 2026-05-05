@@ -13,7 +13,8 @@ export async function POST(request: NextRequest) {
 		const messages: UIMessage[] = body.messages;
 		const agentId: string | undefined =
 			body.agentId ?? request.nextUrl.searchParams.get("agentId") ?? undefined;
-		const modelMessages: ModelMessage[] = convertToModelMessages(messages);
+		const modelMessages: ModelMessage[] =
+			await convertToModelMessages(messages);
 		const selectedAgent = getAgentConfig(agentId);
 		let cleanup: (() => Promise<void>) | undefined;
 		let mcpTools = {};
