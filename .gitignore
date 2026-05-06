@@ -62,6 +62,9 @@ out
 # testing
 /coverage
 
+# web agent local artifacts (tools / Jest)
+/data/web-agent.local
+
 #prisma
 .generated
 

@@ -17,13 +17,21 @@
     "web:registry:build": "npx nx run @kit/web:registry:build",
     "web:postinstall": "npx nx run @kit/web:postinstall",
     "deploy:build": "pnpm agentcn:registry:build && pnpm web:build",
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:web-agent": "jest ai/agents/web"
   },
   "private": true,
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@kit/agentcn": "workspace:*",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.19.37",
+    "dotenv": "^16.5.0",
+    "jest": "^29.7.0",
     "nx": "22.6.0",
+    "ts-jest": "^29.4.1",
     "tsx": "^4.19.3",
     "typescript": "~5.9.2"
   },

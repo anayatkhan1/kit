@@ -11,10 +11,7 @@ export const deepResearchTool = tool({
     const researchTask = await exa.research.create({
       instructions,
       model: tier === "pro" ? "exa-research-pro" : "exa-research",
-      outputSchema: {
-        schema: output_schema ? JSON.parse(output_schema) : undefined,
-        inferSchema: !Boolean(output_schema),
-      },
+      outputSchema: output_schema ? JSON.parse(output_schema) : undefined,
     });
 
     const relativePath = saveArtifact("research-tasks", `${researchTask.researchId}.json`, {
