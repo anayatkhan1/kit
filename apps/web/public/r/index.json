@@ -10,6 +10,15 @@
         "file-system",
         "productivity"
       ]
+    },
+    {
+      "name": "web-agent",
+      "description": "Web research agent with search, answer, deep research, browser automation (Anchor), and websets via Exa.",
+      "categories": [
+        "web",
+        "research",
+        "browser"
+      ]
     }
   ]
 }

@@ -2,6 +2,18 @@
 
 Use this flow before publishing a new CLI version.
 
+## End-user commands (after `agentcn` is published to npm)
+
+The CLI package name on npm is **`agentcn`** (unscoped). Users can run:
+
+```bash
+pnpm dlx agentcn@latest list
+pnpm dlx agentcn@latest add web-agent --dry-run
+npx agentcn@latest add web-agent
+```
+
+Ensure the hosted registry (`/r/*`) is deployed so these commands can fetch `web-agent.json`. Override with `-r <url-or-path>` when testing locally.
+
 ## Registry source of truth
 
 - Production registry endpoint is `https://agentcn.dev/r/*`.
@@ -20,13 +32,13 @@ Use this flow before publishing a new CLI version.
 1. Build registry artifacts from repo root:
    - `pnpm agentcn:registry:build`
 2. Build and test the CLI package:
-   - `pnpm --filter @kit/agentcn build`
-   - `pnpm --filter @kit/agentcn test`
+   - `pnpm --filter agentcn build`
+   - `pnpm --filter agentcn test`
 3. Create a tarball smoke package:
-   - `pnpm --filter @kit/agentcn pack:smoke`
+   - `pnpm --filter agentcn pack:smoke`
 4. Install tarball in a clean test project and run:
    - `agentcn list -r <registry-path-or-url>`
    - `agentcn add file-agent --dry-run -r <registry-path-or-url>`
 5. Verify generated files, tsconfig aliases, and env updates.
 6. Publish:
-   - `pnpm --filter @kit/agentcn publish --access public`
+   - `pnpm --filter agentcn publish --access public`

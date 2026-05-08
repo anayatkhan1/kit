@@ -27,7 +27,7 @@
       "path": "ai/agents/file-agent/agent.ts",
       "type": "registry:agent",
       "target": "ai/agents/file-agent/agent.ts",
-      "content": "import { anthropic } from \"@ai-sdk/anthropic\";\nimport { streamText, type ModelMessage, stepCountIs } from \"ai\";\nimport { fileSystemToolset } from \"@/tools/file-system\";\nimport { SYSTEM_PROMPT } from \"./prompt\";\n\nexport function fileAgent(messages: ModelMessage[]) {\n  return streamText({\n    model: anthropic(\"claude-sonnet-4-5-20250929\"),\n    system: SYSTEM_PROMPT,\n    messages,\n    tools: fileSystemToolset,\n    stopWhen: [stepCountIs(10)],\n  });\n}\n"
+      "content": "import { anthropic } from \"@ai-sdk/anthropic\";\nimport { streamText, type ModelMessage, stepCountIs } from \"ai\";\nimport { fileSystemToolset } from \"../../tools/file-system\";\nimport { SYSTEM_PROMPT } from \"./prompt\";\n\nexport function fileAgent(messages: ModelMessage[]) {\n  return streamText({\n    model: anthropic(\"claude-sonnet-4-5-20250929\"),\n    system: SYSTEM_PROMPT,\n    messages,\n    tools: fileSystemToolset,\n    stopWhen: [stepCountIs(10)],\n  });\n}\n"
     },
     {
       "path": "ai/agents/file-agent/prompt.ts",

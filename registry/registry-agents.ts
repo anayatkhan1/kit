@@ -49,4 +49,47 @@ export const agents: RegistryAgentItem[] = [
       providers: ["anthropic"],
     },
   },
+  {
+    name: "web-agent",
+    type: "registry:agent",
+    description:
+      "Web research agent with search, answer, deep research, browser automation (Anchor), and websets via Exa.",
+    title: "Web Agent",
+    categories: ["web", "research", "browser"],
+    dependencies: [
+      "ai",
+      "@ai-sdk/anthropic",
+      "zod",
+      "exa-js",
+      "playwright-core",
+    ],
+    envVars: {
+      ANTHROPIC_API_KEY: "",
+      EXA_API_KEY: "",
+      ANCHOR_API_KEY: "",
+    },
+    files: [
+      { path: "ai/agents/web/index.ts", type: "registry:agent" },
+      { path: "ai/agents/web/agent.ts", type: "registry:agent" },
+      { path: "ai/agents/web/prompt.ts", type: "registry:agent" },
+      { path: "ai/agents/web/tools/index.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/toolset.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/schema.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/types.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/core.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/web-search.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/answer-question.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/deep-research.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/use-browser.ts", type: "registry:lib" },
+      { path: "ai/agents/web/tools/webset.ts", type: "registry:lib" },
+      {
+        path: "ai/agents/web/tools/services/anchor.ts",
+        type: "registry:lib",
+      },
+    ],
+    meta: {
+      hasMockMode: false,
+      providers: ["anthropic", "exa", "anchor"],
+    },
+  },
 ];

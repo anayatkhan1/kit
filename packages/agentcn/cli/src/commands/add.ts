@@ -23,6 +23,8 @@ type AddRuntimeHooks = {
 const AGENT_ALIASES: Record<string, string> = {
   fileagent: "file-agent",
   file_agent: "file-agent",
+  webagent: "web-agent",
+  web_agent: "web-agent",
 };
 
 function normalizeAgentName(input: string): { value: string; aliased: boolean } {

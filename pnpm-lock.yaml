@@ -30,15 +30,15 @@ importers:
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
-      '@kit/agentcn':
-        specifier: workspace:*
-        version: link:packages/agentcn/cli
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
       '@types/node':
         specifier: ^20.19.37
         version: 20.19.37
+      agentcn:
+        specifier: workspace:*
+        version: link:packages/agentcn/cli
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1

@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "agentcn:registry:build": "pnpm exec tsx scripts/build-agent-registry.mts",
-    "agentcn:build": "pnpm --filter @kit/agentcn build",
+    "agentcn:build": "pnpm --filter agentcn build",
     "web": "npx nx run @kit/web:dev ",
     "web:build": "npx nx run @kit/web:build",
     "web:lint": "npx nx run @kit/web:lint",
@@ -25,7 +25,7 @@
   "private": true,
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@kit/agentcn": "workspace:*",
+    "agentcn": "workspace:*",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.19.37",
     "dotenv": "^16.5.0",
