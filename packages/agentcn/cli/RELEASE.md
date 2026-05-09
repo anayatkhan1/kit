@@ -1,44 +1,87 @@
 # AgentCN CLI Release Checklist
 
-Use this flow before publishing a new CLI version.
+Use this flow before publishing a new CLI version and before announcing install commands.
 
-## End-user commands (after `agentcn` is published to npm)
+## End-user install (one npm package, any runner)
 
-The CLI package name on npm is **`agentcn`** (unscoped). Users can run:
+The CLI package name on npm is **`agentcn`** (unscoped). After it is published, users can install agents with any of these (equivalent for `add` / `list`):
 
 ```bash
+# pnpm
 pnpm dlx agentcn@latest list
-pnpm dlx agentcn@latest add web-agent --dry-run
-npx agentcn@latest add web-agent
+pnpm dlx agentcn@latest add web-agent --dry-run --yes
+
+# npm
+npx agentcn@latest list
+npx agentcn@latest add web-agent --dry-run --yes
+
+# Yarn Berry (v2+)
+yarn dlx agentcn@latest list
+yarn dlx agentcn@latest add web-agent --dry-run --yes
+
+# Bun
+bunx agentcn@latest list
+bunx agentcn@latest add web-agent --dry-run --yes
 ```
 
-Ensure the hosted registry (`/r/*`) is deployed so these commands can fetch `web-agent.json`. Override with `-r <url-or-path>` when testing locally.
+### Prerequisites
+
+1. **`agentcn` is published** to the public npm registry (`npm view agentcn` works).
+2. **Hosted registry is deployed** — the CLI fetches agent definitions from `https://agentcn.dev/r/*` by default (or `AGENTCN_REGISTRY_URL` / `-r`). Without `/r/index.json` and per-agent JSON (e.g. `web-agent.json`), `add` cannot resolve agents.
+
+Override the registry when testing:
+
+```bash
+npx agentcn@latest list -r ./apps/web/public/r
+npx agentcn@latest add web-agent --dry-run --yes -r https://agentcn.dev/r
+```
 
 ## Registry source of truth
 
-- Production registry endpoint is `https://agentcn.dev/r/*`.
-- `/r/*` is owned by the AgentCN registry build output at `kit/apps/web/public/r`.
-- Build order for deployments must run AgentCN registry generation first:
-  - `pnpm deploy:build`
+- Production registry URL: **`https://agentcn.dev/r/*`**.
+- Build output in this repo: **`kit/apps/web/public/r`** (generated; do not edit by hand).
+- Full deploy bundle should run registry generation before the web build:
+  - `pnpm deploy:build` (runs `agentcn:registry:build` then `web:build`).
 
-## Registry env configuration
+## Publishing to npm (maintainers)
 
-- Registry URL config is a CLI concern and should be set in root shell/CI environment.
-- Do not add `AGENTCN_REGISTRY_URL` as a web runtime env unless web code explicitly needs it.
-- Recommended values:
-  - Local testing before deploy: `AGENTCN_REGISTRY_URL=http://localhost:3000/r`
-  - Production/release checks: `AGENTCN_REGISTRY_URL=https://agentcn.dev/r`
-
-1. Build registry artifacts from repo root:
-   - `pnpm agentcn:registry:build`
-2. Build and test the CLI package:
-   - `pnpm --filter agentcn build`
-   - `pnpm --filter agentcn test`
-3. Create a tarball smoke package:
-   - `pnpm --filter agentcn pack:smoke`
-4. Install tarball in a clean test project and run:
-   - `agentcn list -r <registry-path-or-url>`
-   - `agentcn add file-agent --dry-run -r <registry-path-or-url>`
-5. Verify generated files, tsconfig aliases, and env updates.
-6. Publish:
+1. Ensure you are logged in: `npm whoami` (if not, `npm login`).
+2. From the workspace root:
    - `pnpm --filter agentcn publish --access public`
+3. Confirm:
+   - `npm view agentcn version`
+   - `npm view agentcn dist-tags.latest`
+
+`npm publish --dry-run` can be run from `packages/agentcn/cli` to validate the tarball without uploading.
+
+## Post-publish & deploy verification gate
+
+Do **not** announce the multi-runner install flow until **both** are true:
+
+| Check | Command / expectation |
+| --- | --- |
+| npm package resolves | `npm view agentcn` shows the new version |
+| Hosted registry is complete | `pnpm agentcn:registry:verify-live` exits **0** |
+
+The live check hits `https://agentcn.dev/r/index.json` (must list **`web-agent`**) and `https://agentcn.dev/r/web-agent.json` (must return **200**). To confirm the **repo build output** only (offline), from `kit/`:
+
+`bash scripts/verify-agentcn-registry-live.sh "file://$PWD/apps/web/public/r"`
+
+If the production check fails, rebuild and redeploy:
+
+```bash
+pnpm agentcn:registry:build
+pnpm deploy:build
+# then deploy the built web app / static assets so production serves updated apps/web/public/r/*
+```
+
+## Release checklist (ordered)
+
+1. Build registry artifacts from repo root: `pnpm agentcn:registry:build`
+2. Build and test the CLI: `pnpm --filter agentcn build` and `pnpm --filter agentcn test`
+3. Tarball smoke: `pnpm --filter agentcn pack:smoke`
+4. Multi-runner smoke (local tarball + local registry path): `pnpm agentcn:runner-matrix-smoke`  
+   Requires optional tools for full matrix: **corepack/yarn** (Yarn Berry), **bun** (Bun). npm and pnpm use the repo toolchain.
+5. `npm publish --dry-run` from `packages/agentcn/cli` (optional sanity check)
+6. Publish: `pnpm --filter agentcn publish --access public`
+7. `pnpm agentcn:registry:verify-live` against production after deploy

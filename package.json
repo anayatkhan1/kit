@@ -1,6 +1,7 @@
 {
   "name": "@kit/source",
   "version": "0.1.0",
+  "packageManager": "pnpm@9.0.0",
   "license": "MIT",
   "scripts": {
     "agentcn:registry:build": "pnpm exec tsx scripts/build-agent-registry.mts",
@@ -17,6 +18,8 @@
     "web:registry:build": "npx nx run @kit/web:registry:build",
     "web:postinstall": "npx nx run @kit/web:postinstall",
     "deploy:build": "pnpm agentcn:registry:build && pnpm web:build",
+    "agentcn:registry:verify-live": "bash scripts/verify-agentcn-registry-live.sh",
+    "agentcn:runner-matrix-smoke": "bash scripts/agentcn-runner-matrix-smoke.sh",
     "clean": "rm -rf node_modules",
     "test": "jest",
     "test:watch": "jest --watch",
