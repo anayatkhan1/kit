@@ -1,5 +1,5 @@
 {
-  "name": "@kit/agentcn",
+  "name": "agentcn",
   "version": "0.1.0",
   "description": "CLI to install AI agents into your project",
   "bin": {
@@ -29,5 +29,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

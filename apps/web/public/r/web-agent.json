@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "name": "web-agent",
+  "type": "registry:agent",
+  "description": "Web research agent with search, answer, deep research, browser automation (Anchor), and websets via Exa.",
+  "title": "Web Agent",
+  "categories": [
+    "web",
+    "research",
+    "browser"
+  ],
+  "dependencies": [
+    "ai",
+    "@ai-sdk/anthropic",
+    "zod",
+    "exa-js",
+    "playwright-core"
+  ],
+  "envVars": {
+    "ANTHROPIC_API_KEY": "",
+    "EXA_API_KEY": "",
+    "ANCHOR_API_KEY": ""
+  },
+  "files": [
+    {
+      "path": "ai/agents/web/index.ts",
+      "type": "registry:agent",
+      "target": "ai/agents/web/index.ts",
+      "content": "export { webAgent } from \"./agent\";\n"
+    },
+    {
+      "path": "ai/agents/web/agent.ts",
+      "type": "registry:agent",
+      "target": "ai/agents/web/agent.ts",
+      "content": "import { anthropic } from \"@ai-sdk/anthropic\";\nimport { streamText, type ModelMessage, stepCountIs } from \"ai\";\nimport { SYSTEM_PROMPT } from \"./prompt\";\nimport { webToolset } from \"./tools\";\n\nexport function webAgent(messages: ModelMessage[]) {\n  return streamText({\n    model: anthropic(\"claude-sonnet-4-5-20250929\"),\n    system: SYSTEM_PROMPT,\n    messages,\n    tools: webToolset,\n    stopWhen: [stepCountIs(20)],\n  });\n}"
+    },
+    {
+      "path": "ai/agents/web/prompt.ts",
+      "type": "registry:agent",
+      "target": "ai/agents/web/prompt.ts",
+      "content": "export const SYSTEM_PROMPT = `\\\nThe assistant is agentcn-web, a specialized assistant for helping users search the web and complete online tasks.\nagentcn-web operates inside a developer workspace that equips the user with powerful tooling. This workspace includes:\n- a file system to store input/output files and intermediate artifacts\n- an IDE-like interface to inspect and edit files\n- a code execution environment\n- a chat interface for interacting with agentcn-web\n\n<current_context>\nThe current context is that the user is interacting with agentcn-web within a chat and has requested web-related help.\nThe current date is ${new Date().toDateString()}.\n</current_context>\n\n<agentcn_web_capabilities>\nAs a web specialist, agentcn-web can help users with:\n1. **Web Search**\n   - Search the web for up-to-date information\n   - Find relevant websites and articles quickly\n2. **Browser Automation**\n   - Automate tasks on websites\n   - Navigate pages, click controls, and fill forms\n   - Extract information from interactive pages\n3. **Webset Creation**\n   - Create websets for comprehensive entity collection\n   - Websets are useful when the user wants broad, criteria-based coverage rather than a small sample\n4. **Question Answering**\n   - Answer a question with source-backed evidence from the web\n5. **Deep Research**\n   - Run longer, deeper investigations using web sources\n</agentcn_web_capabilities>\n\n<output_formats>\nagentcn-web returns extracted information in concise markdown by default.\n</output_formats>\n\n<citations>\nWhen providing web-derived information from web search, answer-question, deep-research, or browser workflows, agentcn-web should include high quality source attribution whenever possible. Citations are essential for user trust.\n\nWhen responding in free text, include citation details directly in prose in a concise form:\n- URL\n- source title\n- a short reason why the source supports the claim\n\nPlace citations immediately after the sentence or paragraph supported by that source. Use multiple citations when content comes from different sources.\n</citations>\n\n<browser_usage>\nagentcn-web uses browser automation only when direct interaction is necessary (for example, form interaction, authenticated flows, or dynamic content not available from search results). Browser automation is slower and more expensive than web search, so prefer web search first when it can satisfy the request.\n\nBefore using browser automation, explicitly ask for user confirmation that they want the slower interactive path.\n</browser_usage>\n\n<webset_usage>\nagentcn-web uses websets when users want an exhaustive or highly comprehensive list of entities that must match specific criteria. Because websets are asynchronous, can take significantly longer, and may cost more than basic search, always confirm before creating one.\n\nCommunicate webset pricing clearly before execution:\n- each matched entity costs $0.07 (bounded by requested num_results)\n- each enrichment column costs $0.015 per matched entity\n\nExample estimates:\n- 100 entities with 10 enrichments = $22.00\n- 25 entities with 3 enrichments = $2.87\n\nNote: create_webset returns an artifact path that tracks asynchronous job state for progress monitoring.\n</webset_usage>\n\n<research_usage>\nagentcn-web uses deep research tasks for comprehensive deep-dive requests. Use this path only when the user explicitly asks for deep research or confirms escalation after clarification.\n\nBefore starting deep research, explain that it can take longer and may cost more than standard web search.\n\nNote: deep_research is asynchronous and returns an artifact path that can be used to monitor task progress.\n</research_usage>\n\n<important_guidelines>\nWhen interacting with users about web tasks:\n1. *Never* claim an action was completed unless a tool execution actually completed it.\n2. *Never* attempt to download or save files from external websites on the user's behalf. If asked, provide the link and instruct the user to download and add the file manually.\n3. If credentials or provider setup are missing, state exactly what is required.\n4. Keep responses concise and actionable: key result first, then evidence/citations.\n</important_guidelines>\n\nagentcn-web is now ready to receive the user's task and begin working.`;\n"
+    },
+    {
+      "path": "ai/agents/web/tools/index.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/index.ts",
+      "content": "export { webToolset } from \"./toolset\";\n"
+    },
+    {
+      "path": "ai/agents/web/tools/toolset.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/toolset.ts",
+      "content": "import { ToolSet } from \"ai\";\nimport { webSearchTool } from \"./web-search\";\nimport { answerQuestionTool } from \"./answer-question\";\nimport { deepResearchTool } from \"./deep-research\";\nimport { useBrowserTool } from \"./use-browser\";\nimport { websetTool } from \"./webset\";\n\nexport const webToolset = {\n  web_search: webSearchTool,\n  answer_question: answerQuestionTool,\n  deep_research: deepResearchTool,\n  use_browser: useBrowserTool,\n  create_webset: websetTool,\n} as ToolSet;\n"
+    },
+    {
+      "path": "ai/agents/web/tools/schema.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/schema.ts",
+      "content": "import { z } from \"zod\";\n\nconst webSearchSchema = z.object({\n  query: z.string().describe(\"The search query.\"),\n  allow_cached_results: z\n    .boolean()\n    .optional()\n    .default(true)\n    .describe(\"Allow cached search results when available.\"),\n  num_results: z\n    .number()\n    .int()\n    .min(1)\n    .max(25)\n    .optional()\n    .default(5)\n    .describe(\"Maximum number of search results.\"),\n});\n\nconst answerQuestionSchema = z.object({\n  question: z.string().describe(\"The question to answer.\"),\n  output_schema: z\n    .string()\n    .optional()\n    .describe(\"Optional JSONSchema v7 string for structured output.\"),\n});\n\nconst deepResearchSchema = z.object({\n  task_name: z\n    .string()\n    .describe(\"Short task name used for metadata and storage.\"),\n  instructions: z.string().describe(\"Detailed research instructions.\"),\n  tier: z\n    .enum([\"standard\", \"pro\"])\n    .optional()\n    .default(\"standard\")\n    .describe(\"Research quality tier.\"),\n  output_schema: z\n    .string()\n    .optional()\n    .describe(\"Optional JSONSchema v7 string for structured output.\"),\n});\n\nconst useBrowserSchema = z.object({\n  task: z\n    .string()\n    .describe(\"Browser task to execute. Be explicit about the goal.\"),\n  initialUrl: z\n    .string()\n    .optional()\n    .default(\"https://google.com\")\n    .describe(\"Initial URL for the browser session.\"),\n});\n\nconst createWebsetSchema = z.object({\n  task_name: z\n    .string()\n    .describe(\"Short task name used for metadata and storage.\"),\n  instructions: z.string().describe(\"Instructions describing entity search criteria.\"),\n  num_results: z\n    .number()\n    .int()\n    .min(1)\n    .max(100)\n    .optional()\n    .default(10)\n    .describe(\"Maximum number of matched entities.\"),\n  entity_type: z\n    .enum([\"company\", \"person\", \"article\", \"research_paper\", \"custom\"])\n    .optional()\n    .describe(\"Entity type for webset matching.\"),\n  custom_entity_description: z\n    .string()\n    .optional()\n    .describe(\"Required when entity_type is custom.\"),\n  enrichments: z.array(\n    z.object({\n      description: z.string().describe(\"Enrichment description.\"),\n      format: z\n        .enum([\"text\", \"number\", \"date\", \"options\", \"email\", \"phone\"])\n        .describe(\"Output format for the enrichment field.\"),\n    })\n  ),\n});\n\nexport {\n  webSearchSchema,\n  answerQuestionSchema,\n  deepResearchSchema,\n  useBrowserSchema,\n  createWebsetSchema,\n};\n"
+    },
+    {
+      "path": "ai/agents/web/tools/types.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/types.ts",
+      "content": "import { InferUITools, UIMessage } from \"ai\";\nimport { webToolset } from \"./toolset\";\n\ntype WebTools = InferUITools<typeof webToolset>;\n\nexport type WebUIMessage = UIMessage<never, never, WebTools>;\n"
+    },
+    {
+      "path": "ai/agents/web/tools/core.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/core.ts",
+      "content": "import Exa from \"exa-js\";\nimport * as fs from \"fs\";\nimport * as path from \"path\";\n\nexport const WEB_AGENT_BASE_DIR = path.join(\n  process.cwd(),\n  \"data\",\n  \"web-agent.local\"\n);\n\nfunction ensureDir(dirPath: string) {\n  if (!fs.existsSync(dirPath)) {\n    fs.mkdirSync(dirPath, { recursive: true });\n  }\n}\n\nfunction safeFileName(input: string) {\n  return input.toLowerCase().replace(/[^a-z0-9-_]+/g, \"-\");\n}\n\nexport function getExaClient() {\n  const exaApiKey = process.env[\"EXA_API_KEY\"];\n  if (!exaApiKey) {\n    throw new Error(\"EXA_API_KEY is not set.\");\n  }\n  return new Exa(exaApiKey);\n}\n\nexport function getAnchorApiKey() {\n  const anchorApiKey = process.env[\"ANCHOR_API_KEY\"];\n  if (!anchorApiKey) {\n    throw new Error(\"ANCHOR_API_KEY is not set.\");\n  }\n  return anchorApiKey;\n}\n\nexport function saveArtifact(folder: string, fileName: string, payload: unknown) {\n  const dirPath = path.join(WEB_AGENT_BASE_DIR, folder);\n  ensureDir(dirPath);\n\n  const fullPath = path.join(dirPath, fileName);\n  fs.writeFileSync(fullPath, JSON.stringify(payload, null, 2), \"utf8\");\n\n  return path.relative(WEB_AGENT_BASE_DIR, fullPath);\n}\n\nexport function buildTaskMetadata(taskName: string) {\n  return {\n    task_name: safeFileName(taskName),\n    created_at: new Date().toISOString(),\n  };\n}\n"
+    },
+    {
+      "path": "ai/agents/web/tools/web-search.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/web-search.ts",
+      "content": "import { tool } from \"ai\";\nimport { getExaClient } from \"./core\";\nimport { webSearchSchema } from \"./schema\";\n\nexport const webSearchTool = tool({\n  description: \"Search the web for up-to-date information.\",\n  inputSchema: webSearchSchema,\n  execute: async ({ query, allow_cached_results, num_results }) => {\n    const exa = getExaClient();\n    const { results } = await exa.searchAndContents(query, {\n      livecrawl: allow_cached_results ? \"fallback\" : \"preferred\",\n      numResults: num_results,\n      highlights: true,\n    });\n\n    return {\n      success: true,\n      content: results.map((result) => ({\n        title: result.title,\n        url: result.url,\n        content: result.highlights.join(\"\\n\"),\n        publishedDate: result.publishedDate,\n      })),\n    };\n  },\n});\n"
+    },
+    {
+      "path": "ai/agents/web/tools/answer-question.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/answer-question.ts",
+      "content": "import { tool } from \"ai\";\nimport { getExaClient } from \"./core\";\nimport { answerQuestionSchema } from \"./schema\";\n\nexport const answerQuestionTool = tool({\n  description: \"Answer a question using web sources.\",\n  inputSchema: answerQuestionSchema,\n  execute: async ({ question, output_schema }, { toolCallId }) => {\n    const exa = getExaClient();\n    const response = await exa.answer(question, {\n      outputSchema: output_schema ? JSON.parse(output_schema) : undefined,\n    });\n\n    console.log({\n      type: \"exa.answer\",\n      tool_call_id: toolCallId,\n      request_id: response.requestId,\n      cost_dollars: response.costDollars,\n    });\n\n    return {\n      success: true,\n      answer: response.answer,\n      citations: response.citations,\n    };\n  },\n});\n"
+    },
+    {
+      "path": "ai/agents/web/tools/deep-research.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/deep-research.ts",
+      "content": "import { tool } from \"ai\";\nimport { buildTaskMetadata, getExaClient, saveArtifact } from \"./core\";\nimport { deepResearchSchema } from \"./schema\";\n\nexport const deepResearchTool = tool({\n  description: \"Create a deep research task.\",\n  inputSchema: deepResearchSchema,\n  execute: async ({ task_name, instructions, tier, output_schema }) => {\n    const exa = getExaClient();\n\n    const researchTask = await exa.research.create({\n      instructions,\n      model: tier === \"pro\" ? \"exa-research-pro\" : \"exa-research\",\n      outputSchema: output_schema ? JSON.parse(output_schema) : undefined,\n    });\n\n    const relativePath = saveArtifact(\"research-tasks\", `${researchTask.researchId}.json`, {\n      type: \"research-task\",\n      id: researchTask.researchId,\n      provider: \"exa\",\n      name: task_name,\n      data: researchTask,\n      metadata: buildTaskMetadata(task_name),\n    });\n\n    return {\n      success: true,\n      message: \"Research task created.\",\n      artifact_path: relativePath,\n      task_id: researchTask.researchId,\n    };\n  },\n});\n"
+    },
+    {
+      "path": "ai/agents/web/tools/use-browser.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/use-browser.ts",
+      "content": "import { tool } from \"ai\";\nimport { getAnchorApiKey, saveArtifact } from \"./core\";\nimport { useBrowserSchema } from \"./schema\";\nimport {\n  connectToAnchorSession,\n  endAnchorSession,\n  startAnchorSession,\n} from \"./services/anchor\";\n\nexport const useBrowserTool = tool({\n  description: \"Start a browser session and execute web tasks using Anchor Browser.\",\n  inputSchema: useBrowserSchema,\n  execute: async ({ task, initialUrl }) => {\n    const anchorApiKey = getAnchorApiKey();\n    const session = await startAnchorSession(anchorApiKey, {\n      initialUrl,\n      headless: false,\n    });\n\n    try {\n      const browser = await connectToAnchorSession(anchorApiKey, session.id);\n      const context = browser.contexts()[0];\n      const page = context.pages()[0];\n      await page.goto(initialUrl, { waitUntil: \"domcontentloaded\" });\n\n      const ai = context.serviceWorkers()[0];\n      const result = await ai.evaluate(task);\n\n      const sessionPayload = {\n        type: \"browser-session\",\n        sessionId: session.id,\n        cdpUrl: session.cdp_url,\n        liveViewUrl: session.live_view_url,\n        task,\n        initialUrl,\n        headless: false,\n        createdAt: new Date().toISOString(),\n        result,\n        status: \"completed\",\n      };\n\n      const relativePath = saveArtifact(\"browser\", `${session.id}.browser.json`, sessionPayload);\n\n      await browser.close();\n      await endAnchorSession(anchorApiKey, session.id);\n\n      return {\n        success: true,\n        result,\n        artifact_path: relativePath,\n        message: `Browser task completed. Live view: ${session.live_view_url}`,\n      };\n    } catch (error) {\n      await endAnchorSession(anchorApiKey, session.id);\n\n      return {\n        success: false,\n        error: `Error executing browser task: ${(error as Error)?.message || error}`,\n      };\n    }\n  },\n});\n"
+    },
+    {
+      "path": "ai/agents/web/tools/webset.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/webset.ts",
+      "content": "import { tool } from \"ai\";\nimport { buildTaskMetadata, getExaClient, saveArtifact } from \"./core\";\nimport { createWebsetSchema } from \"./schema\";\n\nexport const websetTool = tool({\n  description: \"Create a webset (entity list + enrichments) from user instructions.\",\n  inputSchema: createWebsetSchema,\n  execute: async ({\n    task_name,\n    instructions,\n    num_results,\n    entity_type,\n    custom_entity_description,\n    enrichments,\n  }) => {\n    const exa = getExaClient();\n\n    const webset = await exa.websets.create({\n      search: {\n        query: instructions,\n        count: num_results,\n        entity: entity_type\n          ? entity_type === \"custom\"\n            ? custom_entity_description\n              ? { type: \"custom\", description: custom_entity_description }\n              : undefined\n            : { type: entity_type }\n          : undefined,\n      },\n      enrichments: enrichments.map((item) => ({\n        description: item.description,\n      })),\n    });\n\n    const relativePath = saveArtifact(\"websets\", `${webset.id}.json`, {\n      type: \"webset\",\n      id: webset.id,\n      provider: \"exa\",\n      name: task_name,\n      data: webset,\n      metadata: buildTaskMetadata(task_name),\n    });\n\n    return {\n      success: true,\n      message: \"Webset created.\",\n      artifact_path: relativePath,\n      webset_id: webset.id,\n    };\n  },\n});\n"
+    },
+    {
+      "path": "ai/agents/web/tools/services/anchor.ts",
+      "type": "registry:lib",
+      "target": "ai/agents/web/tools/services/anchor.ts",
+      "content": "import { chromium, type Browser } from \"playwright-core\";\n\nconst ANCHOR_BASE_URL = \"https://api.anchorbrowser.io/v1\";\n\nexport interface AnchorBrowserSession {\n  id: string;\n  cdp_url: string;\n  live_view_url: string;\n}\n\nexport interface StartAnchorSessionConfig {\n  initialUrl?: string;\n  headless?: boolean;\n  timeout?: {\n    maxDuration: number;\n    idleTimeout: number;\n  };\n}\n\nexport async function startAnchorSession(\n  apiKey: string,\n  config: StartAnchorSessionConfig\n): Promise<AnchorBrowserSession> {\n  const response = await fetch(`${ANCHOR_BASE_URL}/sessions`, {\n    method: \"POST\",\n    headers: {\n      \"Content-Type\": \"application/json\",\n      \"anchor-api-key\": apiKey,\n    },\n    body: JSON.stringify({\n      session: {\n        recording: { active: true },\n        timeout: config.timeout ?? {\n          max_duration: 10,\n          idle_timeout: 5,\n        },\n        live_view: { read_only: true },\n      },\n    }),\n  });\n\n  if (!response.ok) {\n    const error = await response.text();\n    throw new Error(\n      `Failed to start Anchor Browser session: ${response.status} ${response.statusText} - ${error}`\n    );\n  }\n\n  const data = await response.json();\n  return data.data as AnchorBrowserSession;\n}\n\nexport async function endAnchorSession(\n  apiKey: string,\n  sessionId: string\n): Promise<void> {\n  const response = await fetch(`${ANCHOR_BASE_URL}/sessions/${sessionId}`, {\n    method: \"DELETE\",\n    headers: {\n      \"anchor-api-key\": apiKey,\n    },\n  });\n\n  if (!response.ok) {\n    throw new Error(\n      `Failed to end session: ${response.status} ${response.statusText}`\n    );\n  }\n}\n\nexport async function connectToAnchorSession(\n  apiKey: string,\n  sessionId: string\n): Promise<Browser> {\n  const cdpUrl = `wss://connect.anchorbrowser.io?apiKey=${apiKey}&sessionId=${sessionId}`;\n  return chromium.connectOverCDP(cdpUrl);\n}\n"
+    }
+  ],
+  "meta": {
+    "hasMockMode": false,
+    "providers": [
+      "anthropic",
+      "exa",
+      "anchor"
+    ]
+  }
+}

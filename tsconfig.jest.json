@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "types": ["node", "jest"]
+  },
+  "include": ["jest.setup.ts", "ai/agents/web/**/*.ts"]
+}

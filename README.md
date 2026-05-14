@@ -30,6 +30,21 @@ These targets are either [inferred automatically](https://nx.dev/concepts/inferr
 
 [More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
+## AgentCN CLI (`agentcn`)
+
+Install agents into a project using the published **`agentcn`** package (same CLI for every package manager):
+
+```bash
+pnpm dlx agentcn@latest add web-agent
+npx agentcn@latest add web-agent
+yarn dlx agentcn@latest add web-agent   # Yarn Berry (v2+)
+bunx agentcn@latest add web-agent
+```
+
+You need the **hosted registry** at `https://agentcn.dev/r` (default) to be deployed and reachable. Override with `-r <path-or-url>` when developing against `apps/web/public/r`.
+
+Maintainers: release checklist, publish steps, live registry verification, and runner smoke tests are documented in [`packages/agentcn/cli/RELEASE.md`](packages/agentcn/cli/RELEASE.md).
+
 ## Add new projects
 
 While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.

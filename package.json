@@ -1,10 +1,11 @@
 {
   "name": "@kit/source",
   "version": "0.1.0",
+  "packageManager": "pnpm@9.0.0",
   "license": "MIT",
   "scripts": {
     "agentcn:registry:build": "pnpm exec tsx scripts/build-agent-registry.mts",
-    "agentcn:build": "pnpm --filter @kit/agentcn build",
+    "agentcn:build": "pnpm --filter agentcn build",
     "web": "npx nx run @kit/web:dev ",
     "web:build": "npx nx run @kit/web:build",
     "web:lint": "npx nx run @kit/web:lint",
@@ -17,24 +18,38 @@
     "web:registry:build": "npx nx run @kit/web:registry:build",
     "web:postinstall": "npx nx run @kit/web:postinstall",
     "deploy:build": "pnpm agentcn:registry:build && pnpm web:build",
-    "clean": "rm -rf node_modules"
+    "agentcn:registry:verify-live": "bash scripts/verify-agentcn-registry-live.sh",
+    "agentcn:runner-matrix-smoke": "bash scripts/agentcn-runner-matrix-smoke.sh",
+    "clean": "rm -rf node_modules",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:web-agent": "jest ai/agents/web"
   },
   "private": true,
   "devDependencies": {
-    "@kit/agentcn": "workspace:*",
-    "@types/node": "^20.17.0",
+    "@jest/globals": "^29.7.0",
+    "agentcn": "workspace:*",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.19.37",
+    "dotenv": "^16.5.0",
+    "jest": "^29.7.0",
     "nx": "22.6.0",
+    "ts-jest": "^29.4.1",
     "tsx": "^4.19.3",
     "typescript": "~5.9.2"
   },
   "workspaces": [
     "apps/*",
+    "examples/*",
     "packages/*",
     "packages/*/*"
   ],
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
     "ai": "^6.0.161",
+    "anchorbrowser": "^0.16.3",
+    "exa-js": "^1.8.27",
+    "playwright-core": "^1.59.1",
     "zod": "^4.3.6"
   }
 }
