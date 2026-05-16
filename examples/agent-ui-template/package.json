@@ -75,11 +75,5 @@
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
 			"biome check --write --no-errors-on-unmatched"
 		]
-	},
-	"pnpm": {
-		"overrides": {
-			"@types/react": "19.2.2",
-			"@types/react-dom": "19.2.2"
-		}
 	}
 }
