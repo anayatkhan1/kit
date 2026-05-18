@@ -39,9 +39,15 @@ export const transformers = [
         // npx.
         if (raw.startsWith("npx")) {
           node.properties["__npm__"] = raw
-          node.properties["__yarn__"] = raw.replace("npx", "yarn")
-          node.properties["__pnpm__"] = raw.replace("npx", "pnpm dlx")
-          node.properties["__bun__"] = raw.replace("npx", "bunx --bun")
+          if (raw.includes("agentcn@latest")) {
+            node.properties["__yarn__"] = raw.replace("npx", "yarn dlx")
+            node.properties["__pnpm__"] = raw.replace("npx", "pnpm dlx")
+            node.properties["__bun__"] = raw.replace("npx", "bunx")
+          } else {
+            node.properties["__yarn__"] = raw.replace("npx", "yarn")
+            node.properties["__pnpm__"] = raw.replace("npx", "pnpm dlx")
+            node.properties["__bun__"] = raw.replace("npx", "bunx --bun")
+          }
         }
 
         // npm run.

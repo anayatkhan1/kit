@@ -40,6 +40,10 @@ interface ObjectType {
 
   required?: boolean
   deprecated?: boolean
+  /**
+   * Optional URL — makes the prop name a link (opens in a new tab).
+   */
+  href?: string
 }
 
 const field = cva("inline-flex flex-row items-center gap-1")
@@ -81,14 +85,33 @@ export function TypeTable({ type }: { type: Record<string, ObjectType> }) {
                 )}
               >
                 <div className={field()}>
-                  <code
-                    className={cn(
-                      "bg-secondary relative rounded border px-[0.3rem] py-[0.1rem] font-mono text-[0.8rem] outline-none"
-                    )}
-                  >
-                    {key}
-                    {!value.required && "?"}
-                  </code>
+                  {value.href ? (
+                    <a
+                      href={value.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                    >
+                      <code
+                        className={cn(
+                          "bg-secondary relative rounded border px-[0.3rem] py-[0.1rem] font-mono text-[0.8rem] outline-none transition-colors",
+                          "group-hover:text-primary group-hover:underline"
+                        )}
+                      >
+                        {key}
+                        {!value.required && "?"}
+                      </code>
+                    </a>
+                  ) : (
+                    <code
+                      className={cn(
+                        "bg-secondary relative rounded border px-[0.3rem] py-[0.1rem] font-mono text-[0.8rem] outline-none"
+                      )}
+                    >
+                      {key}
+                      {!value.required && "?"}
+                    </code>
+                  )}
                   {value.description ? <Info>{value.description}</Info> : null}
                 </div>
               </td>

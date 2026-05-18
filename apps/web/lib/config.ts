@@ -14,8 +14,8 @@ export const siteConfig = {
       label: "Docs",
     },
     {
-      href: "/docs/components/3d-wrapper",
-      label: "Components",
+      href: "/docs/agents/web-agent",
+      label: "Agents",
     },
     {
       href: "/templates",
