@@ -17,6 +17,7 @@ import { Callout } from "@/components/callout"
 import { CodeBlockCommand } from "@/components/code-block-command"
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
 import { CodeTabs } from "@/components/code-tabs"
+import { AgentDemoPreview } from "@/components/agent-demo-preview"
 import { ComponentPreview } from "@/components/component-preview"
 import { ComponentSource } from "@/components/component-source"
 import { ComponentsList } from "@/components/components-list"
@@ -368,6 +369,7 @@ export const mdxComponents = {
   AlertDescription,
   AspectRatio,
   CodeTabs,
+  AgentDemoPreview,
   ComponentPreview,
   ComponentSource,
   CodeCollapsibleWrapper,

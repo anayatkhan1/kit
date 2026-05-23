@@ -54,6 +54,24 @@ pnpm dev
 
 4. Open `http://localhost:3000`, choose an agent profile, and run prompts.
 
+## Docs embed (`/embed/web-agent`)
+
+Compact chat UI for the agentcn docs **Preview** iframe:
+
+```bash
+pnpm dev -p 3001
+```
+
+Open `http://localhost:3001/embed/web-agent`.
+
+Set on the docs app (`apps/web`):
+
+```bash
+NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
+```
+
+Production: deploy this app and point docs at that URL (e.g. `https://demo.agentcn.dev`). Embed routes allow framing from `agentcn.dev` via CSP `frame-ancestors`.
+
 ## Key Files
 
 - `tsconfig.json` - `@kit-ai/*` maps to `kit/ai/*` (shared prompts and toolsets; no copied `ai/` tree in this app).

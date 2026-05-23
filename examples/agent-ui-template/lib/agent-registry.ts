@@ -90,7 +90,7 @@ export const agentRegistry: Record<AgentId, AgentConfig> = {
 
 export function getAgentConfig(agentId: string | undefined): AgentConfig {
 	if (!agentId || !(agentId in agentRegistry)) {
-		return agentRegistry["file-agent"];
+		return agentRegistry["web-agent"];
 	}
 
 	return agentRegistry[agentId as AgentId];

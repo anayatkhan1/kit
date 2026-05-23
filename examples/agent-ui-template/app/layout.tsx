@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import type { ReactNode } from "react";
+import { Suspense } from "react";
 
 import { QueryProvider } from "@/components/providers/query-client-provider";
-import { Suspense } from "react";
-import React from "react";
+import "./globals.css";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -18,42 +18,20 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-	title: "nextjs-template",
-	description: "Your Next.js 16 SaaS Boilerplate",
+	title: "Agent UI Template",
+	description: "Next.js chat UI for testing kit agents",
 };
 
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<html lang="en">
-				<body
-					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-				>
-					<QueryProvider>
-						{/* <header className="flex h-16 items-center justify-end gap-4 p-4">
-								<SignedOut>
-									<SignInButton />
-									<SignUpButton>
-										<button className="h-10 cursor-pointer rounded-full bg-[#6c47ff] px-4 font-medium text-sm text-white sm:h-12 sm:px-5 sm:text-base">
-											Sign Up
-										</button>
-									</SignUpButton>
-								</SignedOut>
-								<SignedIn>
-									<UserButton />
-								</SignedIn>
-							</header> */}
-						{children}
-					</QueryProvider>
-				</body>
-			</html>
-			{/* <ClerkProvider>
-				
-			</ClerkProvider> */}
-		</Suspense>
+		<html lang="en">
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+			>
+				<Suspense fallback={<div>Loading...</div>}>
+					<QueryProvider>{children}</QueryProvider>
+				</Suspense>
+			</body>
+		</html>
 	);
 }
