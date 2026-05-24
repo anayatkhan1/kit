@@ -1,4 +1,5 @@
 import {
+  Bot,
   Box,
   Code,
   Eclipse,
@@ -23,6 +24,7 @@ export const categoryIcons = {
   Backgrounds: Flame,
   "Text Effects": Type,
   Buttons: MousePointerClick,
+  Agents: Bot,
 } as const
 
 export function getCategoryIcon(categoryName: string) {

@@ -1,0 +1,110 @@
+---
+title: Web Agent
+description: Web research agent with search, answer, deep research, browser automation (Anchor), and websets via Exa.
+component: true
+---
+
+<AgentDemoPreview agentId="web-agent" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx agentcn@latest add web-agent
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install ai @ai-sdk/anthropic zod exa-js playwright-core
+```
+
+<Step>Set environment variables in your `.env` file. Get each key from its provider:</Step>
+
+- [ANTHROPIC_API_KEY](https://console.anthropic.com/settings/keys) — Anthropic Console
+- [EXA_API_KEY](https://dashboard.exa.ai/api-keys) — Exa Dashboard
+- [ANCHOR_API_KEY](https://app.anchorbrowser.io/) — Anchor Browser
+
+```bash
+ANTHROPIC_API_KEY=
+EXA_API_KEY=
+ANCHOR_API_KEY=
+```
+
+<Step>Copy the agent source into your project.</Step>
+
+<ComponentSource src="../../ai/agents/web/agent.ts" title="ai/agents/web/agent.ts" />
+
+<Step>Update import paths and add remaining files from the registry payload (`ai/agents/web/*`) to match your project layout.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { webAgent } from "@/ai/agents/web";
+```
+
+```tsx showLineNumbers
+import type { ModelMessage } from "ai";
+
+const messages: ModelMessage[] = [
+  { role: "user", content: "Search for the latest news on AI agents." },
+];
+
+const result = await webAgent(messages);
+// Returns a streamText result — wire into your API route or chat handler
+```
+
+## Configuration
+
+Environment variables required by `web-agent`.
+
+<TypeTable
+  type={{
+    ANTHROPIC_API_KEY: {
+      type: "string",
+      href: "https://console.anthropic.com/settings/keys",
+      description: "Required for the Claude model used by the agent.",
+    },
+    EXA_API_KEY: {
+      type: "string",
+      href: "https://dashboard.exa.ai/api-keys",
+      description:
+        "Web search, answer, deep research, and websets via Exa.",
+    },
+    ANCHOR_API_KEY: {
+      type: "string",
+      href: "https://app.anchorbrowser.io/",
+      description: "Browser automation sessions via Anchor.",
+    },
+  }}
+/>
+
+### Tools
+
+The agent exposes these tools (see `ai/agents/web/tools/toolset.ts`):
+
+- `web_search` — search the web for up-to-date information
+- `answer_question` — answer a question with source-backed evidence
+- `deep_research` — longer investigations using web sources
+- `use_browser` — automate tasks on websites when interaction is required
+- `create_webset` — comprehensive entity collection via Exa websets

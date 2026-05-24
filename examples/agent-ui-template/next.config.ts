@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
 	turbopack: {
 		root: path.resolve(projectRoot, "../.."),
 	},
+	async headers() {
+		return [
+			{
+				source: "/embed/:path*",
+				headers: [
+					{
+						key: "Content-Security-Policy",
+						value:
+							"frame-ancestors 'self' http://localhost:3000 https://agentcn.dev https://www.agentcn.dev",
+					},
+				],
+			},
+		];
+	},
 	cacheComponents: true,
 	// TypeScript configuration
 	typescript: {
