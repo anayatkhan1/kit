@@ -7,7 +7,6 @@ import { TriangleDownIcon } from "@radix-ui/react-icons"
 import { CircleArrowUp } from "lucide-react"
 
 import { getCategoryIcon } from "@/lib/category-icons"
-import { getColors } from "@/lib/colors"
 import { siteConfig } from "@/lib/config"
 import type { source } from "@/lib/source"
 import {
@@ -46,7 +45,6 @@ export function DocsSidebar({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const colors = getColors()
   const pageTree = tree
 
   return (
@@ -186,7 +184,6 @@ export function DocsSidebar({
             <div>
               <CommandMenu
                 tree={tree}
-                colors={colors}
                 className="pointer-events-auto"
               />
             </div>

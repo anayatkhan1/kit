@@ -34,13 +34,13 @@ import { copyToClipboardWithMeta } from "@/components/copy-button"
 
 export function CommandMenu({
   tree,
-  colors,
+  colors = [],
   blocks,
   className,
   ...props
 }: DialogProps & {
   tree: typeof source.pageTree
-  colors: ColorPalette[]
+  colors?: ColorPalette[]
   blocks?: { name: string; description: string; categories: string[] }[]
   className?: string
 }) {
@@ -211,7 +211,8 @@ export function CommandMenu({
                   })}
               </CommandGroup>
             ))}
-            {colors.map((colorPalette) => (
+            {colors.length > 0
+              ? colors.map((colorPalette) => (
               <CommandGroup
                 key={colorPalette.name}
                 heading={
@@ -246,7 +247,8 @@ export function CommandMenu({
                   </CommandMenuItem>
                 ))}
               </CommandGroup>
-            ))}
+            ))
+              : null}
             {blocks?.length ? (
               <CommandGroup
                 heading="Blocks"

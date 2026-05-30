@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import { getColors } from "@/lib/colors"
 import { siteConfig } from "@/lib/config"
 import { source } from "@/lib/source"
 import { Separator } from "@/components/ui/separator"
@@ -13,7 +12,6 @@ import { MobileNav } from "@/components/mobile-nav"
 import { SocialButton } from "@/components/social-button"
 
 export function SiteHeader() {
-  const colors = getColors()
   const pageTree = source.pageTree
 
   return (
@@ -39,7 +37,7 @@ export function SiteHeader() {
             <GithubButton />
             <Separator orientation="vertical" className="mr-1 !h-[20px]" />
             <div className="w-full flex-1 md:flex md:w-auto md:flex-none">
-              <CommandMenu tree={pageTree} colors={colors} />
+              <CommandMenu tree={pageTree} />
             </div>
             <Separator
               orientation="vertical"
