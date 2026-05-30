@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, HeartHandshake } from "lucide-react"
 
+import { siteConfig } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -21,7 +22,7 @@ import {
 export function DocsDropdown() {
   const pathname = usePathname()
 
-  const githubBaseUrl = "https://github.com/badtzx0/badtz-ui/blob/main/content"
+  const githubBaseUrl = `${siteConfig.links.github}/blob/main/apps/web/content`
   const githubEditUrl = `${githubBaseUrl}${pathname}.mdx`
 
   return (
@@ -52,7 +53,7 @@ export function DocsDropdown() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link
-                    href="https://github.com/badtzx0/badtz-ui"
+                    href={siteConfig.links.github}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -64,16 +65,16 @@ export function DocsDropdown() {
           </DropdownMenuSub>
           <DropdownMenuItem asChild>
             <Link
-              href="https://github.com/badtzx0/badtz-ui/discussions/categories/component-suggestions"
+              href={siteConfig.discussions.agentSuggestions}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Request a component
+             Request a agent
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href="https://github.com/badtzx0/badtz-ui/discussions/categories/bug-reports"
+              href={siteConfig.discussions.bugReport}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -82,7 +83,7 @@ export function DocsDropdown() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href="https://github.com/badtzx0/badtz-ui/discussions/categories/general"
+              href={siteConfig.discussions.feedback}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -29,7 +29,7 @@ export const LoginEmail = ({ loginLink }: LoginEmailProps) => {
           <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] px-[36px] py-[8px]">
             <Section className="mt-[32px]">
               <Img
-                src="https://cdn.agentcn.dev/mail-assets/bui-logo.png"
+                src="https://agentcn.dev/agentcn-logo.svg"
                 width="30"
                 height="30"
                 alt="AgentCN"

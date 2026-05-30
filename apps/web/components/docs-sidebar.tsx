@@ -143,20 +143,20 @@ export function DocsSidebar({
                 <SocialButton
                   className="[&_svg]:size-3.5"
                   srOnly="GitHub Link"
-                  src="https://github.com/badtzx0/badtz-ui"
+                  src={siteConfig.links.github}
                 >
                   <Icons.gitHub />
                 </SocialButton>
                 <SocialButton
                   className="[&_svg]:size-3"
                   srOnly="Twitter Link"
-                  src="https://x.com/badtz_ui"
+                  src={siteConfig.links.twitter}
                 >
                   <Icons.twitter />
                 </SocialButton>
                 <SocialButton
                   srOnly="Discord Link"
-                  src="https://discord.gg/SV2y7vz6Es"
+                  src={siteConfig.links.discord}
                   className="[&_svg]:size-4"
                 >
                   <Icons.discord />

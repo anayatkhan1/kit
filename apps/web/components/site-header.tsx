@@ -48,13 +48,13 @@ export function SiteHeader() {
             <SocialButton
               className="hidden md:flex [&_svg]:size-3"
               srOnly="Twitter Link"
-              src="https://x.com/badtz_ui"
+              src={siteConfig.links.twitter}
             >
               <Icons.twitter />
             </SocialButton>
             <SocialButton
               srOnly="Discord Link"
-              src="https://discord.gg/SV2y7vz6Es"
+              src={siteConfig.links.discord}
               className="hidden md:flex [&_svg]:size-4"
             >
               <Icons.discord />

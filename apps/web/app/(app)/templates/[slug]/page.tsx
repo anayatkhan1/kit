@@ -2,6 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { mdxComponents } from "@/mdx-components"
 
+import { siteConfig } from "@/lib/config"
 import { createStaticOGMetadata } from "@/lib/metadata"
 import { getAllTemplates } from "@/lib/templates"
 import { templatesSource } from "@/lib/templates-source"
@@ -52,7 +53,7 @@ export async function generateMetadata(props: {
     },
     twitter: {
       ...createStaticOGMetadata(doc.title, doc.description).twitter,
-      creator: "@badtz-ui",
+      creator: `@${siteConfig.social.twitterHandle}`,
     },
   }
 }

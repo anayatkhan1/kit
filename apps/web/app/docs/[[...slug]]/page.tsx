@@ -9,6 +9,7 @@ import {
 import { findNeighbour } from "fumadocs-core/server"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+import { siteConfig } from "@/lib/config"
 import { createStaticOGMetadata } from "@/lib/metadata"
 import { source } from "@/lib/source"
 import { absoluteUrl } from "@/lib/utils"
@@ -53,7 +54,7 @@ export async function generateMetadata(props: {
     },
     twitter: {
       ...createStaticOGMetadata(doc.title, doc.description).twitter,
-      creator: "@badtz-ui",
+      creator: `@${siteConfig.social.twitterHandle}`,
     },
   }
 }
@@ -75,8 +76,8 @@ export default async function Page(props: {
   // @ts-expect-error - revisit fumadocs types.
   const links = doc.links
 
-  const owner = "badtzx0"
-  const repo = "badtz-ui"
+  const owner = siteConfig.github.owner
+  const repo = siteConfig.github.repo
 
   return (
     <div

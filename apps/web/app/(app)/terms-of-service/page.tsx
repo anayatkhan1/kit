@@ -1,5 +1,7 @@
 import { Metadata } from "next"
 
+import { siteConfig } from "@/lib/config"
+
 export const metadata: Metadata = {
   title: "AgentCN • Terms of Service",
   description:
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
     description:
       "Build beautiful landing pages with 70+ free UI components. Professional animations, modern design system. Open source React components with Tailwind CSS, Motion & TypeScript.",
     images: [{ url: "/twitter-image.jpg", width: 1200, height: 675 }],
-    site: "@badtz_ui",
+    site: `@${siteConfig.social.twitterHandle}`,
   },
 }
 
@@ -53,7 +55,7 @@ These Terms of Service ("Terms") govern your access to and use of the AgentCN we
 
 1.4 External Links
 
-- The Website may contain links to third-party websites (e.g., Twitter: https://x.com/badtz_ui, Discord: https://discord.com/invite/SV).
+- The Website may contain links to third-party websites (e.g., Twitter: ${siteConfig.links.twitter}, Discord: ${siteConfig.links.discord}).
 - We are not responsible for the content, policies, or practices of any external sites.
 
 1.5 Modifications to the Terms
@@ -69,8 +71,8 @@ These Terms of Service ("Terms") govern your access to and use of the AgentCN we
 1.7 Contact
 
 If you have any questions about these Terms, please contact us:
-- Email: contact@agentcn.dev
-- Twitter: https://x.com/badtz_ui
+- Email: ${siteConfig.links.email}
+- Twitter: ${siteConfig.links.twitter}
 
 Thank you for using AgentCN.
             `}

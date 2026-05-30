@@ -3,11 +3,30 @@ export const siteConfig = {
   url: "https://agentcn.dev",
   ogImage: "https://agentcn.dev/og.jpg",
   description:
-    "Build beautiful landing pages with 70+ free UI components. Professional animations, modern design system. Open source React components with Tailwind CSS, Motion & TypeScript.",
+    "Installable AI agents for real business workflows. TypeScript-first agents for Next.js with the Vercel AI SDK.",
   links: {
-    twitter: "https://twitter.com/badtz_ui",
-    github: "https://github.com/badtzx0/badtz-ui",
+    twitter: "https://x.com/agentcnkit",
+    github: "https://github.com/anayatkhan1/kit",
+    discord: "https://discord.gg/SV2y7vz6Es",
+    email: "anayat0khan@gmail.com",
   },
+  social: {
+    twitterHandle: "agentcnkit",
+  },
+  github: {
+    owner: "anayatkhan1",
+    repo: "kit",
+  },
+  githubRepoApi: "https://api.github.com/repos/anayatkhan1/kit",
+  discussions: {
+    agentSuggestions:
+      "https://github.com/anayatkhan1/kit/discussions/categories/agent-suggestions",
+    bugReport:
+      "https://github.com/anayatkhan1/kit/discussions/categories/bug-report",
+    feedback:
+      "https://github.com/anayatkhan1/kit/discussions/categories/feedback",
+  },
+  discordUserId: "1508789016965808148",
   navItems: [
     {
       href: "/docs",

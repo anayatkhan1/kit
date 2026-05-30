@@ -5,6 +5,7 @@ import Link from "next/link"
 import NumberFlow, { useCanAnimate } from "@number-flow/react"
 import { motion, MotionConfig } from "motion/react"
 
+import { siteConfig } from "@/lib/config"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
@@ -32,9 +33,7 @@ export function GithubButton({ className }: { className?: string }) {
   useEffect(() => {
     const fetchStars = async () => {
       try {
-        const response = await fetch(
-          "https://api.github.com/repos/badtzx0/badtz-ui"
-        )
+        const response = await fetch(siteConfig.githubRepoApi)
         const data = await response.json()
         setStars(data.stargazers_count)
         setDisplayValue(data.stargazers_count)
@@ -56,7 +55,7 @@ export function GithubButton({ className }: { className?: string }) {
     >
       <Link
         target="_blank"
-        href="https://github.com/badtzx0/badtz-ui"
+        href={siteConfig.links.github}
         onMouseEnter={() => stars && animateValue(stars)}
         onClick={() => {
           if (typeof window !== "undefined" && window.datafast) {

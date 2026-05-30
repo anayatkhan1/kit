@@ -73,12 +73,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`],
-    creator: "@badtz_ui",
-  },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    creator: `@${siteConfig.social.twitterHandle}`,
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
 }
