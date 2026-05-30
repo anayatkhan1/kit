@@ -4,8 +4,6 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { TriangleDownIcon } from "@radix-ui/react-icons"
-import { CircleArrowUp } from "lucide-react"
-
 import { getCategoryIcon } from "@/lib/category-icons"
 import { siteConfig } from "@/lib/config"
 import type { source } from "@/lib/source"
@@ -126,17 +124,8 @@ export function DocsSidebar({
               </SidebarMenu>
             </SidebarGroup>
           </ScrollArea>
-          <div className="flex items-center justify-between gap-2 px-4 py-3">
-            <Link
-              href="https://pro.agentcn.dev/"
-              target="_blank"
-              className="border-sidebar-border/70 hover:bg-sidebar-accent group/pro-plan text-foreground flex h-7 w-min cursor-pointer items-center rounded-full border pr-3 pl-1.5 text-xs whitespace-nowrap"
-            >
-              <CircleArrowUp className="mr-2 size-3.5 transition-colors duration-200" />
-              Pro plan
-            </Link>
-
-            <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-2 px-4 py-3">
+            <div className="flex items-center justify-center">
               <div className="flex justify-center gap-0.5">
                 <SocialButton
                   className="[&_svg]:size-3.5"
