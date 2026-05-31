@@ -4,23 +4,24 @@ description: Release notes for AgentCN docs and product direction.
 toc: false
 ---
 
+## 2026-05-19
+
+### Docs cleanup (Badtz / legacy removal)
+
+- Removed ghost nav sections (components, shaders, animated-cards, etc.) from docs meta.
+- Renamed **Pro plan** page to **AgentCN Scope** at `/docs/scope`.
+- Rewrote Get Started copy for installable AI agents (no resale / UI-library framing).
+- Simplified docs search (pages only — no color tokens or shadcn install commands).
+- Fixed GitHub "Edit this page" paths to `apps/web/content/docs/`.
+
+### Navigation
+
+- Docs sidebar: **Get Started** + **Agents** only.
+- Legacy `/docs/components/*` URLs redirect to agents docs.
+
 ## 2026-03-24
 
-### Docs cleanup and rewrite
+### Initial MVP docs set
 
-- Removed the old component-marketing docs content.
-- Reduced section sprawl to a lean MVP docs set.
-- Rewrote content around AgentCN resale-agent use cases.
-- Preserved the existing docs architecture and rendering format.
-
-### Navigation changes
-
-- Simplified each section to one core page for now.
-- Updated section `meta.json` files to match the new reduced set.
-- Kept URLs stable for remaining pages.
-
-### Notes
-
-- This is a content reset, not a docs-engine rewrite.
-- Future updates should expand from this baseline incrementally.
-
+- Lean docs structure with Get Started and Agents sections.
+- Web Agent page with CLI install, manual setup, and live preview embed.

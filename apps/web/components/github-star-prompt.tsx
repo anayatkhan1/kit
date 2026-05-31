@@ -27,7 +27,7 @@ export function GitHubStarPrompt() {
                   className="flex flex-1 cursor-pointer items-center gap-3"
                   onClick={() => {
                     if (typeof window !== "undefined" && window.datafast) {
-                      window.datafast("clicked_pro_popup")
+                      window.datafast("clicked_github_star_prompt")
                     }
                     window.open(siteConfig.links.github, "_blank")
                     toast.dismiss(toastId)
@@ -36,7 +36,7 @@ export function GitHubStarPrompt() {
                 >
                   <div className="flex-1">
                     <p className="text-popover-foreground text-sm font-medium">
-                      You like AgentCN UI?
+                      You like AgentCN?
                     </p>
                     <p className="text-muted-foreground mt-1 text-xs">
                       Consider leaving a star! It’s free and means a lot to me.

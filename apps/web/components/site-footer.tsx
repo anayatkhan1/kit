@@ -59,7 +59,7 @@ const FOOTER_SECTIONS: { title: string; links: LinkType[] }[] = [
     links: [
       { href: "/docs", label: "Docs" },
       { href: "/docs/agents/web-agent", label: "Agents" },
-      { href: "/docs/templates", label: "Templates" },
+      { href: "/templates", label: "Templates" },
     ],
   },
   {

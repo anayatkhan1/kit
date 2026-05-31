@@ -4,14 +4,11 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { IconArrowRight } from "@tabler/icons-react"
-import { CornerDownLeftIcon, SquareDashedIcon } from "lucide-react"
+import { CornerDownLeftIcon } from "lucide-react"
 
-import { type Color, type ColorPalette } from "@/lib/colors"
 import { source } from "@/lib/source"
 import { cn } from "@/lib/utils"
-import { useConfig } from "@/hooks/use-config"
 import { useIsMac } from "@/hooks/use-is-mac"
-import { useMutationObserver } from "@/hooks/use-mutation-observer"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -29,62 +26,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Separator } from "@/components/ui/separator"
-import { copyToClipboardWithMeta } from "@/components/copy-button"
 
 export function CommandMenu({
   tree,
-  colors = [],
-  blocks,
   className,
   ...props
 }: DialogProps & {
   tree: typeof source.pageTree
-  colors?: ColorPalette[]
-  blocks?: { name: string; description: string; categories: string[] }[]
   className?: string
 }) {
   const router = useRouter()
   const isMac = useIsMac()
-  const [config] = useConfig()
   const [open, setOpen] = React.useState(false)
-  const [selectedType, setSelectedType] = React.useState<
-    "color" | "page" | "component" | "block" | null
-  >(null)
-  const [copyPayload, setCopyPayload] = React.useState("")
-  const packageManager = config.packageManager || "pnpm"
-
-  const handlePageHighlight = React.useCallback(
-    (isComponent: boolean, item: { url: string; name?: React.ReactNode }) => {
-      if (isComponent) {
-        const componentName = item.url.split("/").pop()
-        setSelectedType("component")
-        setCopyPayload(
-          `${packageManager} dlx shadcn@latest add ${componentName}`
-        )
-      } else {
-        setSelectedType("page")
-        setCopyPayload("")
-      }
-    },
-    [packageManager, setSelectedType, setCopyPayload]
-  )
-
-  const handleColorHighlight = React.useCallback(
-    (color: Color) => {
-      setSelectedType("color")
-      setCopyPayload(color.className)
-    },
-    [setSelectedType, setCopyPayload]
-  )
-
-  const handleBlockHighlight = React.useCallback(
-    (block: { name: string; description: string; categories: string[] }) => {
-      setSelectedType("block")
-      setCopyPayload(`${packageManager} dlx shadcn@latest add ${block.name}`)
-    },
-    [setSelectedType, setCopyPayload, packageManager]
-  )
 
   const runCommand = React.useCallback((command: () => unknown) => {
     setOpen(false)
@@ -106,36 +59,11 @@ export function CommandMenu({
         e.preventDefault()
         setOpen((open) => !open)
       }
-
-      if (e.key === "c" && (e.metaKey || e.ctrlKey)) {
-        runCommand(() => {
-          if (selectedType === "color") {
-            copyToClipboardWithMeta(copyPayload, {
-              name: "copy_color",
-              properties: { color: copyPayload },
-            })
-          }
-
-          if (selectedType === "block") {
-            copyToClipboardWithMeta(copyPayload, {
-              name: "copy_npm_command",
-              properties: { command: copyPayload, pm: packageManager },
-            })
-          }
-
-          if (selectedType === "page" || selectedType === "component") {
-            copyToClipboardWithMeta(copyPayload, {
-              name: "copy_npm_command",
-              properties: { command: copyPayload, pm: packageManager },
-            })
-          }
-        })
-      }
     }
 
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
-  }, [copyPayload, runCommand, selectedType, packageManager])
+  }, [])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -163,7 +91,7 @@ export function CommandMenu({
       >
         <DialogHeader className="sr-only">
           <DialogTitle>Search documentation...</DialogTitle>
-          <DialogDescription>Search for a command to run...</DialogDescription>
+          <DialogDescription>Search documentation pages</DialogDescription>
         </DialogHeader>
         <Command className="**:data-[slot=command-input-wrapper]:bg-input/50 **:data-[slot=command-input-wrapper]:border-input rounded-none bg-transparent **:data-[slot=command-input]:!h-9 **:data-[slot=command-input]:py-0 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:!h-9 **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border">
           <CommandInput placeholder="Search documentation..." />
@@ -180,173 +108,38 @@ export function CommandMenu({
                 {group.type === "folder" &&
                   group.children.map((item) => {
                     if (item.type === "page") {
-                      const isComponent = item.url.includes("/components/")
-
                       return (
-                        <CommandMenuItem
+                        <CommandItem
                           key={item.url}
                           value={
                             item.name?.toString()
                               ? `${group.name} ${item.name}`
                               : ""
                           }
-                          keywords={isComponent ? ["component"] : undefined}
-                          onHighlight={() =>
-                            handlePageHighlight(isComponent, item)
-                          }
+                          className="data-[selected=true]:border-input data-[selected=true]:bg-input/50 h-9 rounded-md border border-transparent !px-3 font-medium"
                           onSelect={() => {
                             runCommand(() => router.push(item.url))
                           }}
                         >
-                          {isComponent ? (
-                            <div className="border-muted-foreground aspect-square size-4 rounded-full border border-dashed" />
-                          ) : (
-                            <IconArrowRight />
-                          )}
+                          <IconArrowRight />
                           {item.name}
-                        </CommandMenuItem>
+                        </CommandItem>
                       )
                     }
                     return null
                   })}
               </CommandGroup>
             ))}
-            {colors.length > 0
-              ? colors.map((colorPalette) => (
-              <CommandGroup
-                key={colorPalette.name}
-                heading={
-                  colorPalette.name.charAt(0).toUpperCase() +
-                  colorPalette.name.slice(1)
-                }
-                className="!p-0 [&_[cmdk-group-heading]]:!p-3"
-              >
-                {colorPalette.colors.map((color) => (
-                  <CommandMenuItem
-                    key={color.hex}
-                    value={color.className}
-                    keywords={["color", color.name, color.className]}
-                    onHighlight={() => handleColorHighlight(color)}
-                    onSelect={() => {
-                      runCommand(() =>
-                        copyToClipboardWithMeta(color.oklch, {
-                          name: "copy_color",
-                          properties: { color: color.oklch },
-                        })
-                      )
-                    }}
-                  >
-                    <div
-                      className="border-ghost aspect-square size-4 rounded-sm bg-(--color) after:rounded-sm"
-                      style={{ "--color": color.oklch } as React.CSSProperties}
-                    />
-                    {color.className}
-                    <span className="text-muted-foreground ml-auto font-mono text-xs font-normal tabular-nums">
-                      {color.oklch}
-                    </span>
-                  </CommandMenuItem>
-                ))}
-              </CommandGroup>
-            ))
-              : null}
-            {blocks?.length ? (
-              <CommandGroup
-                heading="Blocks"
-                className="!p-0 [&_[cmdk-group-heading]]:!p-3"
-              >
-                {blocks.map((block) => (
-                  <CommandMenuItem
-                    key={block.name}
-                    value={block.name}
-                    onHighlight={() => {
-                      handleBlockHighlight(block)
-                    }}
-                    keywords={[
-                      "block",
-                      block.name,
-                      block.description,
-                      ...block.categories,
-                    ]}
-                    onSelect={() => {
-                      runCommand(() =>
-                        router.push(
-                          `/blocks/${block.categories[0]}#${block.name}`
-                        )
-                      )
-                    }}
-                  >
-                    <SquareDashedIcon />
-                    {block.description}
-                    <span className="text-muted-foreground ml-auto font-mono text-xs font-normal tabular-nums">
-                      {block.name}
-                    </span>
-                  </CommandMenuItem>
-                ))}
-              </CommandGroup>
-            ) : null}
           </CommandList>
         </Command>
         <div className="text-muted-foreground absolute inset-x-0 bottom-0 z-20 flex h-10 items-center gap-2 rounded-b-xl border-t border-t-neutral-100 bg-neutral-50 px-4 text-xs font-medium dark:border-t-neutral-700 dark:bg-neutral-800">
-          <div className="flex items-center gap-2">
-            <CommandMenuKbd>
-              <CornerDownLeftIcon />
-            </CommandMenuKbd>{" "}
-            {selectedType === "page" || selectedType === "component"
-              ? "Go to Page"
-              : null}
-            {selectedType === "color" ? "Copy OKLCH" : null}
-          </div>
-          {copyPayload && (
-            <>
-              <Separator orientation="vertical" className="!h-4" />
-              <div className="flex items-center gap-1">
-                <CommandMenuKbd>{isMac ? "⌘" : "Ctrl"}</CommandMenuKbd>
-                <CommandMenuKbd>C</CommandMenuKbd>
-                {copyPayload}
-              </div>
-            </>
-          )}
+          <CommandMenuKbd>
+            <CornerDownLeftIcon />
+          </CommandMenuKbd>
+          Go to Page
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
-
-function CommandMenuItem({
-  children,
-  className,
-  onHighlight,
-  ...props
-}: React.ComponentProps<typeof CommandItem> & {
-  onHighlight?: () => void
-  "data-selected"?: string
-  "aria-selected"?: string
-}) {
-  const ref = React.useRef<HTMLDivElement>(null)
-
-  useMutationObserver(ref, (mutations) => {
-    mutations.forEach((mutation) => {
-      if (
-        mutation.type === "attributes" &&
-        mutation.attributeName === "aria-selected" &&
-        ref.current?.getAttribute("aria-selected") === "true"
-      ) {
-        onHighlight?.()
-      }
-    })
-  })
-
-  return (
-    <CommandItem
-      ref={ref}
-      className={cn(
-        "data-[selected=true]:border-input data-[selected=true]:bg-input/50 h-9 rounded-md border border-transparent !px-3 font-medium",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </CommandItem>
   )
 }
 

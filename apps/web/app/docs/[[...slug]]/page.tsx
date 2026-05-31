@@ -134,7 +134,7 @@ export default async function Page(props: {
                 />
                 <ViewOptions
                   markdownUrl={`/llms.mdx${page.url.replace("/docs", "")}`}
-                  githubUrl={`https://github.com/${owner}/${repo}/blob/main/content/docs/${page.path}`}
+                  githubUrl={`https://github.com/${owner}/${repo}/blob/main/apps/web/content/docs/${page.path}`}
                 />
                 <BookmarkButton
                   className="ml-auto justify-self-end"

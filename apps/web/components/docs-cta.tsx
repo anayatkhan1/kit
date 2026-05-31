@@ -1,5 +1,6 @@
 "use client"
 
+// Toggle via siteConfig.features.showDocsConsultingBanner in lib/config.ts
 import { useDataFast } from "@/lib/datafast-client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
