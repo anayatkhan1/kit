@@ -4,7 +4,7 @@ import { createMDX } from "fumadocs-mdx/next"
 const nextConfig = {
   devIndicators: false,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   outputFileTracingIncludes: {
     "/*": ["./registry/**/*"],
@@ -22,14 +22,6 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "cdn.agentcn.dev",
-      },
-      {
-        protocol: "https",
-        hostname: "pro.agentcn.dev",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.reechlist.com",
       },
     ],
   },

@@ -75,6 +75,31 @@ pnpm deploy:build
 # then deploy the built web app / static assets so production serves updated apps/web/public/r/*
 ```
 
+## Changelog & versioning (Nx release)
+
+The `agentcn` package uses [Nx release](https://nx.dev/features/manage-releases) with conventional commits. Changelog entries include commit links, release dates, and a **Thank You** section for authors.
+
+Configuration lives in [`nx.json`](../../../nx.json) at the repo root (`projectChangelogs.renderOptions`).
+
+From the workspace root:
+
+```bash
+# Preview version bump, CHANGELOG.md update, git tag, and GitHub release
+pnpm release --dry-run --skip-publish
+
+# Run the full release (version + changelog + tag + publish prompt)
+pnpm release
+
+# Individual steps
+pnpm release:version
+pnpm release:changelog
+pnpm release:publish
+```
+
+Generated changelog file: **`packages/agentcn/cli/CHANGELOG.md`**. Tags use `{projectName}@{version}` (e.g. `agentcn@0.1.2`).
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.) so Nx groups entries under **Features**, **Fixes**, and related sections.
+
 ## Release checklist (ordered)
 
 1. Build registry artifacts from repo root: `pnpm agentcn:registry:build`
@@ -82,6 +107,5 @@ pnpm deploy:build
 3. Tarball smoke: `pnpm --filter agentcn pack:smoke`
 4. Multi-runner smoke (local tarball + local registry path): `pnpm agentcn:runner-matrix-smoke`  
    Requires optional tools for full matrix: **corepack/yarn** (Yarn Berry), **bun** (Bun). npm and pnpm use the repo toolchain.
-5. `npm publish --dry-run` from `packages/agentcn/cli` (optional sanity check)
-6. Publish: `pnpm --filter agentcn publish --access public`
-7. `pnpm agentcn:registry:verify-live` against production after deploy
+5. Version, changelog, tag, and publish with Nx: `pnpm release` (or `--dry-run --skip-publish` first)
+6. `pnpm agentcn:registry:verify-live` against production after deploy

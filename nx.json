@@ -11,5 +11,33 @@
       "cache": true
     }
   },
+  "release": {
+    "projects": ["agentcn"],
+    "projectsRelationship": "independent",
+    "version": {
+      "conventionalCommits": true,
+      "fallbackCurrentVersionResolver": "disk"
+    },
+    "changelog": {
+      "workspaceChangelog": false,
+      "projectChangelogs": {
+        "file": "{projectRoot}/CHANGELOG.md",
+        "createRelease": "github",
+        "renderOptions": {
+          "authors": true,
+          "applyUsernameToAuthors": true,
+          "commitReferences": true,
+          "versionTitleDate": true
+        }
+      }
+    },
+    "git": {
+      "commit": true,
+      "tag": true
+    },
+    "releaseTag": {
+      "pattern": "{projectName}@{version}"
+    }
+  },
   "analytics": true
 }

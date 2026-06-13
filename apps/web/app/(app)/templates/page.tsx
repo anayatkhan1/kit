@@ -2,15 +2,15 @@ import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 
+import { siteConfig } from "@/lib/config"
 import { createStaticOGMetadata } from "@/lib/metadata"
 import { getAllTemplates } from "@/lib/templates"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Announcement } from "@/components/announcement"
 import { Icons } from "@/components/icons"
 import TemplateGithubButton from "@/components/marketing/template-github-button"
 import TemplateLiveDemoButton from "@/components/marketing/template-live-demo-button"
-import TemplateProButton from "@/components/marketing/template-pro-button"
-import { TemplatesCTAButton } from "@/components/marketing/templates-cta-button"
 import {
   PageActions,
   PageHeader,
@@ -33,13 +33,15 @@ export default async function TemplatesPage() {
   return (
     <>
       <PageHeader>
-        <Announcement link="/docs/templates">
-          Production-Ready from Day One
-        </Announcement>
+        <Announcement link="/docs">Install agents with the CLI</Announcement>
         <PageHeaderHeading>{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>
-          <TemplatesCTAButton />
+          <Button asChild size="lg" variant="gradient" className="rounded-lg px-4">
+            <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
+              View on GitHub
+            </Link>
+          </Button>
         </PageActions>
       </PageHeader>
       <div className="flex flex-col gap-16 pt-6 pb-14 md:pt-0 lg:pb-24">
@@ -50,17 +52,10 @@ export default async function TemplatesPage() {
               className="grid grid-cols-1 gap-8 rounded-xl sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-16"
             >
               <div className="relative col-span-2 flex h-full flex-col items-start justify-center">
-                {template.openSource ? (
-                  <Badge variant="accent">
-                    <Icons.star className="h-4 w-4" />
-                    Open Source
-                  </Badge>
-                ) : (
-                  <Badge variant="accent">
-                    <Icons.check className="h-4 w-4" />
-                    Included in BUI Pro
-                  </Badge>
-                )}
+                <Badge variant="accent">
+                  <Icons.star className="h-4 w-4" />
+                  Open Source
+                </Badge>
                 <h3 className="font-gilroy mt-6 text-2xl leading-none font-bold">
                   {template.title}
                 </h3>
@@ -77,16 +72,13 @@ export default async function TemplatesPage() {
                 <div className="mt-6 flex flex-wrap items-center gap-3">
                   {template.githubUrl ? (
                     <TemplateGithubButton href={template.githubUrl} />
-                  ) : (
-                    <TemplateProButton />
-                  )}
+                  ) : null}
                   {template.actionButtons &&
                     template.actionButtons.map((button, index) => (
                       <TemplateLiveDemoButton
                         href={button}
                         index={index}
                         label={
-                          template.openSource &&
                           template.actionButtons?.length === 1
                             ? "Try Demo"
                             : undefined

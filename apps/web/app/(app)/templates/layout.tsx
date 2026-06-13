@@ -2,7 +2,7 @@ import { createStaticOGMetadata } from "@/lib/metadata"
 
 const title = "Production Ready Templates"
 const description =
-  "Complete website templates built with React. Modern, responsive, and fully customizable. Perfect for startups, agencies, and businesses."
+  "Open source starter templates for AI agents and modern web apps. Clone, customize, and ship with AgentCN."
 
 export const metadata = createStaticOGMetadata(title, description)
 

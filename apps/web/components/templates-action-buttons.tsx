@@ -12,8 +12,6 @@ interface LiveDemo {
 
 interface TemplatesActionButtonsProps {
   liveDemos?: LiveDemo[]
-  templateRole?: string
-  templateSlug?: string
   githubUrl?: string
 }
 
@@ -38,21 +36,7 @@ export function TemplatesActionButtons({
             View on GitHub <ExternalLink className="h-3.5 w-3.5" />
           </Button>
         </Link>
-      ) : (
-        <Link
-          href="https://pro.agentcn.dev"
-          target="_blank"
-          onClick={() => {
-            if (typeof window !== "undefined" && window.datafast) {
-              window.datafast("clicked_pro_from_templates")
-            }
-          }}
-        >
-          <Button variant="gradient" className="h-8 w-fit text-[13.5px]">
-            AgentCN Pro <ExternalLink className="h-3.5 w-3.5" />
-          </Button>
-        </Link>
-      )}
+      ) : null}
 
       {liveDemos.map((demo, index) => (
         <Link

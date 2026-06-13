@@ -38,12 +38,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
   description: siteConfig.description,
   keywords: [
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "Components",
-    "Blocks",
-    "Templates",
+    "AI agents",
+    "AgentCN",
+    "CLI",
+    "agent registry",
+    "Vercel AI SDK",
+    "TypeScript",
+    "open source",
   ],
   authors: [
     {

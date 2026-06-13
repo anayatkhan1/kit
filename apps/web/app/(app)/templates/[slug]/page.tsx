@@ -90,7 +90,7 @@ export default async function TemplatePage(props: {
           <h1 className="font-gilroy scroll-m-20 text-3xl font-semibold tracking-tight">
             {doc.title}
           </h1>
-          <TemplateTags tags={doc.tags || []} />
+          <TemplateTags tags={(doc.tags as string[] | undefined) ?? []} />
           {doc.description && (
             <p className="text-muted-foreground text-[1.05rem] text-balance sm:text-base">
               {doc.description}

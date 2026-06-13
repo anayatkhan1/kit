@@ -11,11 +11,11 @@ export function HeroButtons() {
   const { track } = useDataFast()
 
   const handleGetStartedClick = () => {
-    track(GOAL_NAMES.PRICING_CLICKED_HERO)
+    track(GOAL_NAMES.DOCS_CLICKED_HERO)
   }
 
   const handleGithubClick = () => {
-    track("clicked_github_from_hero")
+    track(GOAL_NAMES.GITHUB_CLICKED_HERO)
   }
 
   return (

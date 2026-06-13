@@ -87,15 +87,8 @@ function validateGoalName(goalName: string): string {
 
 // Common goal names for type safety
 export const GOAL_NAMES = {
-  PRICING_CLICKED_BANNER: "pricing_clicked_banner",
-  PRICING_CLICKED_HEADER_LINK: "pricing_clicked_header_link",
-  PRICING_CLICKED_HEADER_CTA: "pricing_clicked_header_cta",
-  PRICING_CLICKED_HERO: "pricing_clicked_hero",
-  BROWSE_BLOCKS_CLICKED_HERO: "browse_blocks_clicked_hero",
-  PRICING_CLICKED_CTA: "pricing_clicked_cta",
-  PRICING_CLICKED_UNLOCK: "pricing_clicked_unlock",
-  CHECKOUT_INITIATED: "checkout_initiated",
-  COMPONENTS_CLICKED_DOCS: "components_clicked_docs",
+  DOCS_CLICKED_HERO: "docs_clicked_hero",
+  GITHUB_CLICKED_HERO: "github_clicked_hero",
 } as const
 
 export type GoalName = (typeof GOAL_NAMES)[keyof typeof GOAL_NAMES] | string

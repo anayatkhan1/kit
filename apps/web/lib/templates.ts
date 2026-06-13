@@ -5,8 +5,6 @@ export interface Template {
   title: string
   description?: string
   tags?: string[]
-  role?: "TEMPLATE_1" | "TEMPLATE_2"
-  zipFile?: string
   actionButtons?: string[]
   githubUrl?: string
   openSource?: boolean
@@ -22,14 +20,12 @@ export function getAllTemplates(): Template[] {
     name: page.slugs[0] || "index",
     title: page.data.title || "Untitled",
     description: page.data.description,
-    tags: page.data.tags,
-    role: page.data.role,
-    zipFile: page.data.zipFile,
-    actionButtons: page.data.actionButtons,
-    githubUrl: page.data.githubUrl,
-    openSource: page.data.openSource,
+    tags: page.data.tags as string[] | undefined,
+    actionButtons: page.data.actionButtons as string[] | undefined,
+    githubUrl: page.data.githubUrl as string | undefined,
+    openSource: page.data.openSource as boolean | undefined,
     slug: page.slugs[0] || "index",
-    image: page.data.image,
+    image: page.data.image as string | undefined,
     url: page.url,
   }))
 }

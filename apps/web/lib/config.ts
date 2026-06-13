@@ -27,11 +27,6 @@ export const siteConfig = {
       "https://github.com/anayatkhan1/kit/discussions/categories/feedback",
   },
   discordUserId: "1508789016965808148",
-  /** Reechlist / consulting banners — set true when ready */
-  features: {
-    showDocsConsultingBanner: false,
-    showMarketingBanner: false,
-  },
   navItems: [
     {
       href: "/docs",

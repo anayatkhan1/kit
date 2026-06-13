@@ -50,9 +50,7 @@ export const templates = defineDocs({
   docs: {
     schema: frontmatterSchema.extend({
       tags: z.array(z.string()).optional(),
-      role: z.enum(["TEMPLATE_1", "TEMPLATE_2"]).optional(),
       image: z.string().optional(),
-      zipFile: z.string().optional(),
       actionButtons: z.array(z.string()).optional(),
       githubUrl: z.string().url().optional(),
       openSource: z.boolean().optional(),

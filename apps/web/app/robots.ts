@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next"
 
+import { getSiteUrl } from "@/lib/utils"
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -9,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || "https://agentcn.dev"}/sitemap.xml`,
+    sitemap: `${getSiteUrl()}/sitemap.xml`,
   }
 }
