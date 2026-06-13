@@ -9,19 +9,19 @@ We welcome and appreciate contributions to **AgentCN**! Whether you're fixing bu
 1. **Fork** the repository.
 2. **Clone** your fork locally:
    ```bash
-   git clone https://github.com/badtzx0/badtz-ui.git
+   git clone https://github.com/anayatkhan1/kit.git
    ```
 3. **Navigate** to the project directory:
    ```bash
-   cd badtz-ui
+   cd kit
    ```
 4. **Install dependencies:**
    ```bash
-   npm install
+   pnpm install
    ```
-5. **Run the project locally:**
+5. **Run the docs app locally:**
    ```bash
-   npm run dev
+   pnpm web
    ```
 
 ---
@@ -87,7 +87,7 @@ Got an idea? We’d love to hear it!
 
 If you're stuck or have questions, feel free to reach out via:
 - [GitHub Discussions](#) *(Coming Soon)*
-- [Discord](https://discord.com/invite/SV2y7vz6Es)
+- [Discord](https://discord.gg/SV2y7vz6Es)
 
 ---
 

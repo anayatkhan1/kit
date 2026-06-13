@@ -1,6 +1,6 @@
 # AgentCN - Modern UI Library for Frontend Developers 🛠️✨
 
-![GitHub Repo stars](https://img.shields.io/github/stars/badtzx0/badtz-ui?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/anayatkhan1/kit?style=social)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 A sleek and modern **React UI library** built for frontend developers who want to ship beautiful interfaces faster. ⚡
@@ -38,7 +38,7 @@ For more details, check out our [Contributing Guide](CONTRIBUTING.md).
 
 ## 💬 Community
 
-Have questions or want to connect? Join us on [Discord](https://discord.com/invite/SV2y7vz6Es)
+Have questions or want to connect? Join us on [Discord](https://discord.gg/SV2y7vz6Es) or follow [@agentcnkit](https://x.com/agentcnkit) on X.
 
 ---
 

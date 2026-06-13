@@ -42,42 +42,57 @@ const nextConfig = {
       },
       {
         source: "/components",
-        destination: "/docs/components",
+        destination: "/docs/agents/web-agent",
+        permanent: true,
+      },
+      {
+        source: "/docs/components",
+        destination: "/docs/agents/web-agent",
+        permanent: true,
+      },
+      {
+        source: "/docs/components/:path*",
+        destination: "/docs/agents/web-agent",
         permanent: true,
       },
       {
         source: "/docs/primitives/:path*",
-        destination: "/docs/components/:path*",
+        destination: "/docs/agents/web-agent",
+        permanent: true,
+      },
+      {
+        source: "/docs/pro-plan",
+        destination: "/docs/scope",
         permanent: true,
       },
       {
         source: "/figma",
-        destination: "/docs/figma",
+        destination: "/docs",
         permanent: true,
       },
       {
         source: "/docs/forms",
-        destination: "/docs/components/form",
+        destination: "/docs/agents/web-agent",
         permanent: false,
       },
       {
         source: "/docs/forms/react-hook-form",
-        destination: "/docs/components/form",
+        destination: "/docs/agents/web-agent",
         permanent: false,
       },
       {
         source: "/sidebar",
-        destination: "/docs/components/sidebar",
+        destination: "/docs/agents/web-agent",
         permanent: true,
       },
       {
         source: "/react-19",
-        destination: "/docs/react-19",
+        destination: "/docs",
         permanent: true,
       },
       {
         source: "/charts",
-        destination: "/charts/area",
+        destination: "/docs",
         permanent: true,
       },
       {

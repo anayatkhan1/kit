@@ -1,30 +1,9 @@
-import {
-  Bot,
-  Box,
-  Code,
-  Eclipse,
-  FileText,
-  Flame,
-  MousePointerClick,
-  Settings,
-  Sparkles,
-  SquareDashedMousePointer,
-  Type,
-} from "lucide-react"
+import { Bot, FileText, Settings } from "lucide-react"
 
 export const categoryIcons = {
-  "Getting Started": Settings,
-  Components: Code,
-  "Dark Mode": Eclipse,
-  Configuration: Settings,
-  Documentation: FileText,
-  Advanced: Sparkles,
-  "3D & Shaders": Box,
-  "Animated Cards": SquareDashedMousePointer,
-  Backgrounds: Flame,
-  "Text Effects": Type,
-  Buttons: MousePointerClick,
+  "Get Started": Settings,
   Agents: Bot,
+  Documentation: FileText,
 } as const
 
 export function getCategoryIcon(categoryName: string) {

@@ -1,5 +1,6 @@
 "use client"
 
+// Toggle via siteConfig.features.showDocsConsultingBanner in lib/config.ts
 import { useDataFast } from "@/lib/datafast-client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -42,7 +43,7 @@ export function DocsCta({ className }: React.ComponentProps<"div">) {
 
       </Button>
       <a
-        href="https://reechlist.com"
+        href="https://agentcn.dev"
         target="_blank"
         rel="noopener noreferrer"
         className="absolute inset-0"

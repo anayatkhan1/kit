@@ -1,0 +1,52 @@
+---
+title: AgentCN Scope
+description: Current MVP scope, what is intentionally excluded, and what gets built next.
+links:
+  doc: https://agentcn.dev
+---
+
+This page defines the practical boundary of the first AgentCN release.
+
+## In scope now
+
+- Installable AI agents via the `agentcn` CLI (starting with web-agent).
+- Docs for setup, configuration, and extension.
+- A demo app and embed route for live previews in docs.
+
+## Out of scope for MVP
+
+- Full agent marketplace or hosted runtime.
+- Enterprise multi-tenant features.
+- Voice, scraper, and other modality shells (planned later).
+
+## Why this scope works
+
+Keeping scope tight helps you:
+
+- Ship faster with agents you own in your codebase.
+- Learn from real integrations earlier.
+- Reduce maintenance while the agent library is still evolving.
+
+## Suggested phase plan
+
+### Phase 1
+
+- Core agent install flow and registry.
+- Web agent docs with live preview.
+- CLI publish and hosted registry on agentcn.dev.
+
+### Phase 2
+
+- Additional agent profiles and starter templates.
+- Better evals and quality checks.
+- Stronger operational tooling for production deploys.
+
+### Phase 3
+
+- Team workflows and shared agent configs.
+- More modalities (voice, scraper, etc.).
+- Deeper automation where it has proven ROI.
+
+## Decision rule
+
+If a feature does not directly improve agent install UX or real workflow outcomes, defer it.

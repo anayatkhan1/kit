@@ -7,7 +7,7 @@ interface Bookmark {
   href: string
 }
 
-const STORAGE_KEY = "badtz-ui-bookmarks"
+const STORAGE_KEY = "agentcn-bookmarks"
 const BOOKMARKS_EVENT = "bookmarks-updated"
 
 function getBookmarksFromStorage(): Bookmark[] {

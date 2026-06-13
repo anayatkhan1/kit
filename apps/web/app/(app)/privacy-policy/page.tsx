@@ -1,5 +1,7 @@
 import { Metadata } from "next"
 
+import { siteConfig } from "@/lib/config"
+
 export const metadata: Metadata = {
   title: "AgentCN • Privacy Policy",
   description:
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
     description:
       "Build beautiful landing pages with 70+ free UI components. Professional animations, modern design system. Open source React components with Tailwind CSS, Motion & TypeScript.",
     images: [{ url: "/twitter-image.jpg", width: 1200, height: 675 }],
-    site: "@badtz_ui",
+    site: `@${siteConfig.social.twitterHandle}`,
   },
 }
 
@@ -66,7 +68,7 @@ We do not sell, rent, or trade your information.
 
 1.6 External Links
 
-- Our site may link to third-party platforms like Twitter (https://x.com/badtz_ui). We are not responsible for the privacy practices of external sites.
+- Our site may link to third-party platforms like Twitter (${siteConfig.links.twitter}). We are not responsible for the privacy practices of external sites.
 
 1.7 Changes to This Policy
 
@@ -75,8 +77,8 @@ We may update this Privacy Policy occasionally. All changes will be posted on th
 1.8 Contact Us
 
 For any questions regarding this Privacy Policy, you can reach us at:
-- Email: contact@agentcn.dev
-- Twitter: @badtz_ui (https://x.com/badtz_ui)
+- Email: ${siteConfig.links.email}
+- Twitter: ${siteConfig.links.twitter}
 
 Thank you for trusting AgentCN.
             `}

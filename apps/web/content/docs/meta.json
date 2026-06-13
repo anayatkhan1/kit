@@ -1,13 +1,4 @@
 {
   "root": true,
-  "pages": [
-    "(root)",
-    "dark-mode",
-    "components",
-    "shaders",
-    "animated-cards",
-    "backgrounds",
-    "text-effects",
-    "agents"
-  ]
+  "pages": ["(root)", "agents"]
 }

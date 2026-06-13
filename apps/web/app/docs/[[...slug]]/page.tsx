@@ -9,6 +9,7 @@ import {
 import { findNeighbour } from "fumadocs-core/server"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+import { siteConfig } from "@/lib/config"
 import { createStaticOGMetadata } from "@/lib/metadata"
 import { source } from "@/lib/source"
 import { absoluteUrl } from "@/lib/utils"
@@ -53,7 +54,7 @@ export async function generateMetadata(props: {
     },
     twitter: {
       ...createStaticOGMetadata(doc.title, doc.description).twitter,
-      creator: "@badtz-ui",
+      creator: `@${siteConfig.social.twitterHandle}`,
     },
   }
 }
@@ -75,8 +76,8 @@ export default async function Page(props: {
   // @ts-expect-error - revisit fumadocs types.
   const links = doc.links
 
-  const owner = "badtzx0"
-  const repo = "badtz-ui"
+  const owner = siteConfig.github.owner
+  const repo = siteConfig.github.repo
 
   return (
     <div
@@ -133,7 +134,7 @@ export default async function Page(props: {
                 />
                 <ViewOptions
                   markdownUrl={`/llms.mdx${page.url.replace("/docs", "")}`}
-                  githubUrl={`https://github.com/${owner}/${repo}/blob/main/content/docs/${page.path}`}
+                  githubUrl={`https://github.com/${owner}/${repo}/blob/main/apps/web/content/docs/${page.path}`}
                 />
                 <BookmarkButton
                   className="ml-auto justify-self-end"
@@ -203,10 +204,16 @@ export default async function Page(props: {
       </div>
       <div className="sticky top-[calc(var(--header-height)+1px)] right-[calc(var(--header-height)+1px)] z-30 ml-auto hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-auto flex-col gap-4 overflow-hidden overscroll-none pb-8 xl:flex">
         <div className="flex max-w-60 flex-1 flex-col justify-start gap-12">
-          <DocsCta />
+          {siteConfig.features.showDocsConsultingBanner ? <DocsCta /> : null}
           {/* @ts-expect-error - revisit fumadocs types. */}
           {doc.toc?.length ? (
-            <ScrollArea className="h-[calc(100svh-var(--header-height)-var(--footer-height)-244px)]">
+            <ScrollArea
+              className={
+                siteConfig.features.showDocsConsultingBanner
+                  ? "h-[calc(100svh-var(--header-height)-var(--footer-height)-244px)]"
+                  : "h-[calc(100svh-var(--header-height)-var(--footer-height))]"
+              }
+            >
               {/* @ts-expect-error - revisit fumadocs types. */}
               <DocsTableOfContents toc={doc.toc} />
               <div className="h-12" />

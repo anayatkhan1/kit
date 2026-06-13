@@ -32,34 +32,18 @@ const LinkSection: React.FC<LinkSectionProps> = ({ title, links }) => {
         </h3>
         <ul className="text-muted-foreground space-y-3 text-[13.5px]">
           {links.map(({ href, label }) => {
-            const isTracked =
-              href === "https://github.com/badtzx0/badtz-ui" ||
-              href === "https://pro.agentcn.dev" ||
-              href === "https://x.com/badtz_ui"
-
-            const isSocial =
-              href === "https://discord.com/invite/SV2y7vz6Es" ||
-              href === "https://x.com/badtz_ui"
+            const isExternal = href.startsWith("http")
 
             return (
               <li key={href}>
-                {isTracked ? (
-                  <Link
-                    href={href}
-                    className="text-sidebar-muted-foreground hover:text-foreground transition-colors duration-200"
-                  >
-                    {label}
-                  </Link>
-                ) : (
-                  <Link
-                    href={href}
-                    target={isSocial ? "_blank" : undefined}
-                    rel={isSocial ? "noopener noreferrer" : undefined}
-                    className="text-sidebar-muted-foreground hover:text-foreground transition-colors duration-200"
-                  >
-                    {label}
-                  </Link>
-                )}
+                <Link
+                  href={href}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  className="text-sidebar-muted-foreground hover:text-foreground transition-colors duration-200"
+                >
+                  {label}
+                </Link>
               </li>
             )
           })}
@@ -74,8 +58,8 @@ const FOOTER_SECTIONS: { title: string; links: LinkType[] }[] = [
     title: "Products",
     links: [
       { href: "/docs", label: "Docs" },
-      { href: "/docs/components/3d-wrapper", label: "Components" },
-      { href: "/docs/templates", label: "Templates" },
+      { href: "/docs/agents/web-agent", label: "Agents" },
+      { href: "/templates", label: "Templates" },
     ],
   },
   {
@@ -89,8 +73,9 @@ const FOOTER_SECTIONS: { title: string; links: LinkType[] }[] = [
   {
     title: "Community",
     links: [
-      { href: "https://discord.com/invite/SV2y7vz6Es", label: "Discord" },
-      { href: "https://x.com/badtz_ui", label: "Twitter" },
+      { href: siteConfig.links.discord, label: "Discord" },
+      { href: siteConfig.links.twitter, label: "Twitter" },
+      { href: siteConfig.links.github, label: "GitHub" },
     ],
   },
   {
@@ -100,6 +85,8 @@ const FOOTER_SECTIONS: { title: string; links: LinkType[] }[] = [
 ]
 
 export function SiteFooter() {
+  const logoUrl = `${siteConfig.url}/agentcn-logo.svg`
+
   return (
     <footer
       className="w-full border-t"
@@ -115,7 +102,7 @@ export function SiteFooter() {
       >
         <meta itemProp="name" content="AgentCN" />
         <link itemProp="url" href={baseUrl} />
-        <meta itemProp="logo" content={`${baseUrl}/static/badtz-ui-logo.png`} />
+        <meta itemProp="logo" content={logoUrl} />
 
         <div className="flex flex-col items-start justify-between gap-12 md:flex-row md:gap-20">
           <div className="flex flex-col space-y-4">
@@ -129,20 +116,10 @@ export function SiteFooter() {
               className="text-muted-foreground md:text-sm"
               itemProp="description"
             >
-              Built in public by{" "}
-              <Link
-                target="_blank"
-                rel="noreferrer"
-                className="font-medium underline-offset-2 hover:underline"
-                href="https://x.com/badtz_ui"
-                itemProp="founder"
-              >
-                AgentCN
-              </Link>
-              <br />
+              Installable AI agents for real business workflows.
             </p>
             <div itemScope itemType="https://schema.org/ContactPoint">
-              <meta itemProp="email" content="contact@agentcn.dev" />
+              <meta itemProp="email" content={siteConfig.links.email} />
               <meta itemProp="contactType" content="customer service" />
               <meta itemProp="url" content={baseUrl} />
             </div>
@@ -157,15 +134,11 @@ export function SiteFooter() {
             ))}
           </div>
         </div>
-        <p
-          className="text-muted-foreground mt-10 text-xs"
-          itemScope
-          itemType="https://schema.org/CreativeWork"
-        >
-          <meta itemProp="copyrightYear" content={CURRENT_YEAR.toString()} />
-          <span itemProp="copyrightHolder">© {CURRENT_YEAR} AgentCN.</span> All
-          rights reserved.
-        </p>
+        <div className="text-muted-foreground mt-12 border-t pt-8 text-sm">
+          <p>
+            © {CURRENT_YEAR} {siteConfig.name}. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   )

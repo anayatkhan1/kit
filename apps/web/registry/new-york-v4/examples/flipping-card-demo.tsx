@@ -16,10 +16,10 @@ interface CardData {
 
 const cardsData: CardData[] = [
   {
-    id: "badtz-maru",
+    id: "agentcn",
     front: {
       imageSrc:
-        "https://cdn.agentcn.dev/images/components/flipping-card/badtz.webp",
+        "/agentcn-logo.svg",
       imageAlt: "AgentCN-Maru",
       title: "AgentCN-Maru",
       description:

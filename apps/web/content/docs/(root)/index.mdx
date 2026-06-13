@@ -1,45 +1,36 @@
 ---
 title: Introduction
-description: AgentCN is a lean resale-agent kit focused on fast setup, clear workflows, and an MVP-first developer experience.
+description: AgentCN is an open-source kit for installable AI agents — add agents to your Next.js app via CLI, customize the source, and ship real workflows.
 ---
 
-AgentCN helps you launch an AI-powered resale assistant without building everything from scratch.
+AgentCN helps you add production-ready AI agents to your codebase without building everything from scratch.
 
-This documentation is intentionally simple. It explains what is implemented today, how to run it, and how to extend it safely while the product is still in MVP stage.
+Install agents with the CLI, copy source into your project, wire environment variables, and extend behavior as your product grows.
 
 ## What AgentCN includes
 
-- A practical baseline for a resale-focused AI agent.
-- Structured docs navigation and MDX content that is easy to maintain.
-- Reusable UI patterns for docs and product communication.
-- A clean path for iterating toward production.
-
-## MVP focus
-
-The current version prioritizes:
-
-- Speed over perfection.
-- Core resale-agent flows over edge-case coverage.
-- Clear, editable content over dense implementation details.
+- **CLI** — `npx agentcn@latest add web-agent` (and more agents over time).
+- **Registry** — hosted agent payloads at [agentcn.dev/r](https://agentcn.dev/r).
+- **Docs** — setup, configuration, and live previews for each agent.
+- **Demo app** — [`examples/agent-ui-template`](https://github.com/anayatkhan1/kit/tree/main/examples/agent-ui-template) for testing agents locally.
 
 ## How to use these docs
 
-1. Start in **Get Started** for project context.
-2. Move through each section to understand current capabilities.
-3. Use the changelog page to track scope changes.
-4. Keep new content concise and aligned with MVP goals.
+1. Start here for project context.
+2. Open **Agents → Web Agent** for install steps, env vars, and a live chat preview.
+3. Check **AgentCN Scope** for what is in and out of MVP.
+4. Use the changelog to track doc and product updates.
 
 ## Content conventions
 
-- Keep each page action-oriented.
-- Avoid marketing-only copy.
-- Prefer concrete setup and usage guidance.
+- Keep pages action-oriented (install, configure, run).
+- Prefer concrete commands over marketing copy.
 - Capture known limitations directly.
 
 ## Next steps
 
-Use this docs set as your baseline, then iterate by adding:
+```bash
+npx agentcn@latest add web-agent
+```
 
-- Real resale-agent workflows.
-- Integration notes for your data sources.
-- Prompt and evaluation best practices.
+Then open [Web Agent](/docs/agents/web-agent) for full setup and configuration.
