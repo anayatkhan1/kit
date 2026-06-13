@@ -18,7 +18,14 @@ export function HeroBadge({
         className
       )}
     >
-      <div className={cn("", iconClassName)}>{icon}</div>
+      <div
+        className={cn(
+          "flex size-4 shrink-0 items-center justify-center",
+          iconClassName
+        )}
+      >
+        {icon}
+      </div>
       {children}
     </div>
   )

@@ -1,84 +1,203 @@
 import { Metadata } from "next"
 
 import { siteConfig } from "@/lib/config"
+import { createStaticOGMetadata } from "@/lib/metadata"
+
+const title = "Terms of Service"
+const description =
+  "Terms for using the AgentCN website, documentation, and open source agent registry."
 
 export const metadata: Metadata = {
-  title: "AgentCN • Terms of Service",
-  description:
-    "An expanding collection of 70+ free UI components. Production-grade animations with Framer Motion. Daily updates. Open source. React, Tailwind, TypeScript & JavaScript.",
-  metadataBase: new URL("https://agentcn.dev"),
-  openGraph: {
-    title: "AgentCN - Terms of Service",
-    images: [{ url: "/opengraph-image.jpg", width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "AgentCN - Privacy Policy",
-    description:
-      "Build beautiful landing pages with 70+ free UI components. Professional animations, modern design system. Open source React components with Tailwind CSS, Motion & TypeScript.",
-    images: [{ url: "/twitter-image.jpg", width: 1200, height: 675 }],
-    site: `@${siteConfig.social.twitterHandle}`,
-  },
+  ...createStaticOGMetadata(`AgentCN • ${title}`, description),
+  metadataBase: new URL(siteConfig.url),
 }
 
-export default function PrivacyPolicy() {
+export default function TermsOfServicePage() {
   return (
-    <>
-      <main className="mx-auto max-w-3xl">
-        <div className="px-4 py-16">
-          <h1 className="font-gilroy text-2xl">Terms of Service for AgentCN</h1>
+    <main className="mx-auto max-w-3xl">
+      <div className="px-4 py-16">
+        <h1 className="font-gilroy text-3xl font-semibold tracking-tight">
+          Terms of Service
+        </h1>
+        <p className="text-muted-foreground mt-2 text-sm">
+          Last updated: May 19, 2026
+        </p>
 
-          <pre className="text-muted-foreground font-sans text-sm leading-relaxed whitespace-pre-wrap">
-            {`
-1. Terms of Service
+        <div className="text-muted-foreground mt-10 space-y-8 text-sm leading-relaxed">
+          <section className="space-y-3">
+            <p>
+              These Terms of Service (&quot;Terms&quot;) govern your use of{" "}
+              {siteConfig.url} (the &quot;Website&quot;) operated by AgentCN
+              (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;). By using the
+              Website, you agree to these Terms.
+            </p>
+          </section>
 
-Last updated on February 25, 2025
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              What the Website provides
+            </h2>
+            <p>
+              AgentCN publishes documentation, a hosted agent registry, and
+              links to open source agent source code you can install with the
+              CLI. The Website is provided for information and developer use. No
+              account is required to read the docs or browse the registry.
+            </p>
+          </section>
 
-These Terms of Service ("Terms") govern your access to and use of the AgentCN website ("Website") operated by AgentCN ("we", "us", or "our"). By accessing or using the Website, you agree to be bound by these Terms.
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              Acceptable use
+            </h2>
+            <p>You agree not to:</p>
+            <ul className="list-disc space-y-2 pl-5">
+              <li>Use the Website for unlawful purposes.</li>
+              <li>
+                Attempt to disrupt, scrape, or overload the site or registry in
+                a way that harms other users.
+              </li>
+              <li>
+                Misrepresent your relationship with AgentCN or imply endorsement
+                without permission.
+              </li>
+            </ul>
+          </section>
 
-1.1 Use of the Website
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              Open source software
+            </h2>
+            <p>
+              Agent source code in our GitHub repository is licensed under the
+              MIT License with an additional restriction: you may not sell
+              unmodified or minimally modified versions of the software for
+              commercial purposes. Substantially modified versions may be sold.
+              The original software must remain freely available to the public.
+            </p>
+            <p>
+              See the full license in the{" "}
+              <a
+                href={`${siteConfig.links.github}/blob/main/apps/web/LICENSE.md`}
+                className="text-foreground underline underline-offset-4"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                repository
+              </a>
+              . Your use of the code is governed by that license, not only by
+              these Website Terms.
+            </p>
+          </section>
 
-- The AgentCN website is provided free of charge to users for informational and educational purposes.
-- You agree not to use the Website for any unlawful purpose or any activity that could harm the Website or its users.
-- No account creation is required to access the content.
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              No warranties
+            </h2>
+            <p>
+              The Website, documentation, registry payloads, and related
+              materials are provided &quot;as is&quot; without warranties of any
+              kind. We do not guarantee that agents will meet your requirements,
+              operate without error, or be suitable for production in every
+              environment. You use the Website and any downloaded code at your
+              own risk.
+            </p>
+          </section>
 
-1.2 Intellectual Property
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              Limitation of liability
+            </h2>
+            <p>
+              To the fullest extent permitted by law, AgentCN is not liable for
+              indirect, incidental, or consequential damages arising from your
+              use of the Website or agent source code, including loss of data,
+              revenue, or business interruption.
+            </p>
+          </section>
 
-- The code and components provided under AgentCN are licensed under the MIT License with an additional clause prohibiting the resale of unmodified or minimally modified versions.
-- You are free to use, modify, and distribute the code, provided you respect the terms of the MIT License.
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              External links
+            </h2>
+            <p>
+              The Website may link to third-party services (for example{" "}
+              <a
+                href={siteConfig.links.github}
+                className="text-foreground underline underline-offset-4"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+              ,{" "}
+              <a
+                href={siteConfig.links.discord}
+                className="text-foreground underline underline-offset-4"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Discord
+              </a>
+              , or{" "}
+              <a
+                href={siteConfig.links.twitter}
+                className="text-foreground underline underline-offset-4"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                X
+              </a>
+              ). We are not responsible for their content or policies.
+            </p>
+          </section>
 
-1.3 Limitation of Liability
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">Changes</h2>
+            <p>
+              We may update these Terms at any time. Changes take effect when
+              posted on this page with an updated date. Continued use of the
+              Website means you accept the revised Terms.
+            </p>
+          </section>
 
-- AgentCN provides the Website and its content "as is" without warranties of any kind.
-- We are not responsible for any damages, losses, or issues that may arise from using the Website or the code provided.
-- You use the Website and any code or resources at your own risk.
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">
+              Governing law
+            </h2>
+            <p>
+              These Terms are governed by applicable law in your jurisdiction,
+              without regard to conflict of law principles.
+            </p>
+          </section>
 
-1.4 External Links
-
-- The Website may contain links to third-party websites (e.g., Twitter: ${siteConfig.links.twitter}, Discord: ${siteConfig.links.discord}).
-- We are not responsible for the content, policies, or practices of any external sites.
-
-1.5 Modifications to the Terms
-
-- We reserve the right to update or modify these Terms at any time.
-- Changes will be posted on this page with an updated revision date.
-- Continued use of the Website after any modifications constitutes your acceptance of the revised Terms.
-
-1.6 Governing Law
-
-- These Terms are governed by and construed in accordance with the laws applicable in your jurisdiction.
-
-1.7 Contact
-
-If you have any questions about these Terms, please contact us:
-- Email: ${siteConfig.links.email}
-- Twitter: ${siteConfig.links.twitter}
-
-Thank you for using AgentCN.
-            `}
-          </pre>
+          <section className="space-y-3">
+            <h2 className="text-foreground text-base font-medium">Contact</h2>
+            <p>Questions about these Terms:</p>
+            <ul className="list-none space-y-1">
+              <li>
+                Email:{" "}
+                <a
+                  href={`mailto:${siteConfig.links.email}`}
+                  className="text-foreground underline underline-offset-4"
+                >
+                  {siteConfig.links.email}
+                </a>
+              </li>
+              <li>
+                X:{" "}
+                <a
+                  href={siteConfig.links.twitter}
+                  className="text-foreground underline underline-offset-4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @{siteConfig.social.twitterHandle}
+                </a>
+              </li>
+            </ul>
+          </section>
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   )
 }

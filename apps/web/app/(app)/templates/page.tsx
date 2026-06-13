@@ -2,14 +2,15 @@ import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 
+import { siteConfig } from "@/lib/config"
 import { createStaticOGMetadata } from "@/lib/metadata"
 import { getAllTemplates } from "@/lib/templates"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Announcement } from "@/components/announcement"
 import { Icons } from "@/components/icons"
+import TemplateGithubButton from "@/components/marketing/template-github-button"
 import TemplateLiveDemoButton from "@/components/marketing/template-live-demo-button"
-import TemplateProButton from "@/components/marketing/template-pro-button"
-import { TemplatesCTAButton } from "@/components/marketing/templates-cta-button"
 import {
   PageActions,
   PageHeader,
@@ -22,7 +23,7 @@ export const revalidate = false
 
 const title = "Production Ready Templates"
 const description =
-  "Complete website templates built with React. Modern, responsive, and fully customizable. Perfect for startups, agencies, and businesses."
+  "Complete starter templates for AI agents and modern web apps. Open source and production-ready — clone, customize, and ship fast."
 
 export const metadata = createStaticOGMetadata(title, description)
 
@@ -32,13 +33,15 @@ export default async function TemplatesPage() {
   return (
     <>
       <PageHeader>
-        <Announcement link="/docs/templates">
-          Production-Ready from Day One
-        </Announcement>
+        <Announcement link="/docs">Install agents with the CLI</Announcement>
         <PageHeaderHeading>{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>
-          <TemplatesCTAButton />
+          <Button asChild size="lg" variant="gradient" className="rounded-lg px-4">
+            <Link href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
+              View on GitHub
+            </Link>
+          </Button>
         </PageActions>
       </PageHeader>
       <div className="flex flex-col gap-16 pt-6 pb-14 md:pt-0 lg:pb-24">
@@ -50,8 +53,8 @@ export default async function TemplatesPage() {
             >
               <div className="relative col-span-2 flex h-full flex-col items-start justify-center">
                 <Badge variant="accent">
-                  <Icons.check className="h-4 w-4" />
-                  Included in BUI Pro
+                  <Icons.star className="h-4 w-4" />
+                  Open Source
                 </Badge>
                 <h3 className="font-gilroy mt-6 text-2xl leading-none font-bold">
                   {template.title}
@@ -67,12 +70,19 @@ export default async function TemplatesPage() {
                   <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
                 </Link>
                 <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <TemplateProButton />
+                  {template.githubUrl ? (
+                    <TemplateGithubButton href={template.githubUrl} />
+                  ) : null}
                   {template.actionButtons &&
                     template.actionButtons.map((button, index) => (
                       <TemplateLiveDemoButton
                         href={button}
                         index={index}
+                        label={
+                          template.actionButtons?.length === 1
+                            ? "Try Demo"
+                            : undefined
+                        }
                         key={button}
                       />
                     ))}

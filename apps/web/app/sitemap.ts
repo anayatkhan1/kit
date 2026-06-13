@@ -2,9 +2,10 @@ import type { MetadataRoute } from "next"
 
 import { source } from "@/lib/source"
 import { templatesSource } from "@/lib/templates-source"
+import { getSiteUrl } from "@/lib/utils"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://agentcn.dev"
+  const baseUrl = getSiteUrl()
 
   // Main site pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -19,6 +20,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/terms-of-service`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.4,
     },
   ]
 

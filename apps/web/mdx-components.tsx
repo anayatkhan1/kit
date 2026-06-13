@@ -25,7 +25,6 @@ import { CopyButton } from "@/components/copy-button"
 import { DownloadStripeShaderButton } from "@/components/download-stripe-shader-button"
 import { getIconForLanguageExtension } from "@/components/icons"
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions"
-import { TemplateCta } from "@/components/template-cta"
 import { TemplateMosaic } from "@/components/template-mosaic"
 import { TemplatesActionButtons } from "@/components/templates-action-buttons"
 import { TemplatesFeatures } from "@/components/templates-features"
@@ -377,7 +376,6 @@ export const mdxComponents = {
   TemplatesFeatures,
   TemplatesActionButtons,
   TemplateMosaic,
-  TemplateCta,
   LLMCopyButton,
   ViewOptions,
   TypeTable,

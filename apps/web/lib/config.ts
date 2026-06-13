@@ -3,7 +3,7 @@ export const siteConfig = {
   url: "https://agentcn.dev",
   ogImage: "https://agentcn.dev/og.jpg",
   description:
-    "Installable AI agents for real business workflows. TypeScript-first agents for Next.js with the Vercel AI SDK.",
+    "Open source kit for installable AI agents. CLI, registry, docs, and editable agent source in your repo.",
   links: {
     twitter: "https://x.com/agentcnkit",
     github: "https://github.com/anayatkhan1/kit",
@@ -27,10 +27,6 @@ export const siteConfig = {
       "https://github.com/anayatkhan1/kit/discussions/categories/feedback",
   },
   discordUserId: "1508789016965808148",
-  /** Reechlist / consulting banner in docs right rail — set true when ready */
-  features: {
-    showDocsConsultingBanner: false,
-  },
   navItems: [
     {
       href: "/docs",

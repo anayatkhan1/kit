@@ -1,116 +1,227 @@
-# Kit
+# AgentCN
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+AgentCN is an open source kit for **installable AI agents**. Use the CLI to pull agent source into your project, run agents locally, and customize prompts and tools in your own codebase as the library grows.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+<img width="980" alt="AgentCN — Installable AI agents for your workflow" src="./assets/readme-hero.jpg" />
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+**Docs:** [agentcn.dev/docs](https://agentcn.dev/docs) · **Registry:** [agentcn.dev/r](https://agentcn.dev/r) · **GitHub:** [anayatkhan1/kit](https://github.com/anayatkhan1/kit)
 
-## Run tasks
+## Features
 
-To run the dev server for your app, use:
+- **CLI install** — Add agents to any project with `npx agentcn@latest add web-agent` (pnpm, yarn, bun supported).
+- **Agent registry** — Hosted JSON manifests at `https://agentcn.dev/r` with local override for development.
+- **Editable source** — Agents land in your repo as real TypeScript you can change, not opaque SDK calls.
+- **Web Agent** — Browser automation, web search, deep research, and Q&A tools built on the Vercel AI SDK.
+- **Docs & previews** — Documentation site with live agent previews and setup guides.
+- **Starter template** — [`agentkit-starter`](https://github.com/anayatkhan1/agentkit-starter) for shipping a full agent product fast.
+- **TypeScript** — Full type safety across agents, tools, and the CLI.
+- **Open source** — MIT licensed. CLI published as [`agentcn`](https://www.npmjs.com/package/agentcn) on npm.
 
-```sh
-npx nx dev web
-```
+## Built with
 
-To create a production bundle:
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vercel AI SDK](https://sdk.vercel.ai/)
+- [Anthropic](https://www.anthropic.com/) (Claude)
+- [Next.js](https://nextjs.org/) (docs site & demo)
+- [Nx](https://nx.dev/) (monorepo tooling)
+- [Fumadocs](https://fumadocs.dev/) (documentation)
+- [Playwright](https://playwright.dev/) / [Anchor Browser](https://anchorbrowser.io/) (web agent browser tools)
+- [Exa](https://exa.ai/) (web search)
 
-```sh
-npx nx build web
-```
+### Tools
 
-To see all available targets to run for a project, run:
+- [pnpm](https://pnpm.io/) (package manager)
+- [Nx release](https://nx.dev/features/manage-releases) (versioning & changelogs)
+- [Jest](https://jestjs.io/) (agent tests)
+- [Prettier](https://prettier.io/) (formatting)
 
-```sh
-npx nx show project web
-```
+## Quick start
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## AgentCN CLI (`agentcn`)
-
-Install agents into a project using the published **`agentcn`** package (same CLI for every package manager):
+Install the **web agent** into your project:
 
 ```bash
 pnpm dlx agentcn@latest add web-agent
+# or
 npx agentcn@latest add web-agent
-yarn dlx agentcn@latest add web-agent   # Yarn Berry (v2+)
-bunx agentcn@latest add web-agent
 ```
 
-You need the **hosted registry** at `https://agentcn.dev/r` (default) to be deployed and reachable. Override with `-r <path-or-url>` when developing against `apps/web/public/r`.
+List available agents:
 
-Maintainers: release checklist, publish steps, live registry verification, and runner smoke tests are documented in [`packages/agentcn/cli/RELEASE.md`](packages/agentcn/cli/RELEASE.md).
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/next:app demo
+```bash
+npx agentcn@latest list
 ```
 
-To generate a new library, use:
+Set your API key and run the agent in your app. Full setup is in the [Web Agent docs](https://agentcn.dev/docs/agents/web-agent).
 
-```sh
-npx nx g @nx/react:lib mylib
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ (recommended: 20+)
+- pnpm 9+
+- Anthropic API key (for running agents locally)
+
+### Clone & install
+
+```bash
+git clone https://github.com/anayatkhan1/kit.git
+cd kit
+pnpm install
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### Run the docs site locally
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+```bash
+cp apps/web/.env.example apps/web/.env
+pnpm web
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+Open [http://localhost:3000](http://localhost:3000) for the marketing site and docs.
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Run the agent demo embed
 
-### Step 2
+The docs live preview expects a demo app on port **3001**:
 
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+```bash
+cd examples/agent-ui-template
+pnpm install
+pnpm dev
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Build for production
 
-## Install Nx Console
+```bash
+pnpm deploy:build
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+Runs agent registry generation and the Next.js production build for `@kit/web`.
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Environment Variables
 
-## Useful links
+Create a `.env` file at the repo root for agent development:
 
-Learn more:
+```env
+# Required for running agents locally
+ANTHROPIC_API_KEY=your_anthropic_api_key
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+# Optional: override default registry URL
+AGENTCN_REGISTRY_URL=https://agentcn.dev/r
+```
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+For the docs site (`apps/web/.env`):
+
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
+```
+
+### Getting API keys
+
+- **Anthropic:** [console.anthropic.com](https://console.anthropic.com/)
+
+## Project Structure
+
+```text
+kit/
+├── ai/
+│   ├── agents/
+│   │   ├── web/              # Web agent (browser, search, research tools)
+│   │   └── file-agent/       # File agent (WIP)
+│   └── tools/
+│       └── file-system/      # Shared file-system toolset
+├── apps/
+│   └── web/                  # agentcn.dev — docs, registry host, marketing
+│       ├── content/docs/     # Documentation (MDX)
+│       └── public/r/         # Agent registry JSON (generated)
+├── packages/
+│   └── agentcn/cli/          # `agentcn` npm CLI
+├── examples/
+│   └── agent-ui-template/    # Local demo app for agent previews
+├── scripts/
+│   ├── build-agent-registry.mts
+│   └── verify-agentcn-registry-live.sh
+└── nx.json                   # Nx workspace & release config
+```
+
+## Usage
+
+### Install an agent
+
+```bash
+npx agentcn@latest add web-agent --dry-run   # preview files
+npx agentcn@latest add web-agent --yes       # install without prompts
+```
+
+### Develop against a local registry
+
+```bash
+pnpm agentcn:registry:build
+npx agentcn@latest list -r ./apps/web/public/r
+npx agentcn@latest add web-agent -r ./apps/web/public/r --dry-run --yes
+```
+
+### Customize an agent
+
+After install, agent source lives in your project (typically under `ai/agents/`). Edit prompts, tools, and model settings directly in TypeScript.
+
+## Developing the monorepo
+
+| Task | Command |
+| --- | --- |
+| Docs dev server | `pnpm web` |
+| Docs production build | `pnpm web:build` |
+| Build agent registry | `pnpm agentcn:registry:build` |
+| Build CLI | `pnpm agentcn:build` |
+| Test web agent | `pnpm test:web-agent` |
+| Verify live registry | `pnpm agentcn:registry:verify-live` |
+| CLI runner smoke tests | `pnpm agentcn:runner-matrix-smoke` |
+
+Explore projects and tasks:
+
+```bash
+pnpm nx show projects
+pnpm nx show project agentcn --json
+```
+
+## Releasing
+
+The `agentcn` CLI uses [Nx release](https://nx.dev/features/manage-releases) with conventional commits. Changelog entries include PR links, dates, and author credits.
+
+```bash
+pnpm release --dry-run --skip-publish   # preview
+pnpm release                            # version, changelog, tag, publish
+```
+
+Maintainer checklist: [`packages/agentcn/cli/RELEASE.md`](packages/agentcn/cli/RELEASE.md)
+
+## Feature Requests
+
+Open a [GitHub discussion](https://github.com/anayatkhan1/kit/discussions/categories/agent-suggestions) or [issue](https://github.com/anayatkhan1/kit/issues).
+
+## Contribution Guidelines
+
+1. Fork the repository.
+2. Clone your fork and create a branch:
+
+```bash
+git checkout -b feat/your-feature-name
+```
+
+3. Make your changes and test locally (`pnpm test:web-agent`, `pnpm web:build`).
+4. Commit with [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) — required for Nx release changelogs.
+5. Push and open a pull request against `main`.
+
+### Code style
+
+- Match existing TypeScript and file layout conventions.
+- Run formatting in `apps/web` before committing: `pnpm web:format:check`
+
+## License
+
+AgentCN is licensed under the [MIT License](./LICENSE) with an additional clause restricting resale of unmodified or minimally modified versions.
+
+See [LICENSE](./LICENSE) for the full text.
+
+---
+
+Built with ❤️ by [Anayat Khan](https://anayat.xyz)

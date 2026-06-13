@@ -80,7 +80,7 @@ const FOOTER_SECTIONS: { title: string; links: LinkType[] }[] = [
   },
   {
     title: "Company",
-    links: [{ href: "/", label: "About" }],
+    links: [{ href: "/about", label: "About" }],
   },
 ]
 
@@ -116,7 +116,7 @@ export function SiteFooter() {
               className="text-muted-foreground md:text-sm"
               itemProp="description"
             >
-              Installable AI agents for real business workflows.
+              {siteConfig.description}
             </p>
             <div itemScope itemType="https://schema.org/ContactPoint">
               <meta itemProp="email" content={siteConfig.links.email} />

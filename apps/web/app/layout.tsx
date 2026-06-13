@@ -38,12 +38,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
   description: siteConfig.description,
   keywords: [
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "Components",
-    "Blocks",
-    "Templates",
+    "AI agents",
+    "AgentCN",
+    "CLI",
+    "agent registry",
+    "Vercel AI SDK",
+    "TypeScript",
+    "open source",
   ],
   authors: [
     {
@@ -87,10 +88,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
               try {
                 if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark')
                   document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
                 }
                 if (localStorage.layout) {

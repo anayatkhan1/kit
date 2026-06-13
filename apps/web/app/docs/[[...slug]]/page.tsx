@@ -17,7 +17,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { BookmarkButton } from "@/components/bookmark-button"
-import { DocsCta } from "@/components/docs-cta"
 import { DocsTableOfContents } from "@/components/docs-toc"
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions"
 
@@ -204,16 +203,9 @@ export default async function Page(props: {
       </div>
       <div className="sticky top-[calc(var(--header-height)+1px)] right-[calc(var(--header-height)+1px)] z-30 ml-auto hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-auto flex-col gap-4 overflow-hidden overscroll-none pb-8 xl:flex">
         <div className="flex max-w-60 flex-1 flex-col justify-start gap-12">
-          {siteConfig.features.showDocsConsultingBanner ? <DocsCta /> : null}
           {/* @ts-expect-error - revisit fumadocs types. */}
           {doc.toc?.length ? (
-            <ScrollArea
-              className={
-                siteConfig.features.showDocsConsultingBanner
-                  ? "h-[calc(100svh-var(--header-height)-var(--footer-height)-244px)]"
-                  : "h-[calc(100svh-var(--header-height)-var(--footer-height))]"
-              }
-            >
+            <ScrollArea className="h-[calc(100svh-var(--header-height)-var(--footer-height))]">
               {/* @ts-expect-error - revisit fumadocs types. */}
               <DocsTableOfContents toc={doc.toc} />
               <div className="h-12" />

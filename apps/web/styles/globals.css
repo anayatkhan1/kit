@@ -67,6 +67,8 @@
   --animate-swipe-button-text: swipe-button-text 1.5s
     cubic-bezier(0.4, 0, 0.2, 1) infinite;
   --animate-star-btn: star-btn calc(var(--duration) * 1s) linear infinite;
+  --animate-hero-glow: hero-glow-pulse 8s ease-in-out infinite;
+  --animate-hero-glow-slow: hero-glow-fade 11s ease-in-out infinite;
 }
 
 :root {
@@ -203,6 +205,30 @@
   100% {
     transform: rotate(170deg) translateX(-500px);
     opacity: 0;
+  }
+}
+
+@keyframes hero-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translate(-50%, 0) scale(1);
+  }
+  50% {
+    opacity: 0.78;
+    transform: translate(-50%, 0) scale(1.06);
+  }
+}
+
+@keyframes hero-glow-fade {
+  0%,
+  100% {
+    opacity: 0.32;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.68;
+    transform: scale(1.07);
   }
 }
 
