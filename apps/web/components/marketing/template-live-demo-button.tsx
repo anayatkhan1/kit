@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button"
 export default function TemplateLiveDemoButton({
   href,
   index,
+  label,
 }: {
   href: string
   index: number
+  label?: string
 }) {
   return (
     <Link
@@ -24,7 +26,7 @@ export default function TemplateLiveDemoButton({
     >
       <Button className="h-9 text-[13.5px]" variant="outline">
         <ExternalLink className="h-3.5 w-3.5" />
-        Live Demo {index + 1}
+        {label ?? `Live Demo ${index + 1}`}
       </Button>
     </Link>
   )

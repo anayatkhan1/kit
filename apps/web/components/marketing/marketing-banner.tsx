@@ -1,5 +1,6 @@
 "use client"
 
+// Toggle via siteConfig.features.showMarketingBanner in lib/config.ts
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"

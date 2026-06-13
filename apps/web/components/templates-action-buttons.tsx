@@ -14,26 +14,45 @@ interface TemplatesActionButtonsProps {
   liveDemos?: LiveDemo[]
   templateRole?: string
   templateSlug?: string
+  githubUrl?: string
 }
 
 export function TemplatesActionButtons({
   liveDemos = [],
+  githubUrl,
 }: TemplatesActionButtonsProps) {
   return (
     <div className="mb-8 flex flex-row flex-wrap gap-3">
-      <Link
-        href="https://pro.agentcn.dev"
-        target="_blank"
-        onClick={() => {
-          if (typeof window !== "undefined" && window.datafast) {
-            window.datafast("clicked_pro_from_templates")
-          }
-        }}
-      >
-        <Button variant="gradient" className="h-8 w-fit text-[13.5px]">
-          AgentCN Pro <ExternalLink className="h-3.5 w-3.5" />
-        </Button>
-      </Link>
+      {githubUrl ? (
+        <Link
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.datafast) {
+              window.datafast("clicked_template_github")
+            }
+          }}
+        >
+          <Button variant="gradient" className="h-8 w-fit text-[13.5px]">
+            View on GitHub <ExternalLink className="h-3.5 w-3.5" />
+          </Button>
+        </Link>
+      ) : (
+        <Link
+          href="https://pro.agentcn.dev"
+          target="_blank"
+          onClick={() => {
+            if (typeof window !== "undefined" && window.datafast) {
+              window.datafast("clicked_pro_from_templates")
+            }
+          }}
+        >
+          <Button variant="gradient" className="h-8 w-fit text-[13.5px]">
+            AgentCN Pro <ExternalLink className="h-3.5 w-3.5" />
+          </Button>
+        </Link>
+      )}
 
       {liveDemos.map((demo, index) => (
         <Link

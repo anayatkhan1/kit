@@ -13,15 +13,14 @@ export function CTAButton() {
       className="bg-foreground hover:bg-foreground/90 text-background mt-8 h-10 rounded-lg px-4"
     >
       <Link
-        href="https://pro.agentcn.dev"
-        target="_blank"
+        href="/docs"
         onClick={() => {
           if (typeof window !== "undefined" && window.datafast) {
-            window.datafast("clicked_pro_from_cta")
+            window.datafast("clicked_get_started_from_cta")
           }
         }}
       >
-        Get AgentCN Pro
+        Browse the docs
       </Link>
     </Button>
   )

@@ -6,13 +6,13 @@ export function GithubSection() {
     <section className="from-background to-secondary/60 bg-gradient-to-t from-10% to-90%">
       <div className="container mx-auto flex w-full max-w-6xl flex-col items-center justify-start !px-4 py-8 text-center md:pt-32 md:pb-16">
         <h2 className="leading-tighter font-gilroy max-w-3xl bg-gradient-to-b from-white/80 via-white to-white/60 bg-clip-text pb-2 text-5xl font-semibold tracking-tight text-pretty text-transparent lg:leading-[1.1] lg:font-semibold xl:text-6xl/[4rem] xl:tracking-tighter">
-          Open Source, Built Together
+          Open source on GitHub
         </h2>
         <div className="relative">
           <p className="text-muted-foreground relative z-5 mt-2 max-w-2xl text-base text-balance sm:text-lg">
-            AgentCN is open source by design. Explore real agent code, contribute
-            improvements, and help shape the default library for reusable AI
-            agents.
+            The registry, CLI, docs, and agent source live in one public repo.
+            File issues, open discussions, or send a PR if you want to help
+            shape what ships next.
           </p>
           <div
             className="pointer-events-none absolute top-[10px] left-[10px] hidden h-[200px] w-[195px] md:block"
@@ -57,7 +57,6 @@ export function GithubSection() {
               pathColor="#ffffff40"
             />
           </div>
-          {/* Gradient mask overlay */}
           <div
             className="from-background pointer-events-none absolute top-0 right-[-30px] left-[-30px] z-1 hidden h-[50px] bg-gradient-to-b to-transparent md:block"
             aria-hidden="true"

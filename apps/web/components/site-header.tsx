@@ -28,9 +28,6 @@ export function SiteHeader() {
             <span className="font-gilroy text-lg font-bold">
               {siteConfig.name}
             </span>
-            <span className="bg-muted mt-2 -ml-0.5 rounded px-1 py-0.5 text-[10px] leading-none">
-              Beta
-            </span>
           </Link>
           <MainNav items={siteConfig.navItems} className="hidden lg:flex" />
           <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">

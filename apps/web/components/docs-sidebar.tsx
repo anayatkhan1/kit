@@ -61,9 +61,6 @@ export function DocsSidebar({
             <span className="font-gilroy text-foreground ml-2 text-lg font-bold group-data-[collapsible=icon]:hidden">
               {siteConfig.name}
             </span>
-            <span className="bg-muted text-foreground mt-1.5 rounded px-1 py-0.5 text-[10px] leading-none group-data-[collapsible=icon]:hidden">
-              Beta
-            </span>
           </Link>
           <div className="shrink-0" />
           <ScrollArea className="relative flex-1 overflow-auto">

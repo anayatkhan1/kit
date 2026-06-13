@@ -10,20 +10,19 @@ import { MacbookKeyboard } from "@/components/marketing/mac-keyboard"
 
 const bentoData = [
   {
-    title: "Reusable agents, not one-off builds.",
+    title: "Source in your repo.",
     description:
-      "Install production-oriented AI agents as building blocks you can actually maintain.",
+      "The CLI adds agent files to your project so you can read prompts, tools, and wiring before you ship anything.",
     component: (
       <div className="h-[380px] w-full md:h-full">
-        {" "}
         <CpuVisual />
       </div>
     ),
   },
   {
-    title: "Copy. Paste. Ship.",
+    title: "Install from the CLI.",
     description:
-      "Add agents via CLI, drop them into your codebase, and start shipping workflows in minutes.",
+      "Each agent installs with npx agentcn@latest add. Use mock mode to try it locally, then connect providers when you are ready to ship.",
     component: (
       <div className="mb-6 flex h-auto w-full items-center justify-start pt-10 pl-10">
         <MacbookKeyboard className="origin-top-left" />
@@ -31,9 +30,9 @@ const bentoData = [
     ),
   },
   {
-    title: "Your code. Your control.",
+    title: "Change what you need.",
     description:
-      "Own prompts, tools, schemas, and adapters. Customize behavior without vendor lock-in.",
+      "Prompts, tool definitions, env config, and provider setup are plain files. Edit them the same way you edit the rest of your app.",
     component: (
       <div className="flex h-[380px] w-full items-center justify-start md:h-full">
         <ChartsVisual />
@@ -41,17 +40,16 @@ const bentoData = [
     ),
   },
   {
-    title: "Scale with AgentCN Pro.",
+    title: "Need a full app?",
     description:
-      "Get advanced templates, integrations, and implementation support as your use-cases grow.",
+      "AgentKit is an open source starter with auth, chat UI, and Postgres if you want more than the agent module on its own.",
     component: (
       <div className="mb-6 flex h-auto w-full items-center justify-start">
         <Link
-          href="https://pro.agentcn.dev"
-          target="_blank"
+          href="/templates/agentkit-starter"
           className="group/pro absolute top-6 left-6 z-10 flex items-center gap-0.5 rounded-full border border-[#6d77d5] bg-gradient-to-b from-[#6d77d5] to-[#5c67c7] py-1 pr-2 pl-3 text-xs font-medium text-white shadow-[0_0px_100px_rgba(109,_119,_213,_0.5)]"
         >
-          Explore{" "}
+          AgentKit template
           <ArrowUpRight className="size-3 transition-transform duration-300 group-hover/pro:translate-x-0.5 group-hover/pro:-translate-y-0.5" />
         </Link>
         <LogoTiles />
@@ -63,19 +61,19 @@ const bentoData = [
 const navOptions = [
   {
     name: "Overview",
-    text: "AgentCN is a shadcn-style library of installable AI agents for real business workflows.",
+    text: "AgentCN packages installable AI agents for your codebase. The CLI copies source into your repo instead of hiding logic behind a hosted API.",
   },
   {
     name: "Agents",
-    text: "Use prebuilt agents for document processing, research, sales, onboarding, reporting, and automation.",
+    text: "Agents ship as installable modules with their own docs and live previews. Pick one from the registry, add it to your app, and request new ones in GitHub discussions.",
   },
   {
     name: "Benefits",
-    text: "Move faster by reusing proven agent foundations instead of rebuilding the same logic every time.",
+    text: "Most teams rebuild the same agent scaffolding for every feature. AgentCN gives you a working starting point you can extend.",
   },
   {
     name: "Integration",
-    text: "TypeScript-first integration for Next.js and Node.js with provider adapters and mock mode.",
+    text: "TypeScript, the Vercel AI SDK, and mock mode for local runs. Wire your own providers when you are ready to go live.",
   },
 ]
 
@@ -86,7 +84,7 @@ export function Benefits() {
         <div className="flex flex-col md:flex-row md:gap-8">
           <div className="flex w-full md:w-1/2 md:items-end">
             <h2 className="leading-tighter font-gilroy max-w-2xl bg-gradient-to-b from-white/80 via-white to-white/60 bg-clip-text text-5xl font-semibold tracking-tight text-pretty text-transparent lg:leading-[1.1] lg:font-semibold xl:text-6xl/[4rem] xl:tracking-tighter">
-              Build reusable AI agents faster
+              What you get with AgentCN
             </h2>
           </div>
           <div className="flex w-full items-end justify-end md:w-1/2">

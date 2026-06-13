@@ -20,6 +20,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/terms-of-service`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
   ]
 
   // Documentation pages (dynamically generated)

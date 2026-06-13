@@ -8,6 +8,8 @@ export interface Template {
   role?: "TEMPLATE_1" | "TEMPLATE_2"
   zipFile?: string
   actionButtons?: string[]
+  githubUrl?: string
+  openSource?: boolean
   image?: string
   slug: string
   url: string
@@ -24,6 +26,8 @@ export function getAllTemplates(): Template[] {
     role: page.data.role,
     zipFile: page.data.zipFile,
     actionButtons: page.data.actionButtons,
+    githubUrl: page.data.githubUrl,
+    openSource: page.data.openSource,
     slug: page.slugs[0] || "index",
     image: page.data.image,
     url: page.url,

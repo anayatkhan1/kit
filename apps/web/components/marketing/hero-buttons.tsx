@@ -3,18 +3,19 @@
 import Link from "next/link"
 import { ExternalLink } from "lucide-react"
 
+import { siteConfig } from "@/lib/config"
 import { GOAL_NAMES, useDataFast } from "@/lib/datafast-client"
 import { Button } from "@/components/ui/button"
 
 export function HeroButtons() {
   const { track } = useDataFast()
 
-  const handlePricingClick = () => {
+  const handleGetStartedClick = () => {
     track(GOAL_NAMES.PRICING_CLICKED_HERO)
   }
 
-  const handleBrowseBlocksClick = () => {
-    track("clicked_pro_from_hero")
+  const handleGithubClick = () => {
+    track("clicked_github_from_hero")
   }
 
   return (
@@ -25,18 +26,19 @@ export function HeroButtons() {
         variant="default"
         className="bg-foreground hover:bg-foreground/90 text-background rounded-lg px-4"
       >
-        <Link href="/docs" onClick={handlePricingClick}>
-          Get Started
+        <Link href="/docs" onClick={handleGetStartedClick}>
+          Read the docs
         </Link>
       </Button>
       <Button asChild size="lg" variant="hero" className="rounded-lg px-4">
         <Link
-          href="https://pro.agentcn.dev"
+          href={siteConfig.links.github}
           target="_blank"
+          rel="noopener noreferrer"
           className="group flex items-center text-sm"
-          onClick={handleBrowseBlocksClick}
+          onClick={handleGithubClick}
         >
-          AgentCN UI Pro
+          View on GitHub
           <ExternalLink strokeWidth={1.5} className="size-3.5" />
         </Link>
       </Button>

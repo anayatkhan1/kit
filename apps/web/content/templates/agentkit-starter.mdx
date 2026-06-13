@@ -1,0 +1,56 @@
+---
+title: AgentKit
+description: "Production-ready starter template for building AI agents with web search capabilities. Includes authentication, database persistence, streaming chat UI, and a polished landing page."
+author: "Anayat Khan"
+tags: ["AI", "Web Search", "Chat", "Next.js", "Open Source"]
+openSource: true
+githubUrl: "https://github.com/anayatkhan1/agentkit-starter"
+actionButtons: ["https://agentkitt.xyz"]
+image: "/templates/agentkit-starter.png"
+---
+
+<TemplatesActionButtons
+  githubUrl="https://github.com/anayatkhan1/agentkit-starter"
+  liveDemos={[
+    { title: "Try Demo", href: "https://agentkitt.xyz" },
+  ]}
+/>
+
+## Introduction
+
+[AgentKit](https://github.com/anayatkhan1/agentkit-starter) is a production-ready starter template for building AI chat applications with web search capabilities. It ships with authentication, PostgreSQL persistence, streaming responses, and a modern UI built with shadcn/ui — everything you need to launch fast.
+
+### AI-Powered Web Search
+
+Toggle web search on or off with a single click. When enabled, your agent can search the web for current information, recent events, and up-to-date data using Exa search tools.
+
+### Modern Chat Interface
+
+Pre-built chat UI with streaming responses, file uploads, message history, and tool call visualization. Built with shadcn/ui and Tailwind CSS for a responsive, polished experience.
+
+### Authentication and Persistence
+
+Clerk authentication with email/password and OAuth support. Conversations are saved to PostgreSQL via Prisma with user-scoped chat history.
+
+### Production Ready
+
+Includes error handling, loading states, responsive design, and deployment guidance for Vercel. Full TypeScript coverage throughout the codebase.
+
+## Built With
+
+- Next.js 16 and React 19
+- Vercel AI SDK with Anthropic Claude
+- Clerk authentication
+- Prisma + PostgreSQL
+- shadcn/ui and Tailwind CSS
+- Exa web search integration
+
+## Getting Started
+
+1. **Clone**: `git clone https://github.com/anayatkhan1/agentkit-starter.git`
+2. **Install**: `pnpm install`
+3. **Configure**: Add Clerk, Anthropic, and database env vars
+4. **Migrate**: `pnpm prisma migrate dev`
+5. **Run**: `pnpm dev` and open [http://localhost:3000](http://localhost:3000)
+
+Visit the [live demo](https://agentkitt.xyz) or explore the [GitHub repository](https://github.com/anayatkhan1/agentkit-starter) to get started.

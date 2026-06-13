@@ -54,6 +54,8 @@ export const templates = defineDocs({
       image: z.string().optional(),
       zipFile: z.string().optional(),
       actionButtons: z.array(z.string()).optional(),
+      githubUrl: z.string().url().optional(),
+      openSource: z.boolean().optional(),
       links: z
         .object({
           doc: z.string().optional(),

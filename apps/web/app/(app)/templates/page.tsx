@@ -7,6 +7,7 @@ import { getAllTemplates } from "@/lib/templates"
 import { Badge } from "@/components/ui/badge"
 import { Announcement } from "@/components/announcement"
 import { Icons } from "@/components/icons"
+import TemplateGithubButton from "@/components/marketing/template-github-button"
 import TemplateLiveDemoButton from "@/components/marketing/template-live-demo-button"
 import TemplateProButton from "@/components/marketing/template-pro-button"
 import { TemplatesCTAButton } from "@/components/marketing/templates-cta-button"
@@ -22,7 +23,7 @@ export const revalidate = false
 
 const title = "Production Ready Templates"
 const description =
-  "Complete website templates built with React. Modern, responsive, and fully customizable. Perfect for startups, agencies, and businesses."
+  "Complete starter templates for AI agents and modern web apps. Open source and production-ready — clone, customize, and ship fast."
 
 export const metadata = createStaticOGMetadata(title, description)
 
@@ -49,10 +50,17 @@ export default async function TemplatesPage() {
               className="grid grid-cols-1 gap-8 rounded-xl sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-16"
             >
               <div className="relative col-span-2 flex h-full flex-col items-start justify-center">
-                <Badge variant="accent">
-                  <Icons.check className="h-4 w-4" />
-                  Included in BUI Pro
-                </Badge>
+                {template.openSource ? (
+                  <Badge variant="accent">
+                    <Icons.star className="h-4 w-4" />
+                    Open Source
+                  </Badge>
+                ) : (
+                  <Badge variant="accent">
+                    <Icons.check className="h-4 w-4" />
+                    Included in BUI Pro
+                  </Badge>
+                )}
                 <h3 className="font-gilroy mt-6 text-2xl leading-none font-bold">
                   {template.title}
                 </h3>
@@ -67,12 +75,22 @@ export default async function TemplatesPage() {
                   <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
                 </Link>
                 <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <TemplateProButton />
+                  {template.githubUrl ? (
+                    <TemplateGithubButton href={template.githubUrl} />
+                  ) : (
+                    <TemplateProButton />
+                  )}
                   {template.actionButtons &&
                     template.actionButtons.map((button, index) => (
                       <TemplateLiveDemoButton
                         href={button}
                         index={index}
+                        label={
+                          template.openSource &&
+                          template.actionButtons?.length === 1
+                            ? "Try Demo"
+                            : undefined
+                        }
                         key={button}
                       />
                     ))}
