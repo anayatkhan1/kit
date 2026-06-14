@@ -7,8 +7,9 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 
-export type StepsItemProps = React.ComponentProps<"div">;
+export type StepsItemProps = ComponentProps<"div">;
 
 export const StepsItem = ({
 	children,
@@ -20,10 +21,10 @@ export const StepsItem = ({
 	</div>
 );
 
-export type StepsTriggerProps = React.ComponentProps<
+export type StepsTriggerProps = ComponentProps<
 	typeof CollapsibleTrigger
 > & {
-	leftIcon?: React.ReactNode;
+	leftIcon?: ReactNode;
 	swapIconOnHover?: boolean;
 };
 
@@ -65,10 +66,10 @@ export const StepsTrigger = ({
 	</CollapsibleTrigger>
 );
 
-export type StepsContentProps = React.ComponentProps<
+export type StepsContentProps = ComponentProps<
 	typeof CollapsibleContent
 > & {
-	bar?: React.ReactNode;
+	bar?: ReactNode;
 };
 
 export const StepsContent = ({
@@ -93,7 +94,7 @@ export const StepsContent = ({
 	);
 };
 
-export type StepsBarProps = React.HTMLAttributes<HTMLDivElement>;
+export type StepsBarProps = HTMLAttributes<HTMLDivElement>;
 
 export const StepsBar = ({ className, ...props }: StepsBarProps) => (
 	<div
@@ -103,7 +104,7 @@ export const StepsBar = ({ className, ...props }: StepsBarProps) => (
 	/>
 );
 
-export type StepsProps = React.ComponentProps<typeof Collapsible>;
+export type StepsProps = ComponentProps<typeof Collapsible>;
 
 export function Steps({ defaultOpen = true, className, ...props }: StepsProps) {
 	return (

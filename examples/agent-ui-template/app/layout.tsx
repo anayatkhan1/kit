@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import type { ReactNode } from "react";
 import { Suspense } from "react";
 
 import { QueryProvider } from "@/components/providers/query-client-provider";
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
 	description: "Next.js chat UI for testing kit agents",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
 			<body
