@@ -1,23 +1,44 @@
 import { Command } from "commander";
-import { existsSync } from "node:fs";
 import path from "node:path";
-import { mergeEnvExample, updateTsconfigPaths } from "../lib/config.js";
-import { installDependencies } from "../lib/deps.js";
+import {
+  getMissingEnvKeys,
+  mergeEnvExample,
+  updateTsconfigPaths,
+} from "../lib/config.js";
+import { detectPackageManager, installDependencies } from "../lib/deps.js";
 import { applyInstallPlan, planInstall } from "../lib/install-plan.js";
+import { auditDependencies } from "../lib/package-json.js";
+import { readProject } from "../lib/project.js";
 import {
   loadRegistryItem,
   parseAddOptions,
   resolveRegistrySource,
 } from "../lib/registry.js";
-import type { AddOptionsInput } from "../types.js";
+import type { AddOptions, AddOptionsInput, RegistryItem } from "../types.js";
 import { logger } from "../utils/logger.js";
-import { confirmAction } from "../utils/prompt.js";
-import { spinner } from "../utils/spinner.js";
-
-type ConfirmFn = (message: string, defaultValue?: boolean) => Promise<boolean>;
+import { type ConfirmFn, handleCancel } from "../utils/prompt.js";
+import { printBanner, showIntro, showNote, showOutro } from "../ui/banner.js";
+import {
+  buildOutroMessage,
+  depsInstallConfirm,
+  depsInstalled,
+  depsInstallingWithPm,
+  depsNeeded,
+  depsReady,
+  envAlreadySet,
+  envConfirm,
+  envNeeded,
+  envUpdated,
+  envUpdating,
+  fetchAgent,
+  filesAdding,
+  filesDone,
+} from "../ui/copy.js";
+import { confirmProceed, runStep } from "../ui/steps.js";
 
 type AddRuntimeHooks = {
   confirm?: ConfirmFn;
+  onCancel?: () => never;
 };
 
 const AGENT_ALIASES: Record<string, string> = {
@@ -40,9 +61,41 @@ function normalizeAgentName(input: string): { value: string; aliased: boolean } 
   return { value: trimmed, aliased: false };
 }
 
-function printSection(title: string): void {
-  logger.break();
-  logger.info(title);
+function isInteractive(parsed: AddOptions): boolean {
+  return !parsed.yes && process.stdout.isTTY === true;
+}
+
+function agentImportPath(agentId: string): string {
+  return `@/agents/${agentId.replace(/-agent$/, "")}`;
+}
+
+async function askConfirm(
+  hooks: AddRuntimeHooks,
+  message: string,
+  defaultValue = true
+): Promise<boolean> {
+  if (hooks.confirm) {
+    return hooks.confirm(message, defaultValue);
+  }
+  return confirmProceed(message, defaultValue);
+}
+
+function cancelInstall(hooks: AddRuntimeHooks): never {
+  if (hooks.onCancel) {
+    return hooks.onCancel();
+  }
+  return handleCancel();
+}
+
+async function fetchAgentFromRegistry(
+  parsed: AddOptions,
+  agentId: string
+): Promise<{ item: RegistryItem; registryBase: string }> {
+  return runStep(fetchAgent(agentId), async () => {
+    const registryBase = resolveRegistrySource(parsed.registry, parsed.cwd);
+    const item = await loadRegistryItem(agentId, registryBase);
+    return { item, registryBase };
+  });
 }
 
 export async function runAddCommand(
@@ -50,9 +103,13 @@ export async function runAddCommand(
   input: AddOptionsInput,
   hooks: AddRuntimeHooks = {}
 ): Promise<void> {
-  const confirm = hooks.confirm ?? confirmAction;
   const parsed = parseAddOptions(input, process.cwd());
   const normalizedAgent = normalizeAgentName(agentName);
+  const interactive = isInteractive(parsed);
+
+  if (interactive) {
+    printBanner();
+  }
 
   if (normalizedAgent.aliased) {
     logger.warn(
@@ -60,17 +117,89 @@ export async function runAddCommand(
     );
   }
 
-  logger.break();
-  logger.info(`Adding ${normalizedAgent.value}...`);
-  logger.break();
+  const project = readProject(parsed.cwd);
 
-  printSection("Resolving registry");
-  const loadSpin = spinner("Resolving source and loading agent...");
-  loadSpin.start();
-  const registryBase = resolveRegistrySource(parsed.registry, parsed.cwd);
-  const item = await loadRegistryItem(normalizedAgent.value, registryBase);
-  loadSpin.succeed(`Loaded ${item.name} from registry`);
-  logger.info(`  Source: ${registryBase}`);
+  if (interactive) {
+    showIntro(normalizedAgent.value);
+  } else {
+    logger.info(`Adding ${normalizedAgent.value}...`);
+    logger.break();
+  }
+
+  logger.dim(
+    `Project: ${project.name} (${project.packageManager})${project.isNextJs ? " · Next.js" : ""}`
+  );
+
+  if (!project.isNextJs && !parsed.yes) {
+    const proceed = await askConfirm(
+      hooks,
+      "Next.js was not detected in this directory. Agents are designed for Next.js apps. Continue anyway?",
+      false
+    );
+    if (!proceed) {
+      cancelInstall(hooks);
+    }
+  } else if (!project.isNextJs && parsed.yes) {
+    logger.warn(
+      "Next.js was not detected. Proceeding because --yes was passed."
+    );
+  }
+
+  const { item, registryBase } = await fetchAgentFromRegistry(
+    parsed,
+    normalizedAgent.value
+  );
+
+  if (parsed.verbose) {
+    logger.dim(`  Registry: ${registryBase}`);
+  }
+
+  const agentLabel = item.title ?? item.name;
+  const requiredDeps = item.dependencies ?? [];
+  const depAudit = auditDependencies(parsed.cwd, requiredDeps);
+
+  if (requiredDeps.length > 0) {
+    if (depAudit.missing.length > 0) {
+      if (interactive) {
+        showNote(depsNeeded(agentLabel, depAudit.missing));
+      } else {
+        logger.info(`Missing dependencies: ${depAudit.missing.join(", ")}`);
+      }
+
+      const shouldInstallDeps =
+        parsed.dryRun || parsed.yes
+          ? true
+          : await askConfirm(hooks, depsInstallConfirm(), true);
+
+      if (!shouldInstallDeps) {
+        cancelInstall(hooks);
+      }
+
+      const packageManager = detectPackageManager(parsed.cwd);
+      const depResult = await runStep(
+        depsInstallingWithPm(packageManager, depAudit.missing),
+        async () =>
+          installDependencies(parsed.cwd, requiredDeps, {
+            dryRun: parsed.dryRun,
+            verbose: parsed.verbose,
+          }),
+        { successLabel: depsInstalled() }
+      );
+
+      if (parsed.dryRun) {
+        logger.info(
+          `  Would install: ${depResult.installed.join(", ") || "none"}`
+        );
+      } else if (depResult.installed.length > 0) {
+        logger.dim(`  ${depResult.installed.join(", ")}`);
+      }
+    } else {
+      logger.success(`  ${depsReady()}`);
+      if (parsed.verbose && depAudit.installed.length > 0) {
+        logger.dim(`  ${depAudit.installed.join(", ")}`);
+      }
+    }
+  }
 
   let actions = planInstall(item, parsed.cwd, {
     overwrite: parsed.overwrite,
@@ -81,17 +210,17 @@ export async function runAddCommand(
     skip: actions.filter((a) => a.action === "skip").map((a) => a.targetPath),
   };
 
-  printSection("Plan summary");
-  logger.info(
-    `  Files: ${summary.create.length} create, ${summary.update.length} update, ${summary.skip.length} skip`
-  );
-  if (summary.skip.length > 0 && !parsed.overwrite) {
-    logger.info("  Note: existing files are currently marked as skip.");
-  }
+  const targetDir =
+    summary.create[0] ?? summary.update[0] ?? summary.skip[0];
+  const installFolder = targetDir ? path.dirname(targetDir) : "ai/agents";
+
   if (parsed.verbose) {
-    for (const file of summary.create) logger.info(`  + create ${file}`);
-    for (const file of summary.update) logger.info(`  ~ update ${file}`);
-    for (const file of summary.skip) logger.info(`  - skip   ${file}`);
+    logger.info(
+      `  Files: ${summary.create.length} to add, ${summary.update.length} to update, ${summary.skip.length} skipped`
+    );
+    for (const file of summary.create) logger.dim(`  + ${file}`);
+    for (const file of summary.update) logger.dim(`  ~ ${file}`);
+    for (const file of summary.skip) logger.dim(`  - ${file}`);
   }
 
   if (
@@ -100,7 +229,8 @@ export async function runAddCommand(
     summary.skip.length > 0 &&
     !parsed.yes
   ) {
-    const shouldOverwrite = await confirm(
+    const shouldOverwrite = await askConfirm(
+      hooks,
       `Found ${summary.skip.length} existing file(s). Overwrite them?`,
       false
     );
@@ -109,52 +239,61 @@ export async function runAddCommand(
     }
   }
 
-  if (parsed.dryRun) {
-    logger.info("  Dry run enabled: no files were written.");
-  } else {
-    printSection("Applying files");
-    const applySpin = spinner("Applying file changes...");
-    applySpin.start();
-    const applied = applyInstallPlan(actions);
-    applySpin.succeed("Applied file changes");
-    logger.info(
-      `  Files: ${applied.created.length} created, ${applied.updated.length} updated, ${applied.skipped.length} skipped`
-    );
-    if (parsed.verbose) {
-      for (const file of applied.created) logger.info(`  ✓ ${file}`);
-      for (const file of applied.updated) logger.info(`  ✓ ${file} (updated)`);
-      for (const file of applied.skipped) logger.info(`  - ${file} (skipped)`);
-    }
-  }
-
-  printSection("Config updates");
-
+  const envVarKeys = item.envVars ? Object.keys(item.envVars) : [];
   let envAdded: string[] = [];
-  if (item.envVars && Object.keys(item.envVars).length > 0) {
-    const envExamplePath = path.join(parsed.cwd, ".env.example");
-    const shouldUpdateEnv =
-      parsed.yes || existsSync(envExamplePath)
-        ? true
-        : await confirm(
-            "No .env.example found. Create and append required env keys?",
-            true
-          );
-    if (shouldUpdateEnv) {
-      envAdded = mergeEnvExample(parsed.cwd, item.envVars, { dryRun: parsed.dryRun });
-    } else {
-      logger.info("  Env: skipped");
+
+  if (parsed.dryRun) {
+    logger.info(`  Dry run: would add files under ${installFolder}/`);
+  } else {
+    const applied = await runStep(filesAdding(), async () =>
+      applyInstallPlan(actions)
+    );
+    const fileCount = applied.created.length + applied.updated.length;
+    logger.success(`  ${filesDone(fileCount, installFolder)}`);
+    if (parsed.verbose) {
+      for (const file of applied.created) logger.dim(`  ✓ ${file}`);
+      for (const file of applied.updated) logger.dim(`  ✓ ${file} (updated)`);
+      for (const file of applied.skipped) logger.dim(`  - ${file} (skipped)`);
     }
   }
-  if (envAdded.length > 0) {
-    logger.info(
-      parsed.dryRun
-        ? `  Env: would add ${envAdded.join(", ")}`
-        : `  Env: updated (${envAdded.join(", ")})`
-    );
+
+  if (item.envVars && envVarKeys.length > 0) {
+    const missingEnvKeys = getMissingEnvKeys(parsed.cwd, item.envVars);
+
+    if (missingEnvKeys.length === 0) {
+      logger.success(`  ${envAlreadySet()}`);
+    } else {
+      if (interactive) {
+        showNote(envNeeded(agentLabel, missingEnvKeys));
+      }
+
+      const shouldUpdateEnv =
+        parsed.dryRun || parsed.yes
+          ? true
+          : await askConfirm(hooks, envConfirm(), true);
+
+      if (shouldUpdateEnv) {
+        envAdded = await runStep(envUpdating(), async () =>
+          mergeEnvExample(parsed.cwd, item.envVars!, {
+            dryRun: parsed.dryRun,
+          })
+        );
+
+        if (parsed.dryRun) {
+          logger.info(`  Would add: ${envAdded.join(", ")}`);
+        } else if (envAdded.length > 0) {
+          logger.success(`  ${envUpdated(envAdded)}`);
+        }
+      } else {
+        logger.dim("  Env: skipped");
+      }
+    }
   }
 
-  const tsconfigUpdated = updateTsconfigPaths(parsed.cwd, { dryRun: parsed.dryRun });
-  if (tsconfigUpdated) {
+  const tsconfigUpdated = updateTsconfigPaths(parsed.cwd, {
+    dryRun: parsed.dryRun,
+  });
+  if (tsconfigUpdated && parsed.verbose) {
     logger.info(
       parsed.dryRun
         ? "  tsconfig: paths would be updated"
@@ -162,45 +301,27 @@ export async function runAddCommand(
     );
   }
 
-  printSection("Installing dependencies");
-  const shouldInstallDeps =
-    parsed.dryRun || parsed.yes
-      ? true
-      : await confirm("Install agent dependencies now?", true);
+  const outroEnvKeys =
+    envAdded.length > 0 ? envAdded : envVarKeys;
+  const outroMessage = buildOutroMessage(agentLabel, parsed.dryRun, {
+    envKeys: outroEnvKeys,
+    agentImportPath: agentImportPath(normalizedAgent.value),
+  });
 
-  let depsInstalled: string[] = [];
-  if (!shouldInstallDeps) {
-    logger.info("  Dependencies: skipped by user");
+  if (interactive) {
+    showOutro(outroMessage);
   } else {
-  const depSpin = spinner("Installing dependencies...");
-    if (!parsed.verbose && !parsed.dryRun) depSpin.start();
-    depsInstalled = installDependencies(parsed.cwd, item.dependencies, {
-      dryRun: parsed.dryRun,
-      verbose: parsed.verbose,
-    });
-    if (!parsed.verbose && !parsed.dryRun) depSpin.succeed("Dependencies installed");
-    if (depsInstalled.length > 0) {
-      logger.info(
-        parsed.dryRun
-          ? `  Dependencies: would install ${depsInstalled.join(", ")}`
-          : `  Dependencies: installed ${depsInstalled.join(", ")}`
-      );
-    } else {
-      logger.info("  Dependencies: none required");
+    logger.break();
+    logger.success(parsed.dryRun ? "Dry run complete." : "Done!");
+    logger.info("Next steps:");
+    for (const step of outroMessage.split("\n").slice(1)) {
+      logger.info(`  ${step}`);
     }
+    if (parsed.verbose) {
+      logger.info("  - Use --dry-run and --verbose for troubleshooting.");
+    }
+    logger.break();
   }
-
-  printSection("Done");
-  logger.break();
-  logger.success("Done!");
-  logger.info("Next steps:");
-  logger.info("  - Review created/updated files and run your formatter if needed.");
-  if (envAdded.length > 0) {
-    logger.info(`  - Set environment values: ${envAdded.join(", ")}`);
-  }
-  logger.info("  - Run your app and test the installed agent flow.");
-  logger.info("  - Use --dry-run and --verbose for troubleshooting.");
-  logger.break();
 }
 
 export const addCommand = new Command("add")

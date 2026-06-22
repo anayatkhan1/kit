@@ -36,6 +36,34 @@ npx agentcn@latest list -r ./apps/web/public/r
 npx agentcn@latest add web-agent --dry-run --yes -r https://agentcn.dev/r
 ```
 
+## Interactive install flow (`agentcn add`)
+
+The `add` command guides users through a polished step-by-step install:
+
+1. **Project detection** — validates `package.json` and detects Next.js (`next` dependency or `next.config.*`). Warns and asks to continue if Next.js is missing.
+2. **Fetch agent** — single spinner: `Fetching web-agent...`
+3. **Dependencies** — audits `package.json`; if packages are missing, shows which ones are needed and asks `Install them now?` (default Yes). If all present, shows `Dependencies ready`.
+4. **Source files** — writes agent files under `ai/agents/...`. Prompts before overwriting existing files.
+5. **Environment variables** — lists required API keys and asks `Add them to .env.example?` (default Yes). Creates or updates `.env.example` only (never writes `.env` / `.env.local`).
+6. **Done** — outro with next steps: copy keys to `.env.local`, import agent in chat route, test.
+
+Use `--verbose` to see registry path, per-file breakdown, and tsconfig updates.
+
+### Non-interactive flags
+
+| Flag | Behavior |
+| --- | --- |
+| `--yes` | Skip prompts; auto-install missing deps; skip file overwrites unless `--overwrite` |
+| `--overwrite` | Overwrite conflicting files without prompting |
+| `--dry-run` | Show full plan without writes or installs |
+| `--verbose` | Per-file logging and package manager output |
+
+Example CI / preview:
+
+```bash
+pnpm dlx agentcn@latest add web-agent --dry-run --yes
+```
+
 ## Registry source of truth
 
 - Production registry URL: **`https://agentcn.dev/r/*`**.

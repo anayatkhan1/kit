@@ -31,6 +31,18 @@ export function mergeEnvContent(
   return { content: `${prefix}${additions.join("\n")}\n`, added };
 }
 
+export function getMissingEnvKeys(
+  cwd: string,
+  envVars: Record<string, string>
+): string[] {
+  const envPath = path.join(cwd, ".env.example");
+  const existing = pathExistsSync(envPath)
+    ? fs.readFileSync(envPath, "utf-8")
+    : "";
+  const { added } = mergeEnvContent(existing, envVars);
+  return added;
+}
+
 export function mergeEnvExample(
   cwd: string,
   envVars: Record<string, string>,
