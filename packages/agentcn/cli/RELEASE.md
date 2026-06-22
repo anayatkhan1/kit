@@ -38,13 +38,16 @@ npx agentcn@latest add web-agent --dry-run --yes -r https://agentcn.dev/r
 
 ## Interactive install flow (`agentcn add`)
 
-The `add` command guides users through a step-by-step install:
+The `add` command guides users through a polished step-by-step install:
 
-1. **Project detection** — validates `package.json` and detects Next.js (`next` dependency or `next.config.*`).
-2. **Proceed confirmation** — warns if Next.js is missing and asks whether to continue.
-3. **Dependency audit** — compares registry deps against `package.json` and installs only missing packages first.
-4. **Source files** — writes agent files under `ai/agents/...` after dependencies are ready.
-5. **Config updates** — merges env keys into `.env.example` and adds tsconfig path aliases.
+1. **Project detection** — validates `package.json` and detects Next.js (`next` dependency or `next.config.*`). Warns and asks to continue if Next.js is missing.
+2. **Fetch agent** — single spinner: `Fetching web-agent...`
+3. **Dependencies** — audits `package.json`; if packages are missing, shows which ones are needed and asks `Install them now?` (default Yes). If all present, shows `Dependencies ready`.
+4. **Source files** — writes agent files under `ai/agents/...`. Prompts before overwriting existing files.
+5. **Environment variables** — lists required API keys and asks `Add them to .env.example?` (default Yes). Creates or updates `.env.example` only (never writes `.env` / `.env.local`).
+6. **Done** — outro with next steps: copy keys to `.env.local`, import agent in chat route, test.
+
+Use `--verbose` to see registry path, per-file breakdown, and tsconfig updates.
 
 ### Non-interactive flags
 

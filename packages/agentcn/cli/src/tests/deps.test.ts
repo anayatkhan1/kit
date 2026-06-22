@@ -16,7 +16,7 @@ test("getExecErrorOutput includes stdout and stderr", () => {
   assert.equal(message.includes("ERR_PNPM_ADDING_TO_ROOT"), true);
 });
 
-test("installDependencies skips packages already in package.json", () => {
+test("installDependencies skips packages already in package.json", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-deps-skip-"));
   try {
     writeFileSync(
@@ -32,7 +32,7 @@ test("installDependencies skips packages already in package.json", () => {
       "utf-8"
     );
 
-    const result = installDependencies(root, ["ai", "zod"], {
+    const result = await installDependencies(root, ["ai", "zod"], {
       dryRun: true,
       verbose: false,
     });
@@ -44,7 +44,7 @@ test("installDependencies skips packages already in package.json", () => {
   }
 });
 
-test("installDependencies dry-run reports only missing packages", () => {
+test("installDependencies dry-run reports only missing packages", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-deps-missing-"));
   try {
     writeFileSync(
@@ -52,7 +52,7 @@ test("installDependencies dry-run reports only missing packages", () => {
       JSON.stringify({ name: "deps-test", dependencies: { ai: "5.0.0" } }, null, 2)
     );
 
-    const result = installDependencies(root, ["ai", "exa-js"], {
+    const result = await installDependencies(root, ["ai", "exa-js"], {
       dryRun: true,
       verbose: false,
     });

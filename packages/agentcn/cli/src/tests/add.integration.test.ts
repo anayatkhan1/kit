@@ -208,6 +208,41 @@ test("runAddCommand prompts for overwrite when conflicts exist", async () => {
   }
 });
 
+test("runAddCommand prompts for env keys when missing from .env.example", async () => {
+  const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-env-"));
+  const projectDir = path.join(root, "project");
+  const registryDir = path.join(root, "registry");
+  createProject(projectDir);
+  createRegistry(registryDir);
+
+  const prompts: string[] = [];
+  const confirm = async (message: string) => {
+    prompts.push(message);
+    return true;
+  };
+
+  try {
+    await runAddCommand(
+      "file-agent",
+      {
+        registry: registryDir,
+        cwd: projectDir,
+      },
+      { confirm }
+    );
+    assert.equal(
+      prompts.some((message) => message.includes(".env.example")),
+      true
+    );
+    assert.equal(
+      prompts.some((message) => message.includes("Ready to install")),
+      false
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("runAddCommand prints structured output in non-interactive mode", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-output-"));
   const projectDir = path.join(root, "project");
@@ -232,7 +267,8 @@ test("runAddCommand prints structured output in non-interactive mode", async () 
     assert.equal(output.includes("Adding file-agent"), true);
     assert.equal(output.includes("Next.js"), true);
     assert.equal(output.includes("Dry run"), true);
-    assert.equal(output.includes("Next steps:"), true);
+    assert.equal(output.includes("would add files under"), true);
+    assert.equal(output.includes(".env.local"), true);
   } finally {
     console.log = originalLog;
     rmSync(root, { recursive: true, force: true });

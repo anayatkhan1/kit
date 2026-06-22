@@ -3,16 +3,21 @@ import { type ConfirmFn } from "../utils/prompt.js";
 
 export async function runStep<T>(
   label: string,
-  fn: () => Promise<T> | T
+  fn: () => Promise<T> | T,
+  options?: { successLabel?: string }
 ): Promise<T> {
   const spin = clack.spinner();
   spin.start(label);
   try {
+    // Yield so the spinner can render before long-running work starts.
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
     const result = await fn();
-    spin.stop(label);
+    spin.stop(options?.successLabel ?? label, 0);
     return result;
   } catch (error) {
-    spin.stop(`Failed: ${label}`);
+    spin.stop(`Failed: ${label}`, 1);
     throw error;
   }
 }
