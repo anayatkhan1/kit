@@ -51,13 +51,29 @@ function createRegistry(registryDir: string): void {
   );
 }
 
+function createProject(projectDir: string): void {
+  mkdirSync(projectDir, { recursive: true });
+  writeFileSync(
+    path.join(projectDir, "package.json"),
+    JSON.stringify(
+      {
+        name: "test-project",
+        dependencies: { next: "16.0.0" },
+      },
+      null,
+      2
+    ),
+    "utf-8"
+  );
+  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
+}
+
 test("runAddCommand applies files for local path registry", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-local-"));
   const projectDir = path.join(root, "project");
   const registryDir = path.join(root, "registry");
-  mkdirSync(projectDir, { recursive: true });
+  createProject(projectDir);
   createRegistry(registryDir);
-  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
 
   try {
     await runAddCommand("file-agent", {
@@ -77,9 +93,8 @@ test("runAddCommand dry-run does not write files", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-dry-"));
   const projectDir = path.join(root, "project");
   const registryDir = path.join(root, "registry");
-  mkdirSync(projectDir, { recursive: true });
+  createProject(projectDir);
   createRegistry(registryDir);
-  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
   try {
     await runAddCommand("file-agent", {
       registry: registryDir,
@@ -108,9 +123,8 @@ test("runAddCommand supports alias agent name", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-alias-"));
   const projectDir = path.join(root, "project");
   const registryDir = path.join(root, "registry");
-  mkdirSync(projectDir, { recursive: true });
+  createProject(projectDir);
   createRegistry(registryDir);
-  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
 
   try {
     await runAddCommand("fileagent", {
@@ -130,9 +144,8 @@ test("runAddCommand in --yes mode skips interactive prompts", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-yes-"));
   const projectDir = path.join(root, "project");
   const registryDir = path.join(root, "registry");
-  mkdirSync(projectDir, { recursive: true });
+  createProject(projectDir);
   createRegistry(registryDir);
-  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
   const existingTarget = path.join(projectDir, "ai/agents/file-agent/index.ts");
   mkdirSync(path.dirname(existingTarget), { recursive: true });
   writeFileSync(existingTarget, "export const existing = true;\n", "utf-8");
@@ -164,9 +177,8 @@ test("runAddCommand prompts for overwrite when conflicts exist", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-prompt-"));
   const projectDir = path.join(root, "project");
   const registryDir = path.join(root, "registry");
-  mkdirSync(projectDir, { recursive: true });
+  createProject(projectDir);
   createRegistry(registryDir);
-  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
   const existingTarget = path.join(projectDir, "ai/agents/file-agent/index.ts");
   mkdirSync(path.dirname(existingTarget), { recursive: true });
   writeFileSync(existingTarget, "export const existing = true;\n", "utf-8");
@@ -174,7 +186,8 @@ test("runAddCommand prompts for overwrite when conflicts exist", async () => {
   const prompts: string[] = [];
   const confirm = async (message: string) => {
     prompts.push(message);
-    return false;
+    if (message.includes("Overwrite")) return false;
+    return true;
   };
 
   try {
@@ -195,13 +208,12 @@ test("runAddCommand prompts for overwrite when conflicts exist", async () => {
   }
 });
 
-test("runAddCommand prints structured output sections", async () => {
+test("runAddCommand prints structured output in non-interactive mode", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-output-"));
   const projectDir = path.join(root, "project");
   const registryDir = path.join(root, "registry");
-  mkdirSync(projectDir, { recursive: true });
+  createProject(projectDir);
   createRegistry(registryDir);
-  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
 
   const logs: string[] = [];
   const originalLog = console.log;
@@ -217,13 +229,49 @@ test("runAddCommand prints structured output sections", async () => {
       yes: true,
     });
     const output = logs.join("\n");
-    assert.equal(output.includes("Resolving registry"), true);
-    assert.equal(output.includes("Plan summary"), true);
-    assert.equal(output.includes("Config updates"), true);
-    assert.equal(output.includes("Installing dependencies"), true);
+    assert.equal(output.includes("Adding file-agent"), true);
+    assert.equal(output.includes("Next.js"), true);
+    assert.equal(output.includes("Dry run"), true);
     assert.equal(output.includes("Next steps:"), true);
   } finally {
     console.log = originalLog;
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("runAddCommand warns and proceeds for non-Next.js project with --yes", async () => {
+  const root = mkdtempSync(path.join(tmpdir(), "agentcn-add-non-next-"));
+  const projectDir = path.join(root, "project");
+  const registryDir = path.join(root, "registry");
+  mkdirSync(projectDir, { recursive: true });
+  writeFileSync(
+    path.join(projectDir, "package.json"),
+    JSON.stringify({ name: "plain-node" }, null, 2),
+    "utf-8"
+  );
+  writeFileSync(path.join(projectDir, "tsconfig.json"), "{}", "utf-8");
+  createRegistry(registryDir);
+
+  const warnings: string[] = [];
+  const originalWarn = console.warn;
+  console.warn = (...args: unknown[]) => {
+    warnings.push(args.map(String).join(" "));
+  };
+
+  try {
+    await runAddCommand("file-agent", {
+      registry: registryDir,
+      cwd: projectDir,
+      yes: true,
+    });
+    assert.equal(
+      warnings.some((line) => line.includes("Next.js was not detected")),
+      true
+    );
+    const target = path.join(projectDir, "ai/agents/file-agent/index.ts");
+    assert.equal(readFileSync(target, "utf-8").includes("ok = true"), true);
+  } finally {
+    console.warn = originalWarn;
     rmSync(root, { recursive: true, force: true });
   }
 });

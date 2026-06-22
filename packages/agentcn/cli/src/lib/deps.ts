@@ -1,12 +1,18 @@
 import * as path from "path";
 import { execSync } from "child_process";
 import { pathExistsSync } from "path-exists";
+import { auditDependencies } from "./package-json.js";
 import { logger } from "../utils/logger.js";
 
 type ExecErrorLike = {
   stdout?: unknown;
   stderr?: unknown;
   message?: unknown;
+};
+
+export type InstallDependenciesResult = {
+  installed: string[];
+  skipped: string[];
 };
 
 export function getExecErrorOutput(error: unknown): string {
@@ -32,12 +38,23 @@ export function installDependencies(
   cwd: string,
   dependencies: string[] | undefined,
   options: { dryRun: boolean; verbose: boolean }
-): string[] {
+): InstallDependenciesResult {
   const deps = dependencies ?? [];
-  if (deps.length === 0) return [];
-  if (options.dryRun) return deps;
+  if (deps.length === 0) {
+    return { installed: [], skipped: [] };
+  }
+
+  const audit = auditDependencies(cwd, deps);
+  if (audit.missing.length === 0) {
+    return { installed: [], skipped: audit.installed };
+  }
+
+  if (options.dryRun) {
+    return { installed: audit.missing, skipped: audit.installed };
+  }
+
   const pm = detectPackageManager(cwd);
-  const depString = deps.join(" ");
+  const depString = audit.missing.join(" ");
   const cmd =
     pm === "pnpm"
       ? `pnpm add ${depString}`
@@ -58,7 +75,6 @@ export function installDependencies(
     const message = getExecErrorOutput(error);
 
     if (pm === "pnpm" && message.includes("ERR_PNPM_ADDING_TO_ROOT")) {
-      // When target cwd is a workspace root, pnpm requires explicit -w.
       try {
         runInstall(`pnpm add -w ${depString}`);
       } catch (fallbackError) {
@@ -75,5 +91,6 @@ export function installDependencies(
       throw error;
     }
   }
-  return deps;
+
+  return { installed: audit.missing, skipped: audit.installed };
 }

@@ -36,6 +36,31 @@ npx agentcn@latest list -r ./apps/web/public/r
 npx agentcn@latest add web-agent --dry-run --yes -r https://agentcn.dev/r
 ```
 
+## Interactive install flow (`agentcn add`)
+
+The `add` command guides users through a step-by-step install:
+
+1. **Project detection** — validates `package.json` and detects Next.js (`next` dependency or `next.config.*`).
+2. **Proceed confirmation** — warns if Next.js is missing and asks whether to continue.
+3. **Dependency audit** — compares registry deps against `package.json` and installs only missing packages first.
+4. **Source files** — writes agent files under `ai/agents/...` after dependencies are ready.
+5. **Config updates** — merges env keys into `.env.example` and adds tsconfig path aliases.
+
+### Non-interactive flags
+
+| Flag | Behavior |
+| --- | --- |
+| `--yes` | Skip prompts; auto-install missing deps; skip file overwrites unless `--overwrite` |
+| `--overwrite` | Overwrite conflicting files without prompting |
+| `--dry-run` | Show full plan without writes or installs |
+| `--verbose` | Per-file logging and package manager output |
+
+Example CI / preview:
+
+```bash
+pnpm dlx agentcn@latest add web-agent --dry-run --yes
+```
+
 ## Registry source of truth
 
 - Production registry URL: **`https://agentcn.dev/r/*`**.
