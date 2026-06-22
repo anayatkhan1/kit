@@ -73,10 +73,28 @@ pnpm dlx agentcn@latest add web-agent --dry-run --yes
 
 ## Publishing to npm (maintainers)
 
+### Baseline git tag (required once)
+
+Nx release uses git tags like `agentcn@0.1.1` to know the **last released version**. If you bump `package.json` by hand without tagging, the next `pnpm release` may double-bump (e.g. 0.2.0 → 0.3.0) and fail on changelog.
+
+After the version on npm, tag that commit:
+
+```bash
+# Example: npm currently has 0.1.1 — tag the commit where package.json was 0.1.1
+git tag agentcn@0.1.1 421b96f
+git push origin agentcn@0.1.1
+```
+
+Check tags: `git tag -l 'agentcn@*'`
+
+### Publish steps
+
 1. Ensure you are logged in: `npm whoami` (if not, `npm login`).
-2. From the workspace root:
-   - `pnpm --filter agentcn publish --access public`
-3. Confirm:
+2. Preview first: `pnpm release --dry-run --skip-publish`
+3. From the workspace root:
+   - `pnpm release` (version + changelog + tag + publish)
+   - Or: `pnpm --filter agentcn publish --access public` after `pnpm release:version` and `pnpm release:changelog`
+4. Confirm:
    - `npm view agentcn version`
    - `npm view agentcn dist-tags.latest`
 

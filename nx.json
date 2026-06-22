@@ -20,6 +20,7 @@
     },
     "changelog": {
       "workspaceChangelog": false,
+      "automaticFromRef": "main",
       "projectChangelogs": {
         "file": "{projectRoot}/CHANGELOG.md",
         "createRelease": "github",
