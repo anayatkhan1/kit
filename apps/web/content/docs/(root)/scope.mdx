@@ -50,3 +50,15 @@ Keeping scope tight helps you:
 ## Decision rule
 
 If a feature does not directly improve agent install UX or real workflow outcomes, defer it.
+
+## Adding a new agent
+
+When you ship a new installable agent:
+
+1. Add source under `ai/agents/<name>/` (prompt, tools, `agent.ts`).
+2. Register it in [`registry/registry-agents.ts`](https://github.com/anayatkhan1/kit/blob/main/registry/registry-agents.ts).
+3. Rebuild the hosted registry: `pnpm agentcn:registry:build`.
+4. Add a docs page under `apps/web/content/docs/agents/`.
+5. (Optional) Add an embed route in `examples/agent-ui-template/app/embed/<name>/`.
+6. Add tests for agent behavior and CLI install coverage.
+7. Release with `pnpm release:skip-publish`, then push the `agentcn@X.Y.Z` tag so CI publishes to npm.

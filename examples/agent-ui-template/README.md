@@ -1,128 +1,72 @@
 # Agent UI Template (Next.js + Vercel AI SDK)
 
-Reusable example app for validating how different agents behave in a real Next.js chat UI.
+Minimal demo app for the **web-agent** live preview on [agentcn.dev/docs](https://agentcn.dev/docs).
 
-This template keeps the same frontend shell while switching agent profiles (tools, system prompt, MCP usage, and stop conditions) from a central registry.
+## Included
 
-## Included Agent Profiles
-
-- `file-agent`
-  - local file-system tools
-  - optional GitHub MCP tools (via Docker + PAT)
-- `web-agent`
-  - web search, question answering, deep research, browser, webset tools
-
-## Why this template exists
-
-- Validate real streaming/tool-call UX before docs/publish.
-- Compare multiple agents in one app without route rewrites.
-- Reuse as the base demo app for future agent profiles.
+- `web-agent` chat UI on `/`
+- Compact embed route at `/embed/web-agent` for docs iframe previews
 
 ## Prerequisites
 
 - Node.js 20+
 - pnpm
-- Anthropic API key (`ANTHROPIC_API_KEY`)
-
-Optional depending on selected profile:
-- `GITHUB_PERSONAL_ACCESS_TOKEN` + Docker (for file-agent MCP mode)
-- `EXA_API_KEY` (for web-agent)
-- `ANCHOR_API_KEY` (for web-agent browser path)
+- API keys:
+  - `ANTHROPIC_API_KEY`
+  - `EXA_API_KEY`
+  - `ANCHOR_API_KEY`
 
 ## Setup
-
-1. Install deps:
 
 ```bash
 pnpm install
 ```
 
-2. Create `.env.local`:
+Create `.env.local`:
 
 ```bash
 ANTHROPIC_API_KEY=...
-GITHUB_PERSONAL_ACCESS_TOKEN=...
 EXA_API_KEY=...
 ANCHOR_API_KEY=...
 ```
 
-3. Start app:
+## Commands
+
+- `pnpm dev` — full template app on port 3000
+- `pnpm dev:embed` — embed server on port 3001 (use this for docs local preview)
+- `pnpm lint` — Biome checks
+- `pnpm build` — production build
+
+## Docs embed
+
+Point the docs app at this server:
 
 ```bash
-pnpm dev
+# in apps/web/.env
+NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
 ```
 
-4. Open `http://localhost:3000`, choose an agent profile, and run prompts.
-
-## Docs embed (`/embed/web-agent`)
-
-Compact chat UI for the agentcn docs **Preview** iframe:
+Then run:
 
 ```bash
-pnpm dev -p 3001
+pnpm dev:embed
 ```
 
 Open `http://localhost:3001/embed/web-agent`.
 
-Set on the docs app (`apps/web`):
+## Key files
 
-```bash
-NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
-```
+- `app/api/chat/route.ts` — streaming chat route for web-agent
+- `app/embed/web-agent/` — iframe-friendly embed UI
+- `lib/agent-registry.ts` — server runtime config
+- `lib/agent-profiles.ts` — UI metadata
+- `tsconfig.json` — `@kit-ai/*` maps to `kit/ai/*` in the monorepo
 
-Production: deploy this app and point docs at that URL (e.g. `https://demo.agentcn.dev`). Embed routes allow framing from `agentcn.dev` via CSP `frame-ancestors`.
+## Add another agent to this demo
 
-## Key Files
+1. Add source under `kit/ai/agents/<name>/`
+2. Register runtime config in `lib/agent-registry.ts`
+3. Register UI metadata in `lib/agent-profiles.ts`
+4. Add `app/embed/<name>/` if you want a docs preview route
 
-- `tsconfig.json` - `@kit-ai/*` maps to `kit/ai/*` (shared prompts and toolsets; no copied `ai/` tree in this app).
-- `app/api/chat/route.ts` - generic streaming route using selected agent config.
-- `lib/agent-registry.ts` - profile registry (model, prompt, toolsets, env needs, MCP context).
-- `components/message.tsx` - shared chat + tool activity rendering.
-- `lib/tool-labels.ts` - normalized labels for tool calls in UI.
-
-## Commands
-
-- `pnpm dev` - start template app
-- `pnpm lint` - run Biome checks
-- `pnpm format` - format with Biome
-
-## Add a New Agent (5-minute checklist)
-
-Use this flow whenever you add another agent to this template.
-
-1. Add or extend agent source in the shared kit package (single source of truth):
-   - `kit/ai/agents/<your-agent>/...`
-   - include prompt + tools (and services if needed)
-   - import those modules from `lib/agent-registry.ts` using the `@kit-ai/*` path alias (see existing `file-agent` / `web-agent` imports)
-
-2. Register server runtime config in:
-   - `lib/agent-registry.ts`
-   - required fields:
-     - `id`
-     - `systemPrompt`
-     - `model`
-     - `stopWhen`
-     - `localTools`
-   - optional:
-     - `createMcpContext` (only when agent needs MCP transport)
-
-3. Register UI profile metadata in:
-   - `lib/agent-profiles.ts`
-   - required fields:
-     - `id`
-     - `label`
-     - `description`
-     - `starterPrompt`
-     - `env`
-
-4. (Optional) Improve tool labels for UI activity in:
-   - `lib/tool-labels.ts`
-   - add mappings so tool traces are readable in chat.
-
-5. Validate:
-   - `pnpm format`
-   - `pnpm lint`
-   - `pnpm build`
-   - `pnpm dev`
-
-If these pass, your new agent profile is available in the UI dropdown on `/`.
+See [AgentCN scope docs](https://agentcn.dev/docs/scope) for the full registry + publish workflow.

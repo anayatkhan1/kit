@@ -58,10 +58,11 @@ npx agentcn@latest info web-agent
 
 ```ts
 import { webAgent } from "@/agents/web";
+import { convertToModelMessages, type UIMessage } from "ai";
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
-  const result = webAgent(messages);
+  const { messages }: { messages: UIMessage[] } = await req.json();
+  const result = webAgent(await convertToModelMessages(messages));
   return result.toUIMessageStreamResponse();
 }
 ```

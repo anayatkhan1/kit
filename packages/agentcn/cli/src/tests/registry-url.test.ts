@@ -14,13 +14,13 @@ test("loads registry index and item from URL", async () => {
   const index = {
     schemaVersion: 1,
     name: "agentcn",
-    items: [{ name: "file-agent", description: "File agent" }],
+    items: [{ name: "web-agent", description: "Web agent" }],
   };
   const item = {
     schemaVersion: 1,
-    name: "file-agent",
+    name: "web-agent",
     type: "registry:agent",
-    description: "File agent",
+    description: "Web agent",
     files: [],
   };
 
@@ -30,7 +30,7 @@ test("loads registry index and item from URL", async () => {
       res.end(JSON.stringify(index));
       return;
     }
-    if (req.url === "/file-agent.json") {
+    if (req.url === "/web-agent.json") {
       res.end(JSON.stringify(item));
       return;
     }
@@ -48,9 +48,9 @@ test("loads registry index and item from URL", async () => {
 
   try {
     const loadedIndex = await loadRegistryIndex(baseUrl);
-    const loadedItem = await loadRegistryItem("file-agent", baseUrl);
+    const loadedItem = await loadRegistryItem("web-agent", baseUrl);
     assert.equal(loadedIndex.items.length, 1);
-    assert.equal(loadedItem.name, "file-agent");
+    assert.equal(loadedItem.name, "web-agent");
   } finally {
     server.close();
   }

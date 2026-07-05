@@ -16,42 +16,19 @@ export async function POST(request: NextRequest) {
 		const modelMessages: ModelMessage[] =
 			await convertToModelMessages(messages);
 		const selectedAgent = getAgentConfig(agentId);
-		let cleanup: (() => Promise<void>) | undefined;
-		let mcpTools = {};
-
-		if (selectedAgent.createMcpContext) {
-			const mcpContext = await selectedAgent.createMcpContext();
-			cleanup = mcpContext.close;
-			mcpTools = mcpContext.tools;
-		}
 
 		const result = streamText({
 			model: selectedAgent.model,
 			messages: modelMessages,
 			system: selectedAgent.systemPrompt,
-			tools: {
-				...mcpTools,
-				...selectedAgent.localTools,
-			},
+			tools: selectedAgent.localTools,
 			stopWhen: selectedAgent.stopWhen,
 		});
 
-		return result.toUIMessageStreamResponse({
-			onFinish: async () => {
-				if (cleanup) {
-					await cleanup();
-				}
-			},
-		});
+		return result.toUIMessageStreamResponse();
 	} catch (error) {
 		const message =
 			error instanceof Error ? error.message : "Unknown server error.";
-		return Response.json(
-			{
-				error: message,
-				hint: "If using file-agent with MCP, ensure Docker is running and GITHUB_PERSONAL_ACCESS_TOKEN is set.",
-			},
-			{ status: 500 },
-		);
+		return Response.json({ error: message }, { status: 500 });
 	}
 }

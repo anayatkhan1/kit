@@ -42,8 +42,6 @@ type AddRuntimeHooks = {
 };
 
 const AGENT_ALIASES: Record<string, string> = {
-  fileagent: "file-agent",
-  file_agent: "file-agent",
   webagent: "web-agent",
   web_agent: "web-agent",
 };
@@ -326,7 +324,7 @@ export async function runAddCommand(
 
 export const addCommand = new Command("add")
   .description("Add an agent to your project")
-  .argument("<agent>", "Agent name (e.g. file-agent)")
+  .argument("<agent>", "Agent name (e.g. web-agent)")
   .option("-r, --registry <path|url>", "Registry path or URL")
   .option("--dry-run", "Preview changes without writing files", false)
   .option("--overwrite", "Overwrite existing files", false)

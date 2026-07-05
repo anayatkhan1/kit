@@ -1,11 +1,5 @@
 import assert from "node:assert/strict";
-import {
-  mkdtempSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -19,7 +13,7 @@ function createRegistry(registryDir: string): void {
       {
         schemaVersion: 1,
         name: "agentcn",
-        items: [{ name: "file-agent", description: "File agent" }],
+        items: [{ name: "web-agent", description: "Web agent" }],
       },
       null,
       2
@@ -27,18 +21,18 @@ function createRegistry(registryDir: string): void {
     "utf-8"
   );
   writeFileSync(
-    path.join(registryDir, "file-agent.json"),
+    path.join(registryDir, "web-agent.json"),
     JSON.stringify(
       {
         schemaVersion: 1,
-        name: "file-agent",
+        name: "web-agent",
         type: "registry:agent",
-        description: "File agent",
+        description: "Web agent",
         dependencies: [],
         envVars: { ANTHROPIC_API_KEY: "" },
         files: [
           {
-            path: "ai/agents/file-agent/index.ts",
+            path: "ai/agents/web/index.ts",
             type: "registry:agent",
             content: "export const ok = true;\n",
           },
@@ -76,12 +70,12 @@ test("runAddCommand applies files for local path registry", async () => {
   createRegistry(registryDir);
 
   try {
-    await runAddCommand("file-agent", {
+    await runAddCommand("web-agent", {
       registry: registryDir,
       cwd: projectDir,
       yes: true,
     });
-    const target = path.join(projectDir, "ai/agents/file-agent/index.ts");
+    const target = path.join(projectDir, "ai/agents/web/index.ts");
     const content = readFileSync(target, "utf-8");
     assert.equal(content.includes("ok = true"), true);
   } finally {
@@ -96,13 +90,13 @@ test("runAddCommand dry-run does not write files", async () => {
   createProject(projectDir);
   createRegistry(registryDir);
   try {
-    await runAddCommand("file-agent", {
+    await runAddCommand("web-agent", {
       registry: registryDir,
       cwd: projectDir,
       dryRun: true,
       yes: true,
     });
-    const target = path.join(projectDir, "ai/agents/file-agent/index.ts");
+    const target = path.join(projectDir, "ai/agents/web/index.ts");
     assert.equal(
       (() => {
         try {
@@ -127,12 +121,12 @@ test("runAddCommand supports alias agent name", async () => {
   createRegistry(registryDir);
 
   try {
-    await runAddCommand("fileagent", {
+    await runAddCommand("webagent", {
       registry: registryDir,
       cwd: projectDir,
       yes: true,
     });
-    const target = path.join(projectDir, "ai/agents/file-agent/index.ts");
+    const target = path.join(projectDir, "ai/agents/web/index.ts");
     const content = readFileSync(target, "utf-8");
     assert.equal(content.includes("ok = true"), true);
   } finally {
@@ -146,7 +140,7 @@ test("runAddCommand in --yes mode skips interactive prompts", async () => {
   const registryDir = path.join(root, "registry");
   createProject(projectDir);
   createRegistry(registryDir);
-  const existingTarget = path.join(projectDir, "ai/agents/file-agent/index.ts");
+  const existingTarget = path.join(projectDir, "ai/agents/web/index.ts");
   mkdirSync(path.dirname(existingTarget), { recursive: true });
   writeFileSync(existingTarget, "export const existing = true;\n", "utf-8");
 
@@ -158,7 +152,7 @@ test("runAddCommand in --yes mode skips interactive prompts", async () => {
 
   try {
     await runAddCommand(
-      "file-agent",
+      "web-agent",
       {
         registry: registryDir,
         cwd: projectDir,
@@ -179,7 +173,7 @@ test("runAddCommand prompts for overwrite when conflicts exist", async () => {
   const registryDir = path.join(root, "registry");
   createProject(projectDir);
   createRegistry(registryDir);
-  const existingTarget = path.join(projectDir, "ai/agents/file-agent/index.ts");
+  const existingTarget = path.join(projectDir, "ai/agents/web/index.ts");
   mkdirSync(path.dirname(existingTarget), { recursive: true });
   writeFileSync(existingTarget, "export const existing = true;\n", "utf-8");
 
@@ -192,7 +186,7 @@ test("runAddCommand prompts for overwrite when conflicts exist", async () => {
 
   try {
     await runAddCommand(
-      "file-agent",
+      "web-agent",
       {
         registry: registryDir,
         cwd: projectDir,
@@ -223,7 +217,7 @@ test("runAddCommand prompts for env keys when missing from .env.example", async 
 
   try {
     await runAddCommand(
-      "file-agent",
+      "web-agent",
       {
         registry: registryDir,
         cwd: projectDir,
@@ -257,14 +251,14 @@ test("runAddCommand prints structured output in non-interactive mode", async () 
   };
 
   try {
-    await runAddCommand("file-agent", {
+    await runAddCommand("web-agent", {
       registry: registryDir,
       cwd: projectDir,
       dryRun: true,
       yes: true,
     });
     const output = logs.join("\n");
-    assert.equal(output.includes("Adding file-agent"), true);
+    assert.equal(output.includes("Adding web-agent"), true);
     assert.equal(output.includes("Next.js"), true);
     assert.equal(output.includes("Dry run"), true);
     assert.equal(output.includes("would add files under"), true);
@@ -295,7 +289,7 @@ test("runAddCommand warns and proceeds for non-Next.js project with --yes", asyn
   };
 
   try {
-    await runAddCommand("file-agent", {
+    await runAddCommand("web-agent", {
       registry: registryDir,
       cwd: projectDir,
       yes: true,
@@ -304,7 +298,7 @@ test("runAddCommand warns and proceeds for non-Next.js project with --yes", asyn
       warnings.some((line) => line.includes("Next.js was not detected")),
       true
     );
-    const target = path.join(projectDir, "ai/agents/file-agent/index.ts");
+    const target = path.join(projectDir, "ai/agents/web/index.ts");
     assert.equal(readFileSync(target, "utf-8").includes("ok = true"), true);
   } finally {
     console.warn = originalWarn;
