@@ -1,0 +1,65 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - agentcn@*
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Run publish in dry-run mode (no upload)
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  publish:
+    name: Publish agentcn to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test CLI
+        run: pnpm exec nx run agentcn:test
+
+      - name: Publish packages
+        id: nx_publish
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry-run }}" = "true" ]; then
+            pnpm exec nx release publish --projects=agentcn --outputStyle=static --dry-run
+          else
+            pnpm exec nx release publish --projects=agentcn --outputStyle=static
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+
+      - name: Publish to npm (fallback)
+        if: failure() && steps.nx_publish.outcome == 'failure' && !(github.event_name == 'workflow_dispatch' && inputs.dry-run == true)
+        working-directory: packages/agentcn/cli
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

@@ -21,6 +21,7 @@
     "agentcn:registry:verify-live": "bash scripts/verify-agentcn-registry-live.sh",
     "agentcn:runner-matrix-smoke": "bash scripts/agentcn-runner-matrix-smoke.sh",
     "release": "nx release",
+    "release:skip-publish": "nx release --skip-publish",
     "release:version": "nx release version",
     "release:changelog": "nx release changelog",
     "release:publish": "nx release publish",
