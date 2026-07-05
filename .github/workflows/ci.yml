@@ -43,6 +43,9 @@ jobs:
     name: docs and registry
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_APP_URL: https://agentcn.dev
+      NEXT_PUBLIC_AGENT_DEMO_URL: https://kit-demo-agentcn-ui.vercel.app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -2,9 +2,10 @@ import * as React from "react"
 import Link from "next/link"
 
 import { siteConfig } from "@/lib/config"
+import { getSiteUrl } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+const baseUrl = getSiteUrl()
 
 interface LinkType {
   href: string

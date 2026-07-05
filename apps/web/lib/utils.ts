@@ -8,9 +8,14 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getSiteUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL || siteConfig.url
+  const fromEnv = process.env.NEXT_PUBLIC_APP_URL?.trim()
+  if (fromEnv) {
+    return fromEnv.replace(/\/$/, "")
+  }
+  return siteConfig.url
 }
 
 export function absoluteUrl(path: string) {
-  return `${getSiteUrl()}${path}`
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`
+  return `${getSiteUrl()}${normalizedPath}`
 }
