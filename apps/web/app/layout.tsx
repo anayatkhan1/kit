@@ -4,7 +4,7 @@ import Script from "next/script"
 
 import { META_THEME_COLORS, siteConfig } from "@/lib/config"
 import { fontVariables } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
+import { cn, getSiteUrl } from "@/lib/utils"
 import { LayoutProvider } from "@/hooks/use-layout"
 import { Toaster } from "@/components/ui/sonner"
 import { ActiveThemeProvider } from "@/components/active-theme"
@@ -30,12 +30,14 @@ const Gilroy = localFont({
   ],
 })
 
+const siteUrl = getSiteUrl()
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
+  metadataBase: new URL(siteUrl),
   description: siteConfig.description,
   keywords: [
     "AI agents",
@@ -56,13 +58,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: process.env.NEXT_PUBLIC_APP_URL!,
+    url: siteUrl,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`,
+        url: `${siteUrl}/opengraph-image.png`,
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -73,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`],
+    images: [`${siteUrl}/opengraph-image.png`],
     creator: `@${siteConfig.social.twitterHandle}`,
   },
   manifest: `${siteConfig.url}/site.webmanifest`,

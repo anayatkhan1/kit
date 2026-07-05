@@ -7,19 +7,18 @@ import {
 	PromptInputActions,
 	PromptInputTextarea,
 } from "@/components/ui/prompt-input";
-import { type AgentId, agentProfiles } from "@/lib/agent-profiles";
+import { agentProfiles, defaultAgentId } from "@/lib/agent-profiles";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
 import { ArrowUp, Paperclip, Square, X } from "lucide-react";
 import React, { type ChangeEvent, useRef, useState } from "react";
 
+const webAgent = agentProfiles[defaultAgentId];
+
 export function AgentTemplatePage() {
-	const [activeAgent, setActiveAgent] = useState<AgentId>("file-agent");
-	const [input, setInput] = useState(agentProfiles["file-agent"].starterPrompt);
+	const [input, setInput] = useState(webAgent.starterPrompt);
 	const [files, setFiles] = useState<File[]>([]);
 	const uploadInputRef = useRef<HTMLInputElement | null>(null);
-	const currentAgent = agentProfiles[activeAgent];
-	const agentEntries = Object.values(agentProfiles);
 
 	const { messages, sendMessage, status } = useChat();
 
@@ -58,7 +57,7 @@ export function AgentTemplatePage() {
 					parts,
 				},
 				{
-					body: { agentId: activeAgent },
+					body: { agentId: defaultAgentId },
 				} as any,
 			);
 
@@ -95,11 +94,11 @@ export function AgentTemplatePage() {
 				{isEmpty ? (
 					<header className="space-y-4 text-center">
 						<p className="text-slate-600 text-sm uppercase tracking-[0.3em]">
-							Agent Template • Next.js + Vercel AI SDK
+							Web Agent Demo • Next.js + Vercel AI SDK
 						</p>
 						<h1 className="font-semibold text-4xl text-slate-900 sm:text-5xl">
-							Test Agent UI Behavior <br />
-							with reusable profiles
+							Try the web agent <br />
+							in a minimal chat UI
 						</h1>
 						<div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
 							<span className="rounded-full border border-slate-300 px-3 py-1">
@@ -125,34 +124,12 @@ export function AgentTemplatePage() {
 				)}
 
 				<section className="w-full max-w-2xl">
-					<div className="mb-3 grid gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:grid-cols-2">
-						<label className="flex flex-col gap-1 text-left">
-							<span className="text-slate-600 text-xs">Agent profile</span>
-							<select
-								value={activeAgent}
-								onChange={(event) => {
-									const selected = event.target.value as AgentId;
-									setActiveAgent(selected);
-									setInput(agentProfiles[selected].starterPrompt);
-								}}
-								className="rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 text-sm"
-							>
-								{agentEntries.map((agent) => (
-									<option key={agent.id} value={agent.id}>
-										{agent.label}
-									</option>
-								))}
-							</select>
-						</label>
-						<div className="text-left">
-							<p className="text-slate-600 text-xs">Required env</p>
-							<p className="mt-1 text-slate-900 text-xs">
-								{currentAgent.env.join(" • ")}
-							</p>
-							<p className="mt-1 text-slate-600 text-xs">
-								{currentAgent.description}
-							</p>
-						</div>
+					<div className="mb-3 rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm">
+						<p className="text-slate-600 text-xs">Required env</p>
+						<p className="mt-1 text-slate-900 text-xs">
+							{webAgent.env.join(" • ")}
+						</p>
+						<p className="mt-1 text-slate-600 text-xs">{webAgent.description}</p>
 					</div>
 					<form onSubmit={handleSubmit}>
 						<PromptInput
@@ -187,7 +164,7 @@ export function AgentTemplatePage() {
 							)}
 
 							<PromptInputTextarea
-								placeholder={`Try ${currentAgent.label.toLowerCase()} in this template app...`}
+								placeholder="Try the web agent in this template app..."
 								className="text-base text-slate-900 placeholder:text-slate-500 "
 							/>
 

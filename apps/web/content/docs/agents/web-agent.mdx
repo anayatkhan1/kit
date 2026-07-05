@@ -57,22 +57,30 @@ ANCHOR_API_KEY=
 
 </CodeTabs>
 
-## Usage
+## Wire your API route
+
+Create `app/api/chat/route.ts` in your Next.js app:
 
 ```tsx showLineNumbers
-import { webAgent } from "@/ai/agents/web";
+import { webAgent } from "@/agents/web";
+import { convertToModelMessages, type UIMessage } from "ai";
+
+export async function POST(req: Request) {
+  const { messages }: { messages: UIMessage[] } = await req.json();
+  const result = webAgent(await convertToModelMessages(messages));
+  return result.toUIMessageStreamResponse();
+}
 ```
 
-```tsx showLineNumbers
-import type { ModelMessage } from "ai";
+The CLI adds a `@/agents/*` path alias pointing at `./ai/agents/*` in your `tsconfig.json`.
 
-const messages: ModelMessage[] = [
-  { role: "user", content: "Search for the latest news on AI agents." },
-];
+## API keys required
 
-const result = await webAgent(messages);
-// Returns a streamText result — wire into your API route or chat handler
-```
+The web agent needs **live provider API keys** — there is no mock or offline fallback. Set these in `.env.local` before testing:
+
+- [ANTHROPIC_API_KEY](https://console.anthropic.com/settings/keys) — Claude model
+- [EXA_API_KEY](https://dashboard.exa.ai/api-keys) — search, answer, research, websets
+- [ANCHOR_API_KEY](https://app.anchorbrowser.io/) — browser automation
 
 ## Configuration
 

@@ -17,7 +17,7 @@ const faqData = [
     id: "item-2",
     question: "Is it free to use?",
     answer: [
-      "Yes. The core project is open source. You can install agents, run them locally in mock mode, and ship them in your own product without paying AgentCN.",
+      "Yes. The core project is open source. Install agents into your repo, add your API keys, and ship them in your own product without paying AgentCN.",
       "If you want a full starter app with auth and a database, the AgentKit template is also open source on GitHub.",
     ],
   },
@@ -32,14 +32,14 @@ const faqData = [
     id: "item-4",
     question: "What stack does it use?",
     answer: [
-      "TypeScript and the Vercel AI SDK. Agents support mock mode for local development and provider adapters when you connect live models and external tools.",
+      "TypeScript and the Vercel AI SDK. Agents install as editable source in your project. Connect Anthropic, Exa, Anchor, and other providers with your own API keys.",
     ],
   },
   {
     id: "item-5",
     question: "How do I get started?",
     answer: [
-      "Open the docs, pick an agent from the registry, and run the install command shown on its page. Try mock mode first, then add your keys and tune prompts or tools for your product.",
+      "Open the docs, pick an agent from the registry, and run the install command shown on its page. Add your API keys to `.env.local`, wire the chat API route, and test in your app.",
     ],
   },
   {

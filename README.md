@@ -85,7 +85,7 @@ The docs live preview expects a demo app on port **3001**:
 ```bash
 cd examples/agent-ui-template
 pnpm install
-pnpm dev
+pnpm dev:embed    # port 3001 — matches NEXT_PUBLIC_AGENT_DEMO_URL
 ```
 
 ### Build for production
@@ -124,11 +124,8 @@ NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
 ```text
 kit/
 ├── ai/
-│   ├── agents/
-│   │   ├── web/              # Web agent (browser, search, research tools)
-│   │   └── file-agent/       # File agent (WIP)
-│   └── tools/
-│       └── file-system/      # Shared file-system toolset
+│   └── agents/
+│       └── web/              # Web agent (browser, search, research tools)
 ├── apps/
 │   └── web/                  # agentcn.dev — docs, registry host, marketing
 │       ├── content/docs/     # Documentation (MDX)

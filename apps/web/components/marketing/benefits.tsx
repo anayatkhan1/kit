@@ -22,7 +22,7 @@ const bentoData = [
   {
     title: "Install from the CLI.",
     description:
-      "Each agent installs with npx agentcn@latest add. Use mock mode to try it locally, then connect providers when you are ready to ship.",
+      "Each agent installs with npx agentcn@latest add. Add your provider API keys, then run the agent in your own Next.js app.",
     component: (
       <div className="mb-6 flex h-auto w-full items-center justify-start pt-10 pl-10">
         <MacbookKeyboard className="origin-top-left" />
@@ -73,7 +73,7 @@ const navOptions = [
   },
   {
     name: "Integration",
-    text: "TypeScript, the Vercel AI SDK, and mock mode for local runs. Wire your own providers when you are ready to go live.",
+    text: "TypeScript and the Vercel AI SDK. Install agent source into your repo, add API keys, and wire a chat route when you are ready to ship.",
   },
 ]
 
