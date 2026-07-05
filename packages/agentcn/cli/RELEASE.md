@@ -73,6 +73,44 @@ pnpm dlx agentcn@latest add web-agent --dry-run --yes
 
 ## Publishing to npm (maintainers)
 
+Publishing runs in **GitHub Actions** after you push a release tag. Locally you only version, changelog, and tag — npm upload is automated.
+
+See also: [Nx Publish in CI/CD](https://nx.dev/docs/guides/nx-release/publish-in-ci-cd).
+
+### GitHub Actions secrets (one-time setup)
+
+Configure in GitHub → **Settings → Secrets and variables → Actions**:
+
+| Secret | Purpose |
+| --- | --- |
+| `NPM_ACCESS_TOKEN` | Granular npm token with **read/write** on `agentcn` |
+
+**Create the npm token:**
+
+1. [npm Access Tokens](https://www.npmjs.com/settings/tokens) → **Generate New Token** → **Granular Access Token**
+2. Packages: select **`agentcn`** with **Read and write**
+3. Enable **Bypass 2FA for automation** (CI cannot use `--otp`)
+4. Copy the token and add it as repository secret **`NPM_ACCESS_TOKEN`**
+
+Never commit tokens. Rotate any token that was exposed in chat or logs.
+
+**Optional — GitHub Releases from local `nx release`:**
+
+`nx.json` sets `createRelease: "github"`. If changelog step fails with `401 Requires authentication`, either:
+
+- Run `gh auth login` before releasing locally, or
+- Add a `GITHUB_TOKEN` secret (e.g. `gh auth token`), or
+- Set `"createRelease": false` in `nx.json` and create releases manually from the tag
+
+### CI workflows
+
+| Workflow | Trigger | What it does |
+| --- | --- | --- |
+| [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) | PR and push to `main` | `pnpm exec nx run agentcn:build` + `agentcn:test` |
+| [`.github/workflows/publish.yml`](../../../.github/workflows/publish.yml) | Push tag `agentcn@*` | Test, then `nx release publish` to npm |
+
+**Manual publish dry-run** (no upload): GitHub → Actions → **Publish** → **Run workflow** → enable **dry-run**.
+
 ### Baseline git tag (required once)
 
 Nx release uses git tags like `agentcn@0.1.1` to know the **last released version**. If you bump `package.json` by hand without tagging, the next `pnpm release` may double-bump (e.g. 0.2.0 → 0.3.0) and fail on changelog.
@@ -87,18 +125,44 @@ git push origin agentcn@0.1.1
 
 Check tags: `git tag -l 'agentcn@*'`
 
-### Publish steps
+### Release flow (version locally, publish in CI)
 
-1. Ensure you are logged in: `npm whoami` (if not, `npm login`).
-2. Preview first: `pnpm release --dry-run --skip-publish`
-3. From the workspace root:
-   - `pnpm release` (version + changelog + tag + publish)
-   - Or: `pnpm --filter agentcn publish --access public` after `pnpm release:version` and `pnpm release:changelog`
-4. Confirm:
-   - `npm view agentcn version`
-   - `npm view agentcn dist-tags.latest`
+```bash
+# 1. Preview version bump, changelog, and tag (no publish)
+pnpm release --dry-run --skip-publish
 
-`npm publish --dry-run` can be run from `packages/agentcn/cli` to validate the tarball without uploading.
+# 2. Version + changelog + git tag (skips npm publish)
+pnpm release:skip-publish
+
+# 3. Push commit and tag — CI publishes to npm on tag push
+git push && git push --tags
+
+# 4. Verify after the Publish workflow completes
+npm view agentcn version
+npm view agentcn dist-tags.latest
+pnpm agentcn:registry:verify-live
+```
+
+**What CI does on tag `agentcn@X.Y.Z`:**
+
+1. Install dependencies
+2. Run `agentcn:test`
+3. Run `pnpm exec nx release publish --projects=agentcn` with npm provenance
+4. If Nx + pnpm publish fails (known JSON parse issue), fall back to `npm publish` from `packages/agentcn/cli`
+
+`npm publish --dry-run` can still be run from `packages/agentcn/cli` to validate the tarball without uploading.
+
+### Legacy manual publish (emergency only)
+
+If CI is broken and you need an immediate hotfix:
+
+```bash
+cd packages/agentcn/cli
+pnpm test
+npm publish --access public --otp=XXXXXX   # 6-digit TOTP if not using automation token
+```
+
+Prefer fixing CI over manual publishes.
 
 ## Post-publish & deploy verification gate
 
@@ -130,15 +194,16 @@ Configuration lives in [`nx.json`](../../../nx.json) at the repo root (`projectC
 From the workspace root:
 
 ```bash
-# Preview version bump, CHANGELOG.md update, git tag, and GitHub release
+# Preview version bump, CHANGELOG.md update, and git tag (no npm publish)
 pnpm release --dry-run --skip-publish
 
-# Run the full release (version + changelog + tag + publish prompt)
-pnpm release
+# Version + changelog + tag locally; CI publishes on tag push
+pnpm release:skip-publish
 
 # Individual steps
 pnpm release:version
 pnpm release:changelog
+# Publish runs in CI on tag push, or manually:
 pnpm release:publish
 ```
 
@@ -153,5 +218,5 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:
 3. Tarball smoke: `pnpm --filter agentcn pack:smoke`
 4. Multi-runner smoke (local tarball + local registry path): `pnpm agentcn:runner-matrix-smoke`  
    Requires optional tools for full matrix: **corepack/yarn** (Yarn Berry), **bun** (Bun). npm and pnpm use the repo toolchain.
-5. Version, changelog, tag, and publish with Nx: `pnpm release` (or `--dry-run --skip-publish` first)
+5. Version, changelog, and tag with Nx (CI publishes on tag push): `pnpm release:skip-publish` (preview with `--dry-run` first)
 6. `pnpm agentcn:registry:verify-live` against production after deploy
