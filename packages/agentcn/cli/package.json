@@ -1,13 +1,37 @@
 {
   "name": "agentcn",
-  "version": "0.2.0",
-  "description": "CLI to install AI agents into your project",
+  "version": "0.2.1",
+  "description": "A CLI for adding AI agents to your project",
+  "license": "MIT",
+  "author": "Anayat Khan",
+  "homepage": "https://agentcn.dev/docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anayatkhan1/kit.git",
+    "directory": "packages/agentcn/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/anayatkhan1/kit/issues"
+  },
+  "keywords": [
+    "agentcn",
+    "ai",
+    "agents",
+    "cli",
+    "nextjs",
+    "vercel-ai-sdk",
+    "typescript",
+    "web-agent",
+    "llm"
+  ],
   "bin": {
     "agentcn": "dist/index.js"
   },
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
