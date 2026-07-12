@@ -16,10 +16,36 @@ export type DemoTextPart = {
   text: string
 }
 
-export type DemoMessagePart = DemoToolPart | DemoTextPart
+export type DemoBrowserViewPart = {
+  type: "browser_view"
+  url: string
+  pageTitle: string
+  provider: "Anchor Browser"
+  navigationSteps: string[]
+  pageContent: Array<{
+    heading: string
+    detail: string
+  }>
+}
+
+export type DemoWebsetViewPart = {
+  type: "webset_view"
+  title: string
+  provider: "Exa Websets"
+  entityCount: number
+  columns: string[]
+  rows: string[][]
+}
+
+export type DemoMessagePart =
+  | DemoToolPart
+  | DemoTextPart
+  | DemoBrowserViewPart
+  | DemoWebsetViewPart
 
 export type AgentDemoScenario = {
   id: string
+  label: string
   prompt: string
   assistantParts: DemoMessagePart[]
 }

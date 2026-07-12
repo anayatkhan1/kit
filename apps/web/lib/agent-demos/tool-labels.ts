@@ -37,3 +37,17 @@ export function getDemoText(parts: DemoMessagePart[]): string {
 export function getDemoToolParts(parts: DemoMessagePart[]): DemoToolPart[] {
   return parts.filter((part): part is DemoToolPart => part.type === "tool")
 }
+
+export function getDemoBrowserViews(parts: DemoMessagePart[]) {
+  return parts.filter(
+    (part): part is Extract<DemoMessagePart, { type: "browser_view" }> =>
+      part.type === "browser_view"
+  )
+}
+
+export function getDemoWebsetViews(parts: DemoMessagePart[]) {
+  return parts.filter(
+    (part): part is Extract<DemoMessagePart, { type: "webset_view" }> =>
+      part.type === "webset_view"
+  )
+}

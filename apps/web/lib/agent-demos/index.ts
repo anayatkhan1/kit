@@ -20,10 +20,11 @@ export function getAgentDemo(agentId: string): AgentDemoConfig | undefined {
 }
 
 export function getDefaultScenario(demo: AgentDemoConfig) {
-  return (
-    demo.scenarios.find((s) => s.id === demo.defaultScenarioId) ??
-    demo.scenarios[0]
-  )
+  return getScenarioById(demo, demo.defaultScenarioId) ?? demo.scenarios[0]
+}
+
+export function getScenarioById(demo: AgentDemoConfig, scenarioId: string) {
+  return demo.scenarios.find((s) => s.id === scenarioId)
 }
 
 export type { AgentDemoConfig, AgentDemoScenario, DemoMessagePart } from "./types"

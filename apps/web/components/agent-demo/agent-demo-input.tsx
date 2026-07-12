@@ -27,28 +27,25 @@ export function AgentDemoInput({
   }
 
   return (
-    <div className="shrink-0 space-y-2">
+    <div className="shrink-0 space-y-1.5">
       {hint ? (
-        <p className="text-muted-foreground rounded-md bg-amber-500/10 px-2.5 py-2 text-xs text-amber-800 dark:text-amber-200">
+        <p className="text-muted-foreground rounded-md bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-800 dark:text-amber-200">
           {hint}
         </p>
-      ) : (
-        <p className="text-muted-foreground text-xs">
-          Press send to replay the example with tool steps.
-        </p>
-      )}
+      ) : null}
       <form onSubmit={handleSubmit}>
         <div
           className={cn(
-            "border-border bg-card flex flex-col gap-2 rounded-lg border p-2 shadow-sm transition-opacity",
+            "border-border bg-card flex items-end gap-1.5 rounded-lg border px-2 py-1.5 shadow-sm transition-opacity",
             isLoading && "opacity-80"
           )}
         >
           <Textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="Ask the web agent to search, research, or browse..."
-            className="min-h-[56px] resize-none border-0 bg-transparent p-1.5 text-sm shadow-none focus-visible:ring-0"
+            placeholder="Send the example prompt…"
+            rows={2}
+            className="max-h-14 min-h-9 flex-1 resize-none border-0 bg-transparent p-1 text-sm leading-snug shadow-none focus-visible:ring-0"
             disabled={disabled}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -57,31 +54,19 @@ export function AgentDemoInput({
               }
             }}
           />
-          <div className="flex items-center justify-between gap-2">
+          <Button
+            type="submit"
+            size="icon"
+            className="size-7 shrink-0 rounded-full"
+            disabled={disabled || value.trim().length === 0}
+            aria-label="Send message"
+          >
             {isLoading ? (
-              <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                <Loader2 className="size-3 animate-spin" />
-                Simulating agent…
-              </span>
+              <Loader2 className="size-3.5 animate-spin" />
             ) : (
-              <span className="text-muted-foreground text-xs">
-                Enter to send
-              </span>
+              <ArrowUp className="size-3.5" />
             )}
-            <Button
-              type="submit"
-              size="icon"
-              className="size-8 rounded-full"
-              disabled={disabled || value.trim().length === 0}
-              aria-label="Send message"
-            >
-              {isLoading ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <ArrowUp className="size-4" />
-              )}
-            </Button>
-          </div>
+          </Button>
         </div>
       </form>
     </div>

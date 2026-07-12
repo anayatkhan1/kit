@@ -5,17 +5,19 @@ import * as React from "react"
 import {
   getAgentDemo,
   getDefaultScenario,
+  getScenarioById,
 } from "@/lib/agent-demos"
-import type { DemoMessagePart, DemoToolPart } from "@/lib/agent-demos/types"
+import type { DemoMessagePart } from "@/lib/agent-demos/types"
 import { getDemoToolParts } from "@/lib/agent-demos/tool-labels"
-import { Badge } from "@/components/ui/badge"
 import { AgentDemoInput } from "@/components/agent-demo/agent-demo-input"
 import { AgentDemoMessage } from "@/components/agent-demo/agent-demo-message"
+import { AgentDemoScenarioChips } from "@/components/agent-demo/agent-demo-scenario-chips"
 import { AgentDemoThinking } from "@/components/agent-demo/agent-demo-thinking"
 import type { DemoToolStatus } from "@/components/agent-demo/agent-demo-tool-steps"
 
 const STEP_DELAY_MS = 600
 const THINKING_DELAY_MS = 500
+const RICH_VIEW_DELAY_MS = 2200
 const TEXT_DELAY_MS = 400
 
 type PlayerPhase = "idle" | "playing" | "complete"
@@ -23,9 +25,8 @@ type PlayerPhase = "idle" | "playing" | "complete"
 type PlaybackView = {
   showUser: boolean
   showThinking: boolean
-  assistantTools: DemoToolPart[]
+  revealedParts: DemoMessagePart[]
   toolStatuses: DemoToolStatus[]
-  showText: boolean
 }
 
 function normalizePrompt(value: string) {
@@ -33,16 +34,14 @@ function normalizePrompt(value: string) {
 }
 
 function buildIdleView(scenario: {
-  prompt: string
   assistantParts: DemoMessagePart[]
 }): PlaybackView {
   const tools = getDemoToolParts(scenario.assistantParts)
   return {
     showUser: true,
     showThinking: false,
-    assistantTools: tools,
+    revealedParts: scenario.assistantParts,
     toolStatuses: tools.map(() => "done" as const),
-    showText: true,
   }
 }
 
@@ -50,26 +49,63 @@ function buildEmptyView(): PlaybackView {
   return {
     showUser: false,
     showThinking: false,
-    assistantTools: [],
+    revealedParts: [],
     toolStatuses: [],
-    showText: false,
   }
+}
+
+function toolStatusesForParts(parts: DemoMessagePart[]): DemoToolStatus[] {
+  return getDemoToolParts(parts).map(() => "done" as const)
 }
 
 export function AgentDemoPlayer({ agentId }: { agentId: string }) {
   const demo = getAgentDemo(agentId)
-  const scenario = demo ? getDefaultScenario(demo) : undefined
+  const defaultScenario = demo ? getDefaultScenario(demo) : undefined
+
+  const [activeScenarioId, setActiveScenarioId] = React.useState(
+    defaultScenario?.id ?? ""
+  )
+  const scenario = demo
+    ? getScenarioById(demo, activeScenarioId) ?? getDefaultScenario(demo)
+    : undefined
 
   const [phase, setPhase] = React.useState<PlayerPhase>("idle")
   const [input, setInput] = React.useState(scenario?.prompt ?? "")
+  const [playingScenario, setPlayingScenario] = React.useState<
+    NonNullable<typeof scenario> | null
+  >(null)
   const [playback, setPlayback] = React.useState<PlaybackView>(buildEmptyView())
   const [hint, setHint] = React.useState<string>()
   const timeoutsRef = React.useRef<number[]>([])
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
-  const allTools = React.useMemo(
-    () => (scenario ? getDemoToolParts(scenario.assistantParts) : []),
-    [scenario]
+  const displayScenario = playingScenario ?? scenario
+
+  const clearTimeouts = () => {
+    timeoutsRef.current.forEach((id) => window.clearTimeout(id))
+    timeoutsRef.current = []
+  }
+
+  const schedule = (fn: () => void, delay: number) => {
+    const id = window.setTimeout(fn, delay)
+    timeoutsRef.current.push(id)
+  }
+
+  const selectScenario = React.useCallback(
+    (scenarioId: string) => {
+      if (!demo || phase === "playing") return
+
+      const next = getScenarioById(demo, scenarioId)
+      if (!next) return
+
+      clearTimeouts()
+      setActiveScenarioId(scenarioId)
+      setInput(next.prompt)
+      setPlayback(buildIdleView(next))
+      setPhase("idle")
+      setHint(undefined)
+    },
+    [demo, phase]
   )
 
   React.useEffect(() => {
@@ -93,86 +129,105 @@ export function AgentDemoPlayer({ agentId }: { agentId: string }) {
     })
   }, [playback, phase])
 
-  const clearTimeouts = () => {
-    timeoutsRef.current.forEach((id) => window.clearTimeout(id))
-    timeoutsRef.current = []
-  }
+  const replayScenario = React.useCallback(
+    (targetScenario: NonNullable<typeof scenario>) => {
+      const parts = targetScenario.assistantParts
 
-  const schedule = (fn: () => void, delay: number) => {
-    const id = window.setTimeout(fn, delay)
-    timeoutsRef.current.push(id)
-  }
+      clearTimeouts()
+      setHint(undefined)
+      setPlayingScenario(targetScenario)
+      setPhase("playing")
+      setPlayback(buildEmptyView())
 
-  const replayScenario = React.useCallback(() => {
-    if (!scenario) return
-
-    clearTimeouts()
-    setHint(undefined)
-    setPhase("playing")
-    setPlayback(buildEmptyView())
-
-    let delay = STEP_DELAY_MS
-
-    schedule(() => {
-      setPlayback((prev) => ({ ...prev, showUser: true }))
-    }, delay)
-
-    delay += THINKING_DELAY_MS
-    schedule(() => {
-      setPlayback((prev) => ({ ...prev, showThinking: true }))
-    }, delay)
-
-    allTools.forEach((tool, index) => {
-      delay += STEP_DELAY_MS
+      let delay = STEP_DELAY_MS
 
       schedule(() => {
-        setPlayback((prev) => ({
-          ...prev,
+        setPlayback((prev) => ({ ...prev, showUser: true }))
+      }, delay)
+
+      delay += THINKING_DELAY_MS
+      schedule(() => {
+        setPlayback((prev) => ({ ...prev, showThinking: true }))
+      }, delay)
+
+      parts.forEach((part, index) => {
+        const slice = parts.slice(0, index + 1)
+        const toolsInSlice = getDemoToolParts(slice)
+
+        if (part.type === "tool") {
+          delay += STEP_DELAY_MS
+          schedule(() => {
+            setPlayback((prev) => ({
+              ...prev,
+              showThinking: false,
+              revealedParts: slice,
+              toolStatuses: toolsInSlice.map((_, toolIndex) =>
+                toolIndex < toolsInSlice.length - 1 ? "done" : "running"
+              ),
+            }))
+          }, delay)
+
+          delay += STEP_DELAY_MS
+          schedule(() => {
+            setPlayback((prev) => ({
+              ...prev,
+              revealedParts: slice,
+              toolStatuses: toolStatusesForParts(slice),
+            }))
+          }, delay)
+          return
+        }
+
+        delay += STEP_DELAY_MS
+        schedule(() => {
+          setPlayback((prev) => ({
+            ...prev,
+            showThinking: false,
+            revealedParts: slice,
+            toolStatuses: toolStatusesForParts(slice),
+          }))
+        }, delay)
+
+        if (part.type === "browser_view" || part.type === "webset_view") {
+          delay += RICH_VIEW_DELAY_MS
+        }
+      })
+
+      delay += TEXT_DELAY_MS
+      schedule(() => {
+        setPlayback({
+          showUser: true,
           showThinking: false,
-          assistantTools: allTools.slice(0, index + 1),
-          toolStatuses: allTools.slice(0, index + 1).map((_, toolIndex) =>
-            toolIndex < index ? "done" : "running"
-          ),
-        }))
+          revealedParts: parts,
+          toolStatuses: toolStatusesForParts(parts),
+        })
+        setPhase("complete")
+        setPlayingScenario(null)
       }, delay)
-
-      delay += STEP_DELAY_MS
-      schedule(() => {
-        setPlayback((prev) => ({
-          ...prev,
-          assistantTools: allTools.slice(0, index + 1),
-          toolStatuses: allTools.slice(0, index + 1).map(() => "done" as const),
-        }))
-      }, delay)
-    })
-
-    delay += TEXT_DELAY_MS
-    schedule(() => {
-      setPlayback((prev) => ({
-        ...prev,
-        showThinking: false,
-        assistantTools: allTools,
-        toolStatuses: allTools.map(() => "done" as const),
-        showText: true,
-      }))
-      setPhase("complete")
-    }, delay)
-  }, [allTools, scenario])
+    },
+    []
+  )
 
   const handleSubmit = () => {
-    if (!scenario || phase === "playing") return
+    if (!scenario || !demo || phase === "playing") return
 
     const normalizedInput = normalizePrompt(input)
-    const normalizedPrompt = normalizePrompt(scenario.prompt)
+    const matchingScenario = demo.scenarios.find(
+      (item) => normalizePrompt(item.prompt) === normalizedInput
+    )
 
-    if (normalizedInput !== normalizedPrompt) {
+    if (!matchingScenario) {
       setHint(
-        "This demo only replays the example prompt. Install the agent locally to use custom prompts."
+        "This demo only replays example prompts. Pick a scenario chip above or install locally for custom prompts."
       )
       return
     }
 
-    replayScenario()
+    if (matchingScenario.id !== activeScenarioId) {
+      setActiveScenarioId(matchingScenario.id)
+    }
+
+    replayScenario(matchingScenario)
   }
 
   if (!demo || !scenario) {
@@ -183,24 +238,16 @@ export function AgentDemoPlayer({ agentId }: { agentId: string }) {
     )
   }
 
-  const assistantParts: DemoMessagePart[] = playback.showText
-    ? scenario.assistantParts
-    : playback.assistantTools
-
   return (
     <div className="flex h-full flex-col">
-      <div className="border-border bg-muted/20 flex shrink-0 items-center justify-between border-b px-3 py-2">
-        <div className="min-w-0">
-          <span className="text-foreground block text-sm font-medium">
-            {demo.label}
-          </span>
-          <span className="text-muted-foreground block truncate text-xs">
-            {demo.description}
-          </span>
-        </div>
-        <Badge variant="secondary" className="ml-2 shrink-0 text-xs font-normal">
-          Example demo
-        </Badge>
+      <div className="border-border shrink-0 border-b px-3 py-2 pr-11">
+        <p className="text-muted-foreground mb-1.5 text-xs">Try a capability</p>
+        <AgentDemoScenarioChips
+          scenarios={demo.scenarios}
+          activeScenarioId={activeScenarioId}
+          onSelect={selectScenario}
+          disabled={phase === "playing"}
+        />
       </div>
 
       <div
@@ -208,28 +255,29 @@ export function AgentDemoPlayer({ agentId }: { agentId: string }) {
         className="min-h-0 flex-1 overflow-y-auto scroll-smooth px-3 py-4"
       >
         <div className="space-y-4">
-          {playback.showUser ? (
+          {playback.showUser && displayScenario ? (
             <AgentDemoMessage
               role="user"
-              parts={scenario.prompt}
+              parts={displayScenario.prompt}
               animateIn={phase === "playing"}
             />
           ) : null}
 
           {playback.showThinking ? <AgentDemoThinking /> : null}
 
-          {playback.assistantTools.length > 0 || playback.showText ? (
+          {playback.revealedParts.length > 0 ? (
             <AgentDemoMessage
               role="assistant"
-              parts={assistantParts}
+              parts={playback.revealedParts}
               toolStatuses={playback.toolStatuses}
               animateIn={phase !== "idle"}
+              isReplaying={phase === "playing"}
             />
           ) : null}
         </div>
       </div>
 
-      <div className="border-border bg-muted/10 shrink-0 border-t px-3 py-3">
+      <div className="border-border shrink-0 border-t px-3 py-2">
         <AgentDemoInput
           value={input}
           onChange={setInput}

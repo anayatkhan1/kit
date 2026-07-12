@@ -4,32 +4,40 @@ import { Bot, User } from "lucide-react"
 
 import type { DemoMessagePart } from "@/lib/agent-demos/types"
 import {
+  getDemoBrowserViews,
   getDemoText,
   getDemoToolParts,
+  getDemoWebsetViews,
 } from "@/lib/agent-demos/tool-labels"
 import { cn } from "@/lib/utils"
+import { AgentDemoBrowserPanel } from "@/components/agent-demo/agent-demo-browser-panel"
 import { AgentDemoFormattedText } from "@/components/agent-demo/agent-demo-formatted-text"
 import {
   AgentDemoToolSteps,
   type DemoToolStatus,
 } from "@/components/agent-demo/agent-demo-tool-steps"
+import { AgentDemoWebsetTable } from "@/components/agent-demo/agent-demo-webset-table"
 
 export function AgentDemoMessage({
   role,
   parts,
   toolStatuses,
   animateIn = false,
+  isReplaying = false,
 }: {
   role: "user" | "assistant"
   parts: DemoMessagePart[] | string
   toolStatuses?: DemoToolStatus[]
   animateIn?: boolean
+  isReplaying?: boolean
 }) {
   const isUser = role === "user"
   const text = typeof parts === "string" ? parts : getDemoText(parts)
   const toolParts = typeof parts === "string" ? [] : getDemoToolParts(parts)
+  const browserViews = typeof parts === "string" ? [] : getDemoBrowserViews(parts)
+  const websetViews = typeof parts === "string" ? [] : getDemoWebsetViews(parts)
   const showText = Boolean(text)
-  const showToolsOnly = !showText && toolParts.length > 0
+  const hasRichViews = browserViews.length > 0 || websetViews.length > 0
 
   return (
     <div
@@ -41,8 +49,8 @@ export function AgentDemoMessage({
     >
       <div
         className={cn(
-          "flex max-w-[90%] flex-col gap-1.5",
-          isUser ? "items-end" : "items-start"
+          "flex flex-col gap-1.5",
+          isUser ? "max-w-[90%] items-end" : "w-full max-w-full items-start"
         )}
       >
         <div className="flex items-center gap-2 px-1">
@@ -63,10 +71,10 @@ export function AgentDemoMessage({
 
         <div
           className={cn(
-            "relative w-full rounded-2xl px-4 py-3 text-sm shadow-sm",
+            "relative rounded-2xl px-4 py-3 text-sm shadow-sm",
             isUser
-              ? "bg-primary text-primary-foreground rounded-tr-sm"
-              : "bg-card text-foreground border-border rounded-tl-sm border"
+              ? "bg-primary text-primary-foreground max-w-full rounded-tr-sm"
+              : "bg-card text-foreground border-border w-full rounded-tl-sm border"
           )}
         >
           {isUser ? (
@@ -77,16 +85,33 @@ export function AgentDemoMessage({
                 <AgentDemoToolSteps tools={toolParts} statuses={toolStatuses} />
               ) : null}
 
+              {browserViews.map((view) => (
+                <AgentDemoBrowserPanel
+                  key={view.url}
+                  view={view}
+                  isReplaying={isReplaying}
+                />
+              ))}
+
+              {websetViews.map((view) => (
+                <AgentDemoWebsetTable
+                  key={view.title}
+                  view={view}
+                  isReplaying={isReplaying}
+                />
+              ))}
+
               {showText ? (
                 <div
                   className={cn(
-                    toolParts.length > 0 && "border-border border-t pt-3",
+                    (toolParts.length > 0 || hasRichViews) &&
+                      "border-border border-t pt-3",
                     animateIn && "animate-in fade-in-0 duration-500"
                   )}
                 >
                   <AgentDemoFormattedText text={text} />
                 </div>
-              ) : showToolsOnly ? null : null}
+              ) : null}
             </div>
           )}
         </div>
