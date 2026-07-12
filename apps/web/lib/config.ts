@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "AgentCN",
   url: "https://agentcn.dev",
-  ogImage: "https://agentcn.dev/og.jpg",
+  ogImage: "/opengraph-image",
   description:
     "Open source kit for installable AI agents. CLI, registry, docs, and editable agent source in your repo.",
   links: {
