@@ -78,15 +78,17 @@ pnpm web
 
 Open [http://localhost:3000](http://localhost:3000) for the marketing site and docs.
 
-### Run the agent demo embed
+### Run the agent demo app (optional)
 
-The docs live preview expects a demo app on port **3001**:
+For live agent testing with your API keys, run the demo app on port **3001**:
 
 ```bash
 cd examples/agent-ui-template
 pnpm install
-pnpm dev:embed    # port 3001 — matches NEXT_PUBLIC_AGENT_DEMO_URL
+pnpm dev:embed    # port 3001
 ```
+
+Docs agent pages use simulated examples and do not require this app.
 
 ### Build for production
 
@@ -112,7 +114,6 @@ For the docs site (`apps/web/.env`):
 
 ```env
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
 ```
 
 ### Getting API keys
