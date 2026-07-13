@@ -65,7 +65,7 @@ const navOptions = [
   },
   {
     name: "Agents",
-    text: "Agents ship as installable modules with their own docs and live previews. Pick one from the registry, add it to your app, and request new ones in GitHub discussions.",
+    text: "Agents ship as installable modules with their own docs and interactive examples. Pick one from the registry, add it to your app, and request new ones in GitHub discussions.",
   },
   {
     name: "Benefits",

@@ -1,5 +1,15 @@
 import { Metadata } from "next"
 
+import { siteConfig } from "@/lib/config"
+import { absoluteUrl } from "@/lib/utils"
+
+export const defaultOgImage = {
+  url: absoluteUrl(siteConfig.ogImage),
+  width: 1200,
+  height: 630,
+  alt: siteConfig.name,
+}
+
 export const createStaticOGMetadata = (
   title: string,
   description: string
@@ -7,24 +17,14 @@ export const createStaticOGMetadata = (
   title,
   description,
   openGraph: {
-    images: [
-      {
-        url: "/opengraph-image.png",
-        width: 1200,
-        height: 628,
-        alt: title,
-      },
-    ],
+    title,
+    description,
+    images: [defaultOgImage],
   },
   twitter: {
     card: "summary_large_image",
-    images: [
-      {
-        url: "/twitter-image.png",
-        width: 1200,
-        height: 628,
-        alt: title,
-      },
-    ],
+    title,
+    description,
+    images: [defaultOgImage.url],
   },
 })

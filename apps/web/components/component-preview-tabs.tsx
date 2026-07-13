@@ -12,6 +12,8 @@ export function ComponentPreviewTabs({
   align = "center",
   hideCode = false,
   replayable = false,
+  codeLabel = "Code",
+  previewHeight = 400,
   component,
   source,
   ...props
@@ -19,6 +21,8 @@ export function ComponentPreviewTabs({
   align?: "center" | "start" | "end"
   hideCode?: boolean
   replayable?: boolean
+  codeLabel?: string
+  previewHeight?: number
   component: React.ReactNode
   source: React.ReactNode
 }) {
@@ -28,6 +32,8 @@ export function ComponentPreviewTabs({
   const handleReplay = () => {
     setKey((prev) => prev + 1)
   }
+
+  const isPreview = tab === "preview"
 
   return (
     <div
@@ -52,7 +58,7 @@ export function ComponentPreviewTabs({
                 value="code"
                 className="text-muted-foreground data-[state=active]:text-foreground px-0 text-base data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-transparent"
               >
-                Code
+                {codeLabel}
               </TabsTrigger>
             </TabsList>
           )}
@@ -60,14 +66,18 @@ export function ComponentPreviewTabs({
       </Tabs>
       <div
         data-tab={tab}
-        className="data-[tab=code]:border-code relative rounded-lg border md:-mx-4"
+        className="data-[tab=code]:border-code relative overflow-hidden rounded-lg border md:-mx-4"
+        style={{ height: previewHeight }}
       >
         <div
           data-slot="preview"
-          data-active={tab === "preview"}
-          className="invisible data-[active=true]:visible"
+          data-active={isPreview}
+          className={cn(
+            "absolute inset-0 flex flex-col",
+            !isPreview && "pointer-events-none opacity-0"
+          )}
         >
-          {replayable && (
+          {replayable && isPreview && (
             <Button
               variant="outline"
               size="icon"
@@ -80,7 +90,7 @@ export function ComponentPreviewTabs({
           <div
             data-align={align}
             className={cn(
-              "preview flex h-[400px] w-full justify-center data-[align=center]:items-center data-[align=end]:items-end data-[align=start]:items-start"
+              "preview flex size-full justify-center data-[align=center]:items-center data-[align=end]:items-end data-[align=start]:items-start"
             )}
             key={key}
           >
@@ -89,8 +99,11 @@ export function ComponentPreviewTabs({
         </div>
         <div
           data-slot="code"
-          data-active={tab === "code"}
-          className="component-preview-code absolute inset-0 hidden overflow-hidden rounded-[inherit] data-[active=true]:block **:[figure]:!m-0 **:[pre]:h-[400px]"
+          data-active={!isPreview}
+          className={cn(
+            "component-preview-code absolute inset-0 overflow-auto rounded-[inherit] **:[figure]:!m-0 **:[pre]:min-h-full",
+            isPreview && "pointer-events-none opacity-0"
+          )}
         >
           {source}
         </div>

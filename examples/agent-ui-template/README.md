@@ -1,11 +1,13 @@
 # Agent UI Template (Next.js + Vercel AI SDK)
 
-Minimal demo app for the **web-agent** live preview on [agentcn.dev/docs](https://agentcn.dev/docs).
+Minimal demo app for running the **web-agent** locally with real API keys.
+
+Docs at [agentcn.dev/docs](https://agentcn.dev/docs) use simulated examples and do not require this app.
 
 ## Included
 
 - `web-agent` chat UI on `/`
-- Compact embed route at `/embed/web-agent` for docs iframe previews
+- Compact embed route at `/embed/web-agent` for local testing
 
 ## Prerequisites
 
@@ -33,20 +35,13 @@ ANCHOR_API_KEY=...
 ## Commands
 
 - `pnpm dev` — full template app on port 3000
-- `pnpm dev:embed` — embed server on port 3001 (use this for docs local preview)
+- `pnpm dev:embed` — embed server on port 3001
 - `pnpm lint` — Biome checks
 - `pnpm build` — production build
 
-## Docs embed
+## Local embed route
 
-Point the docs app at this server:
-
-```bash
-# in apps/web/.env
-NEXT_PUBLIC_AGENT_DEMO_URL=http://localhost:3001
-```
-
-Then run:
+Run the embed server:
 
 ```bash
 pnpm dev:embed
@@ -57,7 +52,7 @@ Open `http://localhost:3001/embed/web-agent`.
 ## Key files
 
 - `app/api/chat/route.ts` — streaming chat route for web-agent
-- `app/embed/web-agent/` — iframe-friendly embed UI
+- `app/embed/web-agent/` — compact embed UI
 - `lib/agent-registry.ts` — server runtime config
 - `lib/agent-profiles.ts` — UI metadata
 - `tsconfig.json` — `@kit-ai/*` maps to `kit/ai/*` in the monorepo
@@ -67,6 +62,6 @@ Open `http://localhost:3001/embed/web-agent`.
 1. Add source under `kit/ai/agents/<name>/`
 2. Register runtime config in `lib/agent-registry.ts`
 3. Register UI metadata in `lib/agent-profiles.ts`
-4. Add `app/embed/<name>/` if you want a docs preview route
+4. Add `app/embed/<name>/` if you want a local embed route
 
 See [AgentCN scope docs](https://agentcn.dev/docs/scope) for the full registry + publish workflow.
