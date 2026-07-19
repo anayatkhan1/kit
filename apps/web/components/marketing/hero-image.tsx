@@ -1,28 +1,30 @@
 import Link from "next/link"
+import { ArrowUpRight, Terminal } from "lucide-react"
 
-import { AgentcnLogo } from "@/components/agentcn-logo"
+import { HeroAgentReplay } from "@/components/marketing/hero-agent-replay"
+import { BorderBeam } from "@/components/ui/border-beam"
 import { Meteors } from "@/components/ui/meteors"
 import { Particles } from "@/components/ui/particles"
 
 export function HeroImage() {
-  const particlesColor = "#8b5cf6"
+  const particlesColor = "#6d77d5"
 
   const customParticleOptions = {
     particles: {
-      opacity: 0.8,
-      quantity: 800,
+      opacity: 0.55,
+      quantity: 420,
       size: {
         value: {
-          min: 0.5,
-          max: 0.8,
+          min: 0.4,
+          max: 0.9,
         },
       },
       move: {
-        quantity: 800,
+        quantity: 420,
         enable: true,
         speed: {
-          min: 0.1,
-          max: 0.1,
+          min: 0.05,
+          max: 0.15,
         },
         direction: "none",
         random: true,
@@ -34,7 +36,7 @@ export function HeroImage() {
       shadow: {
         enable: true,
         color: particlesColor,
-        blur: 5,
+        blur: 4,
         offset: {
           x: 0,
           y: 0,
@@ -43,8 +45,8 @@ export function HeroImage() {
       glow: {
         enable: true,
         color: particlesColor,
-        distance: 10,
-        size: 2,
+        distance: 8,
+        size: 1.5,
       },
     },
     interactivity: {
@@ -58,68 +60,95 @@ export function HeroImage() {
   }
 
   return (
-    <div className="flex w-full items-center justify-center overflow-hidden px-4 pb-16 md:pb-20">
-      <div className="relative mx-auto w-full max-w-4xl">
+    <div className="relative flex w-full items-center justify-center overflow-hidden px-4 pb-20 md:pb-28">
+      <div className="relative mx-auto w-full max-w-5xl">
+        {/* Soft vignette so the product shot sits in atmosphere */}
         <div
-          className="bg-background pointer-events-none absolute inset-0 z-10 [mask-image:radial-gradient(ellipse_100%_75%_at_50%_20%,transparent_50%,#000_100%)]"
+          className="bg-background pointer-events-none absolute inset-0 z-10 mask-[radial-gradient(ellipse_95%_75%_at_50%_28%,transparent_40%,#000_100%)]"
           aria-hidden="true"
         />
+
+        {/* Ambient light + particles behind the frame */}
         <div
-          className="pointer-events-none absolute inset-x-0 -top-[200px] z-[1] h-[400px] bg-[radial-gradient(circle_at_bottom_center,#6d77d5,transparent_75%)] [mask-image:radial-gradient(circle_at_50%_65%,white,transparent)] md:-top-[240px] md:h-[480px]"
+          className="pointer-events-none absolute inset-x-0 top-[-220px] z-1 h-[460px] bg-[radial-gradient(circle_at_bottom_center,rgba(109,119,213,0.55),transparent_72%)] mask-[radial-gradient(circle_at_50%_70%,white,transparent)] md:top-[-260px] md:h-[540px]"
           aria-hidden="true"
         >
           <Particles customOptions={customParticleOptions} className="w-full" />
-          <Meteors number={5} />
+          <Meteors number={4} />
         </div>
 
-        <div className="border-border bg-card relative z-5 mx-auto w-full overflow-hidden rounded-xl border shadow-2xl">
-          <div className="border-border flex items-center gap-2 border-b px-4 py-3">
-            <span className="size-2.5 rounded-full bg-red-500/70" />
-            <span className="size-2.5 rounded-full bg-yellow-500/70" />
-            <span className="size-2.5 rounded-full bg-green-500/70" />
-            <span className="text-muted-foreground ml-2 text-xs">
-              agentcn.dev/docs/agents
-            </span>
-          </div>
+        {/* Product frame */}
+        <div className="relative z-2 mx-auto w-full">
+          <div
+            className="pointer-events-none absolute -inset-x-10 -inset-y-8 rounded-[40px] bg-[radial-gradient(ellipse_at_center,rgba(109,119,213,0.18),transparent_70%)] blur-2xl dark:bg-[radial-gradient(ellipse_at_center,rgba(109,119,213,0.28),transparent_70%)]"
+            aria-hidden="true"
+          />
 
-          <div className="flex gap-4 border-b px-4 pt-3 text-sm">
-            <span className="text-foreground font-medium">Preview</span>
-            <span className="text-muted-foreground">Code</span>
-          </div>
+          <div className="border-border/70 bg-card/90 relative overflow-hidden rounded-[1.25rem] border shadow-[0_30px_100px_-40px_rgba(60,70,140,0.55)] ring-1 ring-black/5 backdrop-blur-xl dark:bg-card/80 dark:shadow-[0_40px_120px_-40px_rgba(109,119,213,0.45)] dark:ring-white/10">
+            <BorderBeam
+              lightColor="#a5b4fc"
+              duration={9}
+              borderWidth={1}
+              className="rounded-[inherit] opacity-70 dark:opacity-90"
+            />
 
-          <div className="bg-background p-4 md:p-6">
-            <div className="border-border flex min-h-[220px] flex-col overflow-hidden rounded-lg border md:min-h-[260px]">
-              <div className="border-border flex items-center gap-2 border-b px-3 py-2">
-                <AgentcnLogo className="text-foreground size-5" />
-                <span className="text-muted-foreground text-xs">Agent preview</span>
+            {/* Window chrome */}
+            <div className="border-border/60 relative z-10 flex items-center gap-3 border-b bg-gradient-to-b from-white/40 to-transparent px-4 py-3 dark:from-white/5">
+              <div className="flex items-center gap-1.5">
+                <span className="size-2.5 rounded-full bg-[#ff5f57]/90 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]" />
+                <span className="size-2.5 rounded-full bg-[#febc2e]/90 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]" />
+                <span className="size-2.5 rounded-full bg-[#28c840]/90 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]" />
               </div>
-              <div className="flex flex-1 flex-col justify-end gap-3 p-3">
-                <div className="bg-muted/50 text-foreground ml-auto max-w-[85%] rounded-lg px-3 py-2 text-sm">
-                  What are the latest updates on EU AI regulation this month?
-                </div>
-                <div className="border-border bg-card flex items-center gap-2 rounded-lg border px-3 py-2">
-                  <span className="text-muted-foreground flex-1 text-sm">
-                    Search the web or paste a URL to research…
-                  </span>
-                  <span className="bg-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs text-white">
-                    ↑
-                  </span>
-                </div>
+              <div className="bg-muted/50 text-muted-foreground mx-auto flex min-w-0 max-w-md flex-1 items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-[11px] ring-1 ring-black/5 dark:ring-white/5">
+                <span className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 inline-flex size-3.5 items-center justify-center rounded-full text-[8px] font-semibold">
+                  ✓
+                </span>
+                <span className="truncate tracking-tight">
+                  agentcn.dev/docs/agents/web-agent
+                </span>
               </div>
+              <div className="hidden w-[52px] sm:block" />
+            </div>
+
+            {/* Tabs */}
+            <div className="border-border/60 relative z-10 flex items-center gap-6 border-b px-4 text-sm">
+              <span className="border-foreground text-foreground border-b-2 py-2.5 text-[13px] font-medium tracking-tight">
+                Preview
+              </span>
+              <span className="text-muted-foreground py-2.5 text-[13px]">
+                Setup
+              </span>
+            </div>
+
+            <div className="relative z-10">
+              <HeroAgentReplay />
+            </div>
+
+            {/* Install CTA strip */}
+            <div className="border-border/60 relative z-10 flex flex-wrap items-center justify-between gap-3 border-t bg-gradient-to-r from-muted/40 via-muted/20 to-transparent px-4 py-3.5">
+              <div className="text-muted-foreground flex min-w-0 items-center gap-2.5">
+                <span className="bg-foreground/5 flex size-7 shrink-0 items-center justify-center rounded-md ring-1 ring-black/5 dark:ring-white/10">
+                  <Terminal className="size-3.5" />
+                </span>
+                <code className="truncate font-mono text-xs tracking-tight md:text-[13px]">
+                  npx agentcn@latest add web-agent
+                </code>
+              </div>
+              <Link
+                href="/docs/agents/web-agent"
+                className="text-foreground group inline-flex items-center gap-1 text-xs font-medium tracking-tight transition-colors hover:text-primary md:text-[13px]"
+              >
+                Explore the agent
+                <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
             </div>
           </div>
 
-          <div className="border-border bg-muted/30 flex flex-wrap items-center justify-between gap-2 border-t px-4 py-3">
-            <code className="text-muted-foreground text-xs md:text-sm">
-              npx agentcn@latest add &lt;agent&gt;
-            </code>
-            <Link
-              href="/docs"
-              className="text-primary text-xs font-medium hover:underline md:text-sm"
-            >
-              Browse agents →
-            </Link>
-          </div>
+          {/* Soft floor reflection */}
+          <div
+            className="pointer-events-none mx-auto mt-3 h-16 w-[88%] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(109,119,213,0.18),transparent_70%)] blur-xl dark:bg-[radial-gradient(ellipse_at_center,rgba(109,119,213,0.28),transparent_70%)]"
+            aria-hidden="true"
+          />
         </div>
       </div>
     </div>
