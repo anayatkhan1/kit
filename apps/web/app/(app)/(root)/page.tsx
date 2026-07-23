@@ -7,9 +7,9 @@ import { GithubSection } from "@/components/marketing/github-section"
 import { HeroBackground } from "@/components/marketing/hero-background"
 import { HeroBadge } from "@/components/marketing/hero-badge"
 import { HeroButtons } from "@/components/marketing/hero-buttons"
+import { ProductProofStrip } from "@/components/marketing/product-proof-strip"
 import {
   OpenSourceIcon,
-  RegistryIcon,
   TypeScriptIcon,
   VercelIcon,
 } from "@/components/marketing/hero-icons"
@@ -30,10 +30,9 @@ export const revalidate = false
 
 export const metadata = createStaticOGMetadata(title, description)
 
-const tags = [
+const stackSignals = [
   { name: "TypeScript", icon: <TypeScriptIcon /> },
   { name: "Vercel AI SDK", icon: <VercelIcon /> },
-  { name: "Agent registry", icon: <RegistryIcon /> },
   { name: "Open source", icon: <OpenSourceIcon /> },
 ]
 
@@ -47,26 +46,27 @@ export default function IndexPage() {
             <Announcement link="/docs">
               Now shipping · Web Agent + CLI registry
             </Announcement>
-            <PageHeaderHeading className="max-w-3xl">
+            <PageHeaderHeading className="mt-3 max-w-3xl">
               {title}
             </PageHeaderHeading>
-            <PageHeaderDescription className="max-w-xl text-pretty">
+            <PageHeaderDescription className="mt-4 max-w-xl text-pretty md:mt-5">
               {description}
             </PageHeaderDescription>
-            <PageActions className="relative z-5">
-              <HeroButtons />
-            </PageActions>
-            <div className="mt-6 flex max-w-lg flex-wrap items-center justify-center gap-2">
-              {tags.map((tag) => (
-                <HeroBadge key={tag.name} icon={tag.icon}>
-                  {tag.name}
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5">
+              {stackSignals.map((signal) => (
+                <HeroBadge key={signal.name} icon={signal.icon}>
+                  {signal.name}
                 </HeroBadge>
               ))}
             </div>
+            <PageActions className="relative z-5 mt-6 gap-3">
+              <HeroButtons />
+            </PageActions>
           </PageHeader>
           <HeroImage />
         </div>
       </div>
+      <ProductProofStrip />
       <Benefits />
       <GithubSection />
       <FAQ />

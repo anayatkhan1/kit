@@ -1,7 +1,8 @@
 import Link from "next/link"
-import { ArrowUpRight, Terminal } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 
 import { HeroAgentReplay } from "@/components/marketing/hero-agent-replay"
+import { InstallCommand } from "@/components/marketing/install-command"
 import { BorderBeam } from "@/components/ui/border-beam"
 import { Meteors } from "@/components/ui/meteors"
 import { Particles } from "@/components/ui/particles"
@@ -126,14 +127,7 @@ export function HeroImage() {
 
             {/* Install CTA strip */}
             <div className="border-border/60 relative z-10 flex flex-wrap items-center justify-between gap-3 border-t bg-gradient-to-r from-muted/40 via-muted/20 to-transparent px-4 py-3.5">
-              <div className="text-muted-foreground flex min-w-0 items-center gap-2.5">
-                <span className="bg-foreground/5 flex size-7 shrink-0 items-center justify-center rounded-md ring-1 ring-black/5 dark:ring-white/10">
-                  <Terminal className="size-3.5" />
-                </span>
-                <code className="truncate font-mono text-xs tracking-tight md:text-[13px]">
-                  npx agentcn@latest add web-agent
-                </code>
-              </div>
+              <InstallCommand className="max-w-full" />
               <Link
                 href="/docs/agents/web-agent"
                 className="text-foreground group inline-flex items-center gap-1 text-xs font-medium tracking-tight transition-colors hover:text-primary md:text-[13px]"

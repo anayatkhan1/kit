@@ -1,60 +1,46 @@
-import Link from "next/link"
+"use client"
+
 import { ArrowUpRight } from "lucide-react"
+import { motion } from "motion/react"
 
 import { cn } from "@/lib/utils"
+import {
+  AgentKitVisual,
+  CliInstallVisual,
+  CustomizeAgentVisual,
+  SourceFilesVisual,
+} from "@/components/marketing/agent-product-visuals"
 import { BentoNav } from "@/components/marketing/bento-nav"
-import { ChartsVisual } from "@/components/marketing/charts-visual"
-import { CpuVisual } from "@/components/marketing/cpu-visual"
-import { LogoTiles } from "@/components/marketing/logo-tiles"
-import { MacbookKeyboard } from "@/components/marketing/mac-keyboard"
 
 const bentoData = [
   {
     title: "Source in your repo.",
     description:
       "The CLI adds agent files to your project so you can read prompts, tools, and wiring before you ship anything.",
-    component: (
-      <div className="h-[380px] w-full md:h-full">
-        <CpuVisual />
-      </div>
-    ),
+    component: <SourceFilesVisual />,
+    className: "md:col-span-7",
   },
   {
     title: "Install from the CLI.",
     description:
-      "Each agent installs with npx agentcn@latest add. Add your provider API keys, then run the agent in your own Next.js app.",
-    component: (
-      <div className="mb-6 flex h-auto w-full items-center justify-start pt-10 pl-10">
-        <MacbookKeyboard className="origin-top-left" />
-      </div>
-    ),
+      "Each agent installs with npx agentcn@latest add. Add your provider API keys, then run it in your own Next.js app.",
+    component: <CliInstallVisual />,
+    className: "md:col-span-5",
   },
   {
     title: "Change what you need.",
     description:
-      "Prompts, tool definitions, env config, and provider setup are plain files. Edit them the same way you edit the rest of your app.",
-    component: (
-      <div className="flex h-[380px] w-full items-center justify-start md:h-full">
-        <ChartsVisual />
-      </div>
-    ),
+      "Prompts, tools, env config, and providers are plain files. Edit them the same way you edit the rest of your app.",
+    component: <CustomizeAgentVisual />,
+    className: "md:col-span-7",
   },
   {
     title: "Need a full app?",
     description:
-      "AgentKit is an open source starter with auth, chat UI, and Postgres if you want more than the agent module on its own.",
-    component: (
-      <div className="mb-6 flex h-auto w-full items-center justify-start">
-        <Link
-          href="/templates/agentkit-starter"
-          className="group/pro absolute top-6 left-6 z-10 flex items-center gap-0.5 rounded-full border border-[#6d77d5] bg-gradient-to-b from-[#6d77d5] to-[#5c67c7] py-1 pr-2 pl-3 text-xs font-medium text-white shadow-[0_0px_100px_rgba(109,_119,_213,_0.5)]"
-        >
-          AgentKit template
-          <ArrowUpRight className="size-3 transition-transform duration-300 group-hover/pro:translate-x-0.5 group-hover/pro:-translate-y-0.5" />
-        </Link>
-        <LogoTiles />
-      </div>
-    ),
+      "AgentKit is an open source starter with auth, chat UI, and Postgres if you want more than the agent module alone.",
+    component: <AgentKitVisual />,
+    className: "md:col-span-5",
+    href: "/templates/agentkit-starter",
   },
 ]
 
@@ -79,11 +65,11 @@ const navOptions = [
 
 export function Benefits() {
   return (
-    <section className="from-background via-secondary/60 to-background bg-gradient-to-b from-20%">
-      <div className="container mx-auto flex w-full max-w-5xl flex-col items-center justify-start !px-4 py-16 text-center md:items-start md:py-32 md:text-left">
-        <div className="flex flex-col md:flex-row md:gap-8">
+    <section className="from-background via-secondary/60 to-background bg-linear-to-b from-20%">
+      <div className="container mx-auto flex w-full max-w-5xl flex-col items-center justify-start px-4! py-16 text-center md:items-start md:py-32 md:text-left">
+        <div className="flex w-full flex-col md:flex-row md:gap-8">
           <div className="flex w-full md:w-1/2 md:items-end">
-            <h2 className="leading-tighter font-gilroy max-w-2xl bg-gradient-to-b from-white/80 via-white to-white/60 bg-clip-text text-5xl font-semibold tracking-tight text-pretty text-transparent lg:leading-[1.1] lg:font-semibold xl:text-6xl/[4rem] xl:tracking-tighter">
+            <h2 className="leading-tighter font-gilroy text-foreground max-w-2xl text-5xl font-semibold tracking-tight text-pretty lg:leading-[1.1] lg:font-semibold xl:text-6xl/[4rem] xl:tracking-tighter dark:bg-linear-to-b dark:from-white/80 dark:via-white dark:to-white/60 dark:bg-clip-text dark:text-transparent">
               What you get with AgentCN
             </h2>
           </div>
@@ -91,23 +77,16 @@ export function Benefits() {
             <BentoNav className="mt-6 md:mt-0" options={navOptions} />
           </div>
         </div>
-        <div className="mt-10 flex w-full flex-col gap-4 md:mt-14">
-          <div className="flex flex-col gap-4 md:h-[380px] md:flex-row">
-            <div className="h-[380px] md:h-full md:w-[45%]">
-              <BentoCell {...bentoData[0]} />
-            </div>
-            <div className="h-[380px] md:h-full md:max-w-[55%]">
-              <BentoCell {...bentoData[1]} />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 md:h-[380px] md:flex-row">
-            <div className="md:w-[55%]">
-              <BentoCell {...bentoData[2]} />
-            </div>
-            <div className="h-[390px] md:h-full md:w-[45%]">
-              <BentoCell {...bentoData[3]} />
-            </div>
-          </div>
+
+        <div className="mt-10 grid w-full grid-cols-1 gap-4 md:mt-14 md:grid-cols-12 md:grid-rows-[420px_420px]">
+          {bentoData.map((item, index) => (
+            <BentoCell
+              key={item.title}
+              {...item}
+              index={index}
+              className={cn("min-h-[420px] md:min-h-0 md:h-full", item.className)}
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -118,27 +97,51 @@ function BentoCell({
   title,
   description,
   component,
+  href,
+  index,
+  className,
 }: {
   title: string
   description: string
   component: React.ReactNode
+  href?: string
+  index: number
+  className?: string
 }) {
-  const cellClasses =
-    "h-full w-full border border-border bg-secondary/50 rounded-2xl overflow-hidden relative large-accent-shadow"
-
   return (
-    <div className={cn(cellClasses)}>
-      <div className="h-full p-7 text-left">
-        <div className="bg-secondary/50 border-border absolute right-1.5 bottom-1.5 left-1.5 z-5 rounded-lg border p-4 backdrop-blur-sm">
-          <span className="inline">
-            <span className="font-medium">{title} </span>
-            <span className="text-muted-foreground text-base">
-              {description}
-            </span>
-          </span>
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}
+      className={cn(
+        "group/bento relative flex h-full min-h-[420px] flex-col overflow-hidden rounded-2xl border border-border/80 bg-secondary/40 large-accent-shadow transition-[border-color,box-shadow] duration-500 hover:border-primary/25 hover:shadow-[0_24px_60px_-36px_rgba(109,119,213,0.45)] md:min-h-0",
+        className
+      )}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(109,119,213,0.1),transparent_55%)] opacity-70" />
+
+      <div className="relative z-10 flex items-start justify-between gap-3 px-5 pt-5 pb-3 text-left">
+        <div className="min-w-0 max-w-md">
+          <p className="text-[15px] font-medium tracking-tight text-foreground md:text-base">
+            {title}
+          </p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+            {description}
+          </p>
         </div>
-        {component}
+        {href ? (
+          <a
+            href={href}
+            className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-border/70 bg-background/50 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            aria-label="Open AgentKit template"
+          >
+            <ArrowUpRight className="size-3.5" />
+          </a>
+        ) : null}
       </div>
-    </div>
+
+      <div className="relative min-h-0 flex-1 px-4 pb-4">{component}</div>
+    </motion.div>
   )
 }

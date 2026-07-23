@@ -14,13 +14,13 @@ export function HeroBadge({
   return (
     <div
       className={cn(
-        "border-border bg-secondary/70 text-foreground relative z-10 flex h-7.5 items-center gap-2 rounded-full border border-dashed pr-4 pl-2 font-mono text-[13.5px] shadow-xs backdrop-blur-sm",
+        "group relative z-10 flex h-7 items-center gap-1.5 rounded-full border border-border/50 bg-secondary/30 px-2.5 pr-3 font-mono text-[11px] text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:border-border/80 hover:bg-foreground/4 hover:text-foreground",
         className
       )}
     >
       <div
         className={cn(
-          "flex size-4 shrink-0 items-center justify-center",
+          "flex size-3.5 shrink-0 items-center justify-center opacity-70 transition-opacity duration-300 group-hover:opacity-100",
           iconClassName
         )}
       >

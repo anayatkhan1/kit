@@ -20,7 +20,7 @@ export function CTAButton() {
           }
         }}
       >
-        Browse the docs
+        Browse agents
       </Link>
     </Button>
   )

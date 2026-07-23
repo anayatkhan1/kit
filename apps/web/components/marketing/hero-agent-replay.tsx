@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Bot, Check, Loader2, Sparkles, User } from "lucide-react"
+import { Bot, Check, Loader2, User } from "lucide-react"
 
 import type { DemoMessagePart, DemoToolPart } from "@/lib/agent-demos/types"
 import {
@@ -85,7 +85,7 @@ const THINKING_MS = 520
 const HOLD_MS = 3200
 const RESET_MS = 650
 
-type Phase = "idle" | "user" | "thinking" | "tools" | "answer" | "hold"
+type Phase = "user" | "thinking" | "tools" | "answer" | "hold"
 
 type Playback = {
   phase: Phase
@@ -178,7 +178,7 @@ function HeroToolSteps({
 
 export function HeroAgentReplay() {
   const [playback, setPlayback] = React.useState<Playback>({
-    phase: "idle",
+    phase: "user",
     scenarioIndex: 0,
     revealedTools: [],
     toolStatuses: [],
@@ -192,7 +192,6 @@ export function HeroAgentReplay() {
   const scenario = HERO_SCENARIOS[playback.scenarioIndex]!
   const answerText = getDemoText(scenario.assistantParts)
   const isAnimating =
-    playback.phase !== "idle" &&
     playback.phase !== "hold" &&
     playback.phase !== "answer"
 
@@ -214,10 +213,10 @@ export function HeroAgentReplay() {
       clearTimeouts()
 
       const tools = getDemoToolParts(next.assistantParts)
-      let delay = 280
+      let delay = 650
 
       setPlayback({
-        phase: "idle",
+        phase: "user",
         scenarioIndex: index,
         revealedTools: [],
         toolStatuses: [],
@@ -225,20 +224,10 @@ export function HeroAgentReplay() {
       })
 
       schedule(() => {
-        setPlayback({
-          phase: "user",
-          scenarioIndex: index,
-          revealedTools: [],
-          toolStatuses: [],
-          showText: false,
-        })
-      }, delay)
-
-      delay += THINKING_MS
-      schedule(() => {
         setPlayback((prev) => ({ ...prev, phase: "thinking" }))
       }, delay)
 
+      delay += THINKING_MS
       tools.forEach((_, toolIndex) => {
         delay += STEP_MS
         const slice = tools.slice(0, toolIndex + 1)
@@ -297,7 +286,7 @@ export function HeroAgentReplay() {
       return
     }
 
-    const startId = window.setTimeout(() => playRef.current(0), 700)
+    const startId = window.setTimeout(() => playRef.current(0), 350)
     return () => {
       window.clearTimeout(startId)
       clearTimeouts()
@@ -390,22 +379,6 @@ export function HeroAgentReplay() {
         className="min-h-0 flex-1 space-y-3.5 overflow-y-auto px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-live="polite"
       >
-        {!showUser ? (
-          <div className="text-muted-foreground flex h-full min-h-[200px] flex-col items-center justify-center gap-3 text-center">
-            <div className="bg-muted/60 flex size-10 items-center justify-center rounded-2xl ring-1 ring-black/5 dark:ring-white/10">
-              <Sparkles className="size-4 opacity-70" />
-            </div>
-            <div className="space-y-1">
-              <p className="text-foreground/80 text-xs font-medium tracking-tight">
-                Preparing agent run
-              </p>
-              <p className="text-[11px] opacity-70">
-                Replaying a real capability path…
-              </p>
-            </div>
-          </div>
-        ) : null}
-
         {showUser ? (
           <div
             className={cn(
