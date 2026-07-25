@@ -9,10 +9,12 @@
  */
 
 import type { AgentDemoConfig } from "./types"
+import { extractionAgentDemo } from "./extraction-agent"
 import { webAgentDemo } from "./web-agent"
 
 const agentDemos: Record<string, AgentDemoConfig> = {
   [webAgentDemo.agentId]: webAgentDemo,
+  [extractionAgentDemo.agentId]: extractionAgentDemo,
 }
 
 export function getAgentDemo(agentId: string): AgentDemoConfig | undefined {

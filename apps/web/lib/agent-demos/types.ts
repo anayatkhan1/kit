@@ -4,6 +4,12 @@ export type DemoToolName =
   | "deep_research"
   | "use_browser"
   | "create_webset"
+  | "get_document_metadata"
+  | "document_information_extraction"
+  | "get_sheet_metadata"
+  | "spreadsheet_information_extraction"
+  | "image_information_extraction"
+  | "save_extraction"
 
 export type DemoToolPart = {
   type: "tool"
