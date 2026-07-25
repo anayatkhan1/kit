@@ -5,7 +5,7 @@ import { CTAButton } from "@/components/marketing/cta-button"
 import { InstallCommand } from "@/components/marketing/install-command"
 
 export function CallToAction() {
-  const particlesColor = "#8b5cf6"
+  const particlesColor = "#6d77d5"
 
   const customParticleOptions = {
     particles: {
