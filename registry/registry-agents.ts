@@ -66,4 +66,60 @@ export const agents: RegistryAgentItem[] = [
       providers: ["anthropic", "exa", "anchor"],
     },
   },
+  {
+    name: "extraction-agent",
+    type: "registry:agent",
+    description:
+      "Extract information from PDFs, spreadsheets, and images with citations, then save results locally.",
+    title: "Extraction Agent",
+    categories: ["extraction", "documents", "spreadsheets"],
+    dependencies: [
+      "ai",
+      "@ai-sdk/anthropic",
+      "zod",
+      "pdf-lib",
+      "xlsx",
+    ],
+    envVars: {
+      ANTHROPIC_API_KEY: "",
+    },
+    files: [
+      { path: "ai/agents/extraction/index.ts", type: "registry:agent" },
+      { path: "ai/agents/extraction/agent.ts", type: "registry:agent" },
+      { path: "ai/agents/extraction/prompt.ts", type: "registry:agent" },
+      { path: "ai/agents/extraction/tools/index.ts", type: "registry:lib" },
+      { path: "ai/agents/extraction/tools/toolset.ts", type: "registry:lib" },
+      { path: "ai/agents/extraction/tools/schema.ts", type: "registry:lib" },
+      { path: "ai/agents/extraction/tools/types.ts", type: "registry:lib" },
+      { path: "ai/agents/extraction/tools/core.ts", type: "registry:lib" },
+      {
+        path: "ai/agents/extraction/tools/get-document-metadata.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/extraction/tools/document-information-extraction.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/extraction/tools/get-sheet-metadata.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/extraction/tools/spreadsheet-information-extraction.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/extraction/tools/image-information-extraction.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/extraction/tools/save-extraction.ts",
+        type: "registry:lib",
+      },
+    ],
+    meta: {
+      hasMockMode: false,
+      providers: ["anthropic"],
+    },
+  },
 ];

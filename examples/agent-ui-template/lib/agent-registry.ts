@@ -1,5 +1,7 @@
 import "server-only";
 import { anthropic } from "@ai-sdk/anthropic";
+import { SYSTEM_PROMPT as EXTRACTION_AGENT_PROMPT } from "@kit-ai/agents/extraction/prompt";
+import { extractionToolset } from "@kit-ai/agents/extraction/tools/toolset";
 import { SYSTEM_PROMPT as WEB_AGENT_PROMPT } from "@kit-ai/agents/web/prompt";
 import { webToolset } from "@kit-ai/agents/web/tools/toolset";
 import { type ToolSet, stepCountIs } from "ai";
@@ -29,6 +31,19 @@ export const agentRegistry: Record<AgentId, AgentConfig> = {
 		model: anthropic("claude-sonnet-4-5-20250929"),
 		stopWhen: [stepCountIs(20)],
 		localTools: webToolset,
+	},
+	"extraction-agent": {
+		id: "extraction-agent",
+		label: "Extraction Agent",
+		description:
+			"Extracts facts from PDFs, spreadsheets, and images with citations.",
+		starterPrompt:
+			"Extract the invoice number, total due, and due date from invoices/acme.pdf. Cite pages.",
+		env: ["ANTHROPIC_API_KEY"],
+		systemPrompt: EXTRACTION_AGENT_PROMPT,
+		model: anthropic("claude-sonnet-4-5-20250929"),
+		stopWhen: [stepCountIs(25)],
+		localTools: extractionToolset,
 	},
 };
 

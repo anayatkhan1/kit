@@ -1,0 +1,104 @@
+---
+title: Extraction Agent
+description: Extract information from PDFs, spreadsheets, and images with citations, then save results locally.
+component: true
+---
+
+<AgentDemoPreview agentId="extraction-agent" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx agentcn@latest add extraction-agent
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install ai @ai-sdk/anthropic zod pdf-lib xlsx
+```
+
+<Step>Set environment variables in your `.env` file. Get the key from its provider:</Step>
+
+- [ANTHROPIC_API_KEY](https://console.anthropic.com/settings/keys) — Anthropic Console
+
+```bash
+ANTHROPIC_API_KEY=
+```
+
+<Step>Copy the agent source into your project.</Step>
+
+<ComponentSource src="../../ai/agents/extraction/agent.ts" title="ai/agents/extraction/agent.ts" />
+
+<Step>Update import paths and add remaining files from the registry payload (`ai/agents/extraction/*`) to match your project layout.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Wire your API route
+
+Create `app/api/chat/route.ts` in your Next.js app:
+
+```tsx showLineNumbers
+import { extractionAgent } from "@/agents/extraction";
+import { convertToModelMessages, type UIMessage } from "ai";
+
+export async function POST(req: Request) {
+  const { messages }: { messages: UIMessage[] } = await req.json();
+  const result = extractionAgent(await convertToModelMessages(messages));
+  return result.toUIMessageStreamResponse();
+}
+```
+
+The CLI adds a `@/agents/*` path alias pointing at `./ai/agents/*` in your `tsconfig.json`.
+
+Place input files under `data/extraction-agent.local/` (created automatically) and reference them with relative paths such as `invoices/acme.pdf`.
+
+## API keys required
+
+The extraction agent needs a live Anthropic API key — there is no mock or offline fallback for multimodal extraction.
+
+- [ANTHROPIC_API_KEY](https://console.anthropic.com/settings/keys) — Claude model
+
+## Configuration
+
+Environment variables required by `extraction-agent`.
+
+<TypeTable
+  type={{
+    ANTHROPIC_API_KEY: {
+      type: "string",
+      href: "https://console.anthropic.com/settings/keys",
+      description: "Required for the Claude model used by the agent and extraction tools.",
+    },
+  }}
+/>
+
+### Tools
+
+The agent exposes these tools (see `ai/agents/extraction/tools/toolset.ts`):
+
+- `get_document_metadata` — PDF page count and document metadata
+- `document_information_extraction` — extract facts from a PDF with page citations
+- `get_sheet_metadata` — spreadsheet sheet names, dimensions, and flags
+- `spreadsheet_information_extraction` — extract facts from xlsx/xls/csv with cell citations
+- `image_information_extraction` — extract text and facts from images
+- `save_extraction` — write markdown or JSON results under `data/extraction-agent.local`

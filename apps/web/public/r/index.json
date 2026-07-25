@@ -11,6 +11,15 @@
         "research",
         "browser"
       ]
+    },
+    {
+      "name": "extraction-agent",
+      "description": "Extract information from PDFs, spreadsheets, and images with citations, then save results locally.",
+      "categories": [
+        "extraction",
+        "documents",
+        "spreadsheets"
+      ]
     }
   ]
 }

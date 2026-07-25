@@ -28,7 +28,8 @@
     "clean": "rm -rf node_modules",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:web-agent": "jest ai/agents/web"
+    "test:web-agent": "jest ai/agents/web",
+    "test:extraction-agent": "jest ai/agents/extraction"
   },
   "private": true,
   "devDependencies": {
@@ -55,7 +56,9 @@
     "ai": "^6.0.161",
     "anchorbrowser": "^0.16.3",
     "exa-js": "^1.8.27",
+    "pdf-lib": "^1.17.1",
     "playwright-core": "^1.59.1",
+    "xlsx": "^0.18.5",
     "zod": "^4.3.6"
   }
 }

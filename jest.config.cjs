@@ -2,7 +2,7 @@
 module.exports = {
   testEnvironment: "node",
   roots: ["<rootDir>"],
-  testMatch: ["**/ai/agents/web/**/*.test.ts"],
+  testMatch: ["**/ai/agents/**/*.test.ts"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   transform: {
     "^.+\\.tsx?$": [

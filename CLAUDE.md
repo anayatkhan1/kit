@@ -21,3 +21,5 @@
 - The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
 
 <!-- nx configuration end-->
+
+See [AGENTS.md](AGENTS.md) for the full agent/docs index (skills, slash commands, Cursor agents, and where to edit AgentCN docs).

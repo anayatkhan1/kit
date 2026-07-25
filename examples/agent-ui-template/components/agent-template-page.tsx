@@ -7,23 +7,35 @@ import {
 	PromptInputActions,
 	PromptInputTextarea,
 } from "@/components/ui/prompt-input";
-import { agentProfiles, defaultAgentId } from "@/lib/agent-profiles";
+import {
+	type AgentId,
+	agentProfiles,
+	defaultAgentId,
+} from "@/lib/agent-profiles";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
 import { ArrowUp, Paperclip, Square, X } from "lucide-react";
 import React, { type ChangeEvent, useRef, useState } from "react";
 
-const webAgent = agentProfiles[defaultAgentId];
-
 export function AgentTemplatePage() {
-	const [input, setInput] = useState(webAgent.starterPrompt);
+	const [agentId, setAgentId] = useState<AgentId>(defaultAgentId);
+	const selectedAgent = agentProfiles[agentId];
+	const [input, setInput] = useState(selectedAgent.starterPrompt);
 	const [files, setFiles] = useState<File[]>([]);
 	const uploadInputRef = useRef<HTMLInputElement | null>(null);
 
-	const { messages, sendMessage, status } = useChat();
+	const { messages, sendMessage, status, setMessages } = useChat();
 
 	const isLoading = status === "submitted" || status === "streaming";
 	const isEmpty = messages.length === 0;
+
+	const handleAgentChange = (nextAgentId: AgentId) => {
+		setAgentId(nextAgentId);
+		setInput(agentProfiles[nextAgentId].starterPrompt);
+		setMessages([]);
+		setFiles([]);
+		if (uploadInputRef.current) uploadInputRef.current.value = "";
+	};
 
 	const fileToDataURL = (file: File) =>
 		new Promise<string>((resolve, reject) => {
@@ -57,7 +69,7 @@ export function AgentTemplatePage() {
 					parts,
 				},
 				{
-					body: { agentId: defaultAgentId },
+					body: { agentId },
 				} as any,
 			);
 
@@ -94,12 +106,29 @@ export function AgentTemplatePage() {
 				{isEmpty ? (
 					<header className="space-y-4 text-center">
 						<p className="text-slate-600 text-sm uppercase tracking-[0.3em]">
-							Web Agent Demo • Next.js + Vercel AI SDK
+							Agent Demo • Next.js + Vercel AI SDK
 						</p>
 						<h1 className="font-semibold text-4xl text-slate-900 sm:text-5xl">
-							Try the web agent <br />
+							Try {selectedAgent.label.toLowerCase()} <br />
 							in a minimal chat UI
 						</h1>
+						<div className="flex items-center justify-center gap-2">
+							{(Object.keys(agentProfiles) as AgentId[]).map((id) => (
+								<button
+									key={id}
+									type="button"
+									onClick={() => handleAgentChange(id)}
+									className={cn(
+										"rounded-full border px-3 py-1 text-xs transition",
+										agentId === id
+											? "border-indigo-600 bg-indigo-600 text-white"
+											: "border-slate-300 text-slate-600 hover:border-slate-400",
+									)}
+								>
+									{agentProfiles[id].label}
+								</button>
+							))}
+						</div>
 						<div className="flex items-center justify-center gap-3 text-slate-600 text-xs">
 							<span className="rounded-full border border-slate-300 px-3 py-1">
 								Enter ↵ to send, Shift+Enter for newline
@@ -125,11 +154,37 @@ export function AgentTemplatePage() {
 
 				<section className="w-full max-w-2xl">
 					<div className="mb-3 rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm">
+						<div className="mb-2 flex flex-wrap gap-2">
+							{(Object.keys(agentProfiles) as AgentId[]).map((id) => (
+								<button
+									key={id}
+									type="button"
+									onClick={() => handleAgentChange(id)}
+									className={cn(
+										"rounded-full border px-3 py-1 text-xs transition",
+										agentId === id
+											? "border-indigo-600 bg-indigo-600 text-white"
+											: "border-slate-300 text-slate-600 hover:border-slate-400",
+									)}
+								>
+									{agentProfiles[id].label}
+								</button>
+							))}
+						</div>
 						<p className="text-slate-600 text-xs">Required env</p>
 						<p className="mt-1 text-slate-900 text-xs">
-							{webAgent.env.join(" • ")}
+							{selectedAgent.env.join(" • ")}
 						</p>
-						<p className="mt-1 text-slate-600 text-xs">{webAgent.description}</p>
+						<p className="mt-1 text-slate-600 text-xs">
+							{selectedAgent.description}
+						</p>
+						{agentId === "extraction-agent" ? (
+							<p className="mt-1 text-slate-500 text-xs">
+								Workspace: <code>data/extraction-agent.local/</code> — try{" "}
+								<code>invoices/acme.pdf</code>, <code>sales/q2.xlsx</code>,{" "}
+								<code>receipts/cafe.png</code>
+							</p>
+						) : null}
 					</div>
 					<form onSubmit={handleSubmit}>
 						<PromptInput
@@ -164,7 +219,11 @@ export function AgentTemplatePage() {
 							)}
 
 							<PromptInputTextarea
-								placeholder="Try the web agent in this template app..."
+								placeholder={
+									agentId === "extraction-agent"
+										? "Ask to extract from a PDF, spreadsheet, or image..."
+										: "Try the web agent in this template app..."
+								}
 								className="text-base text-slate-900 placeholder:text-slate-500 "
 							/>
 

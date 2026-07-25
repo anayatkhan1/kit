@@ -12,6 +12,10 @@ function taskInput(input: Record<string, string>) {
   return input.task_name ?? input.task ?? "unknown"
 }
 
+function fileInput(input: Record<string, string>) {
+  return input.file_path ?? "unknown"
+}
+
 const toolLabelFormatters: Record<
   DemoToolPart["tool"],
   (part: DemoToolPart) => string
@@ -21,6 +25,16 @@ const toolLabelFormatters: Record<
   deep_research: (part) => `Deep research: ${taskInput(part.input)}`,
   use_browser: (part) => `Use browser: ${taskInput(part.input)}`,
   create_webset: (part) => `Create webset: ${taskInput(part.input)}`,
+  get_document_metadata: (part) =>
+    `Document metadata: ${fileInput(part.input)}`,
+  document_information_extraction: (part) =>
+    `Extract PDF: ${fileInput(part.input)}`,
+  get_sheet_metadata: (part) => `Sheet metadata: ${fileInput(part.input)}`,
+  spreadsheet_information_extraction: (part) =>
+    `Extract sheet: ${fileInput(part.input)}`,
+  image_information_extraction: (part) =>
+    `Extract image: ${fileInput(part.input)}`,
+  save_extraction: (part) => `Save extraction: ${taskInput(part.input)}`,
 }
 
 export function getDemoToolLabel(part: DemoToolPart): string {

@@ -1,22 +1,23 @@
 # Agent UI Template (Next.js + Vercel AI SDK)
 
-Minimal demo app for running the **web-agent** locally with real API keys.
+Minimal demo app for running agents locally with real API keys.
 
 Docs at [agentcn.dev/docs](https://agentcn.dev/docs) use simulated examples and do not require this app.
 
 ## Included
 
-- `web-agent` chat UI on `/`
-- Compact embed route at `/embed/web-agent` for local testing
+- Chat UI on `/` with agent switcher (`web-agent`, `extraction-agent`)
+- Compact embed routes:
+  - `/embed/web-agent`
+  - `/embed/extraction-agent`
 
 ## Prerequisites
 
 - Node.js 20+
 - pnpm
 - API keys:
-  - `ANTHROPIC_API_KEY`
-  - `EXA_API_KEY`
-  - `ANCHOR_API_KEY`
+  - `ANTHROPIC_API_KEY` (required for both agents)
+  - `EXA_API_KEY` / `ANCHOR_API_KEY` (web-agent only)
 
 ## Setup
 
@@ -24,13 +25,15 @@ Docs at [agentcn.dev/docs](https://agentcn.dev/docs) use simulated examples and 
 pnpm install
 ```
 
-Create `.env.local`:
+Create `.env` or `.env.local`:
 
 ```bash
 ANTHROPIC_API_KEY=...
 EXA_API_KEY=...
 ANCHOR_API_KEY=...
 ```
+
+Sample extraction files are under `data/extraction-agent.local/` (`invoices/acme.pdf`, `sales/q2.xlsx`, `receipts/cafe.png`).
 
 ## Commands
 
@@ -39,21 +42,22 @@ ANCHOR_API_KEY=...
 - `pnpm lint` — Biome checks
 - `pnpm build` — production build
 
-## Local embed route
+## Test extraction-agent
 
-Run the embed server:
+1. `pnpm dev`
+2. Open `http://localhost:3000`
+3. Click **Extraction Agent**
+4. Send prompts such as:
+   - `Extract invoice number, total, and due date from invoices/acme.pdf`
+   - `Summarize Q2 revenue by region from sales/q2.xlsx`
+   - `What items and total are on receipts/cafe.png?`
 
-```bash
-pnpm dev:embed
-```
-
-Open `http://localhost:3001/embed/web-agent`.
+Or open `http://localhost:3001/embed/extraction-agent` after `pnpm dev:embed`.
 
 ## Key files
 
-- `app/api/chat/route.ts` — streaming chat route for web-agent
-- `app/embed/web-agent/` — compact embed UI
-- `lib/agent-registry.ts` — server runtime config
+- `app/api/chat/route.ts` — streaming chat route (reads `agentId`)
+- `lib/agent-registry.ts` — server runtime config (tools + prompt)
 - `lib/agent-profiles.ts` — UI metadata
 - `tsconfig.json` — `@kit-ai/*` maps to `kit/ai/*` in the monorepo
 
