@@ -2,14 +2,15 @@ import { Meteors } from "@/components/ui/meteors"
 import { Particles } from "@/components/ui/particles"
 import { Icons } from "@/components/icons"
 import { CTAButton } from "@/components/marketing/cta-button"
+import { InstallCommand } from "@/components/marketing/install-command"
 
 export function CallToAction() {
   const particlesColor = "#8b5cf6"
 
   const customParticleOptions = {
     particles: {
-      opacity: 0.8,
-      quantity: 800,
+      opacity: 0.55,
+      quantity: 320,
       size: {
         value: {
           min: 0.5,
@@ -17,7 +18,7 @@ export function CallToAction() {
         },
       },
       move: {
-        quantity: 800,
+        quantity: 320,
         enable: true,
         speed: {
           min: 0.1,
@@ -64,7 +65,7 @@ export function CallToAction() {
           aria-hidden="true"
         >
           <Particles customOptions={customParticleOptions} className="w-full" />
-          <Meteors number={5} />
+          <Meteors number={3} />
           <div className="absolute top-[calc(100%-75px)] left-1/2 z-1 flex h-full max-h-[400px] w-full -translate-x-1/2 items-start justify-center overflow-hidden">
             <div>
               <svg
@@ -100,7 +101,7 @@ export function CallToAction() {
         </div>
 
         <div className="relative z-5 mx-auto flex w-full max-w-5xl flex-col items-center justify-start text-center">
-          <h2 className="leading-tighter font-gilroy max-w-3xl bg-gradient-to-b from-white/80 via-white to-white/60 bg-clip-text text-5xl font-semibold tracking-tight text-pretty text-transparent lg:leading-[1.1] lg:font-semibold xl:text-6xl/[4rem] xl:tracking-tighter">
+          <h2 className="leading-tighter font-gilroy text-foreground max-w-3xl text-5xl font-semibold tracking-tight text-pretty lg:leading-[1.1] lg:font-semibold xl:text-6xl/[4rem] xl:tracking-tighter dark:bg-linear-to-b dark:from-white/80 dark:via-white dark:to-white/60 dark:bg-clip-text dark:text-transparent">
             Pick an agent and install it
           </h2>
           <p className="text-muted-foreground mt-4 max-w-2xl text-base text-balance sm:text-lg">
@@ -108,6 +109,7 @@ export function CallToAction() {
             agent, and how to run it locally before you connect live providers.
           </p>
           <CTAButton />
+          <InstallCommand className="mt-4 max-w-full border border-border/60 bg-background/45 px-3 py-2 backdrop-blur-sm" />
         </div>
       </div>
     </section>

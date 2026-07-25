@@ -7,9 +7,9 @@ import { GithubSection } from "@/components/marketing/github-section"
 import { HeroBackground } from "@/components/marketing/hero-background"
 import { HeroBadge } from "@/components/marketing/hero-badge"
 import { HeroButtons } from "@/components/marketing/hero-buttons"
+import { ProductProofStrip } from "@/components/marketing/product-proof-strip"
 import {
   OpenSourceIcon,
-  RegistryIcon,
   TypeScriptIcon,
   VercelIcon,
 } from "@/components/marketing/hero-icons"
@@ -21,19 +21,18 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 
-const title = "Installable AI agents for your Workflow"
+const title = "Installable AI agents for your stack"
 const description =
-  "AgentCN is an open source kit with a CLI and agent registry. Pull agent source into your project, run it locally, and change prompts and tools in your own codebase as the library grows."
+  "Open-source agents you install like components. Pull source into your repo, run it locally, and ship with prompts and tools you actually own."
 
 export const dynamic = "force-static"
 export const revalidate = false
 
 export const metadata = createStaticOGMetadata(title, description)
 
-const tags = [
+const stackSignals = [
   { name: "TypeScript", icon: <TypeScriptIcon /> },
   { name: "Vercel AI SDK", icon: <VercelIcon /> },
-  { name: "Agent registry", icon: <RegistryIcon /> },
   { name: "Open source", icon: <OpenSourceIcon /> },
 ]
 
@@ -43,26 +42,31 @@ export default function IndexPage() {
       <div className="relative">
         <HeroBackground />
         <div className="relative z-10">
-          <PageHeader className="border-transparent px-4 pb-12 md:pb-16">
+          <PageHeader className="border-transparent px-4 pb-10 md:pb-14">
             <Announcement link="/docs">
-              Docs, registry, and CLI install guide
+              Now shipping · Web Agent + CLI registry
             </Announcement>
-            <PageHeaderHeading>{title}</PageHeaderHeading>
-            <PageHeaderDescription>{description}</PageHeaderDescription>
-            <PageActions className="relative z-5">
-              <HeroButtons />
-            </PageActions>
-            <div className="mt-5 flex max-w-md flex-wrap items-center justify-center gap-2">
-              {tags.map((tag) => (
-                <HeroBadge key={tag.name} icon={tag.icon}>
-                  {tag.name}
+            <PageHeaderHeading className="mt-3 max-w-3xl">
+              {title}
+            </PageHeaderHeading>
+            <PageHeaderDescription className="mt-4 max-w-xl text-pretty md:mt-5">
+              {description}
+            </PageHeaderDescription>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5">
+              {stackSignals.map((signal) => (
+                <HeroBadge key={signal.name} icon={signal.icon}>
+                  {signal.name}
                 </HeroBadge>
               ))}
             </div>
+            <PageActions className="relative z-5 mt-6 gap-3">
+              <HeroButtons />
+            </PageActions>
           </PageHeader>
           <HeroImage />
         </div>
       </div>
+      <ProductProofStrip />
       <Benefits />
       <GithubSection />
       <FAQ />

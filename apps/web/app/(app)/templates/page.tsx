@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 
@@ -11,6 +10,7 @@ import { Announcement } from "@/components/announcement"
 import { Icons } from "@/components/icons"
 import TemplateGithubButton from "@/components/marketing/template-github-button"
 import TemplateLiveDemoButton from "@/components/marketing/template-live-demo-button"
+import { AnimatedTemplatePreview } from "@/components/marketing/animated-template-preview"
 import {
   PageActions,
   PageHeader,
@@ -88,20 +88,23 @@ export default async function TemplatesPage() {
                     ))}
                 </div>
               </div>
-              <div className="bg-secondary col-span-3 flex aspect-video items-center justify-center overflow-hidden rounded-lg">
+              <Link
+                href={`/templates/${template.name}`}
+                className="col-span-3 block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+              >
                 {template.image ? (
-                  <Image
+                  <AnimatedTemplatePreview
                     src={template.image}
                     alt={template.title}
-                    width={540}
-                    height={310}
-                    className="h-full w-full rounded-lg object-cover"
-                    quality={100}
                   />
                 ) : (
-                  <span className="text-muted-foreground text-sm">Preview</span>
+                  <div className="bg-secondary flex aspect-video items-center justify-center overflow-hidden rounded-lg">
+                    <span className="text-muted-foreground text-sm">
+                      Preview
+                    </span>
+                  </div>
                 )}
-              </div>
+              </Link>
             </div>
           )
         })}
