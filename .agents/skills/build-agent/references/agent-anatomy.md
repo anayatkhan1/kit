@@ -1,12 +1,13 @@
 # Agent anatomy — source layout & templates
 
-Reference implementation: `ai/agents/web/`. Copy this structure verbatim for a
-new agent, replacing `web`/`<name>` and the tool set.
+Reference implementation: `ai/agents/web/` (distributed as `web-agent`). Copy this
+structure verbatim for a new agent, replacing the short folder name `web` and
+the tool set. Registry/docs/demo/CLI use `<short>-agent` (e.g. `web-agent`).
 
 ## Directory layout
 
 ```
-ai/agents/<name>/
+ai/agents/<short>/          # e.g. web — NOT web-agent
 ├── index.ts              # public entry: re-exports the agent
 ├── agent.ts              # the agent (streamText call)
 ├── prompt.ts            # SYSTEM_PROMPT string
@@ -19,14 +20,15 @@ ai/agents/<name>/
 │   ├── <tool>.ts         # one file per tool (tool({...}))
 │   └── services/
 │       └── <service>.ts  # external API client wrappers (optional)
-└── test/
+└── test/                 # local only — omit from registry files
     ├── test-helpers.ts   # describeIf<Provider> guards
     └── <tool>.test.ts    # one suite per tool
 ```
 
 ## Layer 1 — `index.ts`
 
-Thin public surface. Consumers import from `ai/agents/<name>`.
+Thin public surface. Consumers import from `@/agents/<short>` (maps to
+`ai/agents/<short>`).
 
 ```ts
 export { webAgent } from "./agent";

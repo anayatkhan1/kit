@@ -38,49 +38,58 @@ An agent in this repo has **five layers**. Adding an agent means touching each:
 - **Model:** `anthropic("claude-sonnet-4-5-20250929")` via `@ai-sdk/anthropic`.
 - **AI SDK:** Vercel `ai` (`streamText`, `tool`, `stepCountIs`).
 - **Tool schemas:** `zod`, defined in a dedicated `schema.ts`, imported by tools.
-- **Agent name:** kebab-case, matches the folder, the registry `name`, the docs
-  slug, and the demo `agentId` — all identical. E.g. `web-agent`.
+- **Agent naming (dual, like web-agent):** source folder is the short domain name
+  (`ai/agents/web/`); distribution identity is `<short>-agent` for the registry
+  `name`, docs slug, demo `agentId`, and CLI (`web-agent`). Code exports use the
+  short name (`webAgent`, `webToolset`). Install import is `@/agents/web`.
+  Keep these pairs consistent — do not invent a third naming scheme.
 - **Env vars:** never hardcode secrets. Read from `process.env` and throw a clear
   error if missing (see `tools/core.ts`).
+- **Tests:** live under `ai/agents/<short>/test/` but are **not** listed in the
+  registry `files` array (users don't install tests).
+- **Porting prototypes:** rebuild against this layout. Never ship proprietary
+  imports (`workspace`, `@re-factor/*`, private provider registries).
 
 ## Checklist
 
-### Phase 1 — Scaffold the source (`ai/agents/<name>/`)
+### Phase 1 — Scaffold the source (`ai/agents/<short>/`)
 
 Copy the web-agent layout. Full templates in `references/agent-anatomy.md`.
+Use `<short>` for the folder (e.g. `web`, `extraction`) and `<short>-agent`
+for distribution (e.g. `web-agent`, `extraction-agent`).
 
-- [ ] `ai/agents/<name>/index.ts` — re-export the agent: `export { <name>Agent } from "./agent"`.
-- [ ] `ai/agents/<name>/agent.ts` — `streamText` call with model, system prompt, tools, `stopWhen`.
-- [ ] `ai/agents/<name>/prompt.ts` — the `SYSTEM_PROMPT` string.
-- [ ] `ai/agents/<name>/tools/schema.ts` — one zod schema per tool.
-- [ ] `ai/agents/<name>/tools/core.ts` — shared clients/helpers + env-var guards.
-- [ ] `ai/agents/<name>/tools/<tool>.ts` — one file per tool using `tool({...})`.
-- [ ] `ai/agents/<name>/tools/toolset.ts` — map tool names → tool defs.
-- [ ] `ai/agents/<name>/tools/index.ts` — `export { <name>Toolset } from "./toolset"`.
-- [ ] `ai/agents/<name>/tools/types.ts` — shared TS types (optional).
-- [ ] `ai/agents/<name>/tools/services/*.ts` — external API clients (optional).
+- [ ] `ai/agents/<short>/index.ts` — re-export: `export { <short>Agent } from "./agent"`.
+- [ ] `ai/agents/<short>/agent.ts` — `streamText` call with model, system prompt, tools, `stopWhen`.
+- [ ] `ai/agents/<short>/prompt.ts` — the `SYSTEM_PROMPT` string.
+- [ ] `ai/agents/<short>/tools/schema.ts` — one zod schema per tool.
+- [ ] `ai/agents/<short>/tools/core.ts` — shared clients/helpers + env-var guards.
+- [ ] `ai/agents/<short>/tools/<tool>.ts` — one file per tool using `tool({...})`.
+- [ ] `ai/agents/<short>/tools/toolset.ts` — map tool names → tool defs.
+- [ ] `ai/agents/<short>/tools/index.ts` — `export { <short>Toolset } from "./toolset"`.
+- [ ] `ai/agents/<short>/tools/types.ts` — shared TS types (optional).
+- [ ] `ai/agents/<short>/tools/services/*.ts` — external API clients (optional).
 
-### Phase 2 — Tests (`ai/agents/<name>/test/`)
+### Phase 2 — Tests (`ai/agents/<short>/test/`)
 
 - [ ] `test/test-helpers.ts` — `describeIf<Provider>` guards keyed on env vars.
 - [ ] `test/<tool>.test.ts` — one suite per tool; live-API suites use the guards.
-- [ ] Run `pnpm test:web-agent`-equivalent: `pnpm jest ai/agents/<name>`.
+- [ ] Run `pnpm jest ai/agents/<short>` (and add a root script like `test:web-agent` if useful).
 
 ### Phase 3 — Register for distribution
 
 - [ ] Add an entry to the `agents` array in `registry/registry-agents.ts`
-      (name, description, title, categories, `dependencies`, `envVars`, and every
-      file from Phase 1 with its `type`).
+      (`name: "<short>-agent"`, description, title, categories, `dependencies`,
+      `envVars`, and every Phase 1 file with its `type`; paths use `ai/agents/<short>/...`).
 - [ ] Build the registry: `pnpm agentcn:registry:build`.
-- [ ] Confirm `apps/web/public/r/<name>.json` and updated `index.json` exist.
+- [ ] Confirm `apps/web/public/r/<short>-agent.json` and updated `index.json` exist.
 
 ### Phase 4 — Docs + demo
 
-- [ ] `apps/web/content/docs/agents/<name>.mdx` — frontmatter (`title`,
-      `description`, `component: true`), `<AgentDemoPreview agentId="<name>" />`,
+- [ ] `apps/web/content/docs/agents/<short>-agent.mdx` — frontmatter (`title`,
+      `description`, `component: true`), `<AgentDemoPreview agentId="<short>-agent" />`,
       install tabs, wiring, tools reference.
 - [ ] Add the slug to `pages` in `apps/web/content/docs/agents/meta.json`.
-- [ ] `apps/web/lib/agent-demos/<name>.ts` — an `AgentDemoConfig` with scenarios.
+- [ ] `apps/web/lib/agent-demos/<short>-agent.ts` — an `AgentDemoConfig` with scenarios.
 - [ ] Register it in `apps/web/lib/agent-demos/index.ts` (`agentDemos` map).
 
 ### Phase 5 — Verify (dev) and ship (prod)
@@ -95,21 +104,23 @@ Copy the web-agent layout. Full templates in `references/agent-anatomy.md`.
 ## Quick command reference
 
 ```bash
-pnpm jest ai/agents/<name>          # run agent tests
-pnpm agentcn:registry:build         # regenerate public/r/*.json (REQUIRED after registry edits)
-pnpm exec nx run @kit/web:typecheck # typecheck the web app + agent source
-pnpm exec nx run @kit/web:build     # build docs/marketing site
-pnpm deploy:build                   # registry build + web build (prod parity)
-npx agentcn@latest add <name>       # what a user runs to install your agent
+pnpm jest ai/agents/<short>              # run agent tests
+pnpm agentcn:registry:build              # regenerate public/r/*.json (REQUIRED after registry edits)
+pnpm exec nx run @kit/web:typecheck      # typecheck the web app + agent source
+pnpm exec nx run @kit/web:build          # build docs/marketing site
+pnpm deploy:build                        # registry build + web build (prod parity)
+npx agentcn@latest add <short>-agent     # what a user runs to install your agent
 ```
 
 ## Common mistakes
 
 - **Forgetting `pnpm agentcn:registry:build`** after editing source or the
   registry — the CLI serves stale JSON and installs the old files.
-- **Name drift** — folder, registry `name`, docs slug, and demo `agentId` must be
-  identical.
-- **Adding a file to `ai/agents/<name>/` but not to `files` in the registry** —
+- **Name drift** — folder stays `<short>`; registry `name`, docs slug, and demo
+  `agentId` stay `<short>-agent`. Mixing them (e.g. folder `web-agent`) breaks
+  imports and the CLI install path.
+- **Adding a file to `ai/agents/<short>/` but not to `files` in the registry** —
   the CLI won't install it, so the agent breaks in the user's project.
+- **Listing `test/` in registry `files`** — tests are for this repo only; omit them.
 - **New dependency not listed in the registry `dependencies`** — user install
   fails at runtime. Keep `dependencies`/`envVars` in sync with the source.
