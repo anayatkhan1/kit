@@ -39,6 +39,12 @@ const taskToolInput = (part: ToolLikePart) => {
 	return "unknown";
 };
 
+const filePathToolInput = (part: ToolLikePart) => {
+	const filePath = asRecord(part.input)?.file_path;
+	if (typeof filePath === "string" && filePath.length > 0) return filePath;
+	return "unknown";
+};
+
 const toolLabelFormatters: Record<string, (part: ToolLikePart) => string> = {
 	"tool-writeFile": (part) => `Write: ${pathToolInput(part)}`,
 	"tool-readFile": (part) => `Read: ${pathToolInput(part)}`,
@@ -53,6 +59,17 @@ const toolLabelFormatters: Record<string, (part: ToolLikePart) => string> = {
 	"tool-deep_research": (part) => `Deep research: ${taskToolInput(part)}`,
 	"tool-use_browser": (part) => `Use browser: ${taskToolInput(part)}`,
 	"tool-create_webset": (part) => `Create webset: ${taskToolInput(part)}`,
+	"tool-get_document_metadata": (part) =>
+		`Document metadata: ${filePathToolInput(part)}`,
+	"tool-document_information_extraction": (part) =>
+		`Extract PDF: ${filePathToolInput(part)}`,
+	"tool-get_sheet_metadata": (part) =>
+		`Sheet metadata: ${filePathToolInput(part)}`,
+	"tool-spreadsheet_information_extraction": (part) =>
+		`Extract sheet: ${filePathToolInput(part)}`,
+	"tool-image_information_extraction": (part) =>
+		`Extract image: ${filePathToolInput(part)}`,
+	"tool-save_extraction": (part) => `Save extraction: ${taskToolInput(part)}`,
 };
 
 export function getToolLabel(part: ToolLikePart): string {
