@@ -4,6 +4,10 @@ Every agent gets a docs page and a zero-cost simulated demo. The demo replays a
 scripted conversation (no live API calls, no keys, no spend) so visitors can see
 the agent "work" in the docs.
 
+Scope v1 tools per [agent-foundation-strategy.md](agent-foundation-strategy.md).
+Use **doc recipes** for vendor use-case variants (e-commerce scrape, blog migration)
+instead of shipping separate registry agents.
+
 ## Part A — Docs page (MDX)
 
 ### 1. Create the page
@@ -74,6 +78,18 @@ ANCHOR_API_KEY=
 ## Tools
 
 ... document each tool: name, purpose, key inputs ...
+
+## Extend this agent
+
+Show users how to add one tool (numbered steps matching `agent-foundation-strategy.md`):
+
+1. Add `tools/<new-tool>.ts` + schema in `tools/schema.ts`
+2. Register in `tools/toolset.ts`
+3. Update `prompt.ts` routing
+4. Add env vars to registry if needed
+
+Include a short worked example (e.g. `generate_caption` for a channel agent).
+This section is where **deferred v1 features** belong — not new registry agents.
 ```
 
 - `<AgentDemoPreview agentId="<name>" />` renders the simulated player. The
@@ -204,6 +220,7 @@ handle its timing in `agent-demo-player.tsx`.
 ## Definition of done
 
 - [ ] `apps/web/content/docs/agents/<name>.mdx` created with `<AgentDemoPreview>`.
+- [ ] **Extend this agent** section with at least one extension recipe.
 - [ ] Slug added to `apps/web/content/docs/agents/meta.json`.
 - [ ] `apps/web/lib/agent-demos/<name>.ts` created with ≥1 scenario.
 - [ ] Registered in `apps/web/lib/agent-demos/index.ts`.

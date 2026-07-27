@@ -8,7 +8,7 @@ The repo hub is [AGENTS.md](../../AGENTS.md).
 
 | Skill | Path | Use when |
 |-------|------|----------|
-| **build-agent** | [build-agent/SKILL.md](build-agent/SKILL.md) | Adding or shipping an installable agent (`ai/agents/` → registry → CLI → docs/demo). References: `build-agent/references/`. |
+| **build-agent** | [build-agent/SKILL.md](build-agent/SKILL.md) | Adding or shipping an installable agent (`ai/agents/` → registry → CLI → docs/demo). **Read [agent-foundation-strategy.md](build-agent/references/agent-foundation-strategy.md) first.** Other references: `build-agent/references/`. |
 
 ## Nx-managed (usually leave alone)
 

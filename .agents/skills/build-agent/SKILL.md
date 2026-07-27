@@ -1,6 +1,6 @@
 ---
 name: build-agent
-description: Build and ship a new installable agent in this repo, following the web-agent pattern from development to CLI to production. USE WHEN adding a new agent, adding tools to an agent, exposing an agent through the agentcn CLI/registry, writing agent docs, or wiring the docs demo. Trigger words - new agent, add agent, add a tool, register agent, agent registry, agentcn add, agent docs demo.
+description: Build and ship a new installable agent in this repo, following the web-agent pattern from development to CLI to production. USE WHEN adding a new agent, adding tools to an agent, exposing an agent through the agentcn CLI/registry, writing agent docs, or wiring the docs demo. ALWAYS read references/agent-foundation-strategy.md first to scope v1 tools and avoid agent sprawl. Trigger words - new agent, add agent, add a tool, register agent, agent registry, agentcn add, agent docs demo, foundation agent, extension tools.
 ---
 
 # Build an Agent (dev → CLI → prod)
@@ -12,6 +12,19 @@ repo. It mirrors the reference implementation, the **web-agent**
 Follow the checklist top-to-bottom. Each phase links to a deeper reference file
 under `references/`. Always copy the existing web-agent conventions instead of
 inventing new ones — consistency is what makes the registry + CLI work.
+
+## Before you scaffold (required)
+
+Read [references/agent-foundation-strategy.md](references/agent-foundation-strategy.md)
+and pass the gate checklist:
+
+- One job-to-be-done, one agent (3–5 core tools in v1).
+- No overlap with existing agents without explicit justification.
+- Vendor demo categories → docs recipes, not separate registry agents.
+- Foundation = tools + workspace + extension docs; not a full UI port from `tmp/`.
+
+State the one-sentence job, lane, v1 tool list, and deferred extensions **before**
+creating files.
 
 ## Mental model
 
@@ -49,6 +62,17 @@ An agent in this repo has **five layers**. Adding an agent means touching each:
   registry `files` array (users don't install tests).
 - **Porting prototypes:** rebuild against this layout. Never ship proprietary
   imports (`workspace`, `@re-factor/*`, private provider registries).
+- **Foundation over feature sprawl:** see `references/agent-foundation-strategy.md`.
+  Prefer 3–5 v1 tools + extension docs over shipping every vendor demo as tools.
+
+## Reference files
+
+| File | Purpose |
+|------|---------|
+| [agent-foundation-strategy.md](references/agent-foundation-strategy.md) | **Product gate** — lanes, v1 scope, anti-patterns, extension contract |
+| [agent-anatomy.md](references/agent-anatomy.md) | Source layout and code templates |
+| [registry-cli-prod.md](references/registry-cli-prod.md) | Registry, CLI, production ship |
+| [docs-and-demo.md](references/docs-and-demo.md) | Docs page and simulated demo |
 
 ## Checklist
 
@@ -87,7 +111,7 @@ for distribution (e.g. `web-agent`, `extraction-agent`).
 
 - [ ] `apps/web/content/docs/agents/<short>-agent.mdx` — frontmatter (`title`,
       `description`, `component: true`), `<AgentDemoPreview agentId="<short>-agent" />`,
-      install tabs, wiring, tools reference.
+      install tabs, wiring, tools reference, **Extend this agent** section.
 - [ ] Add the slug to `pages` in `apps/web/content/docs/agents/meta.json`.
 - [ ] `apps/web/lib/agent-demos/<short>-agent.ts` — an `AgentDemoConfig` with scenarios.
 - [ ] Register it in `apps/web/lib/agent-demos/index.ts` (`agentDemos` map).
@@ -124,3 +148,7 @@ npx agentcn@latest add <short>-agent     # what a user runs to install your agen
 - **Listing `test/` in registry `files`** — tests are for this repo only; omit them.
 - **New dependency not listed in the registry `dependencies`** — user install
   fails at runtime. Keep `dependencies`/`envVars` in sync with the source.
+- **Too many v1 tools** — confuses users and the model; defer to extension docs
+  (see `references/agent-foundation-strategy.md`).
+- **Shipping a vendor's full demo catalog as multiple agents** — use one foundation
+  agent + doc recipes per use case instead.
