@@ -175,8 +175,10 @@ Before merge:
 
 ## When the user says “add an agent”
 
-1. Read this file + [SKILL.md](../SKILL.md).
-2. State the **one-sentence job** and **lane**.
-3. List **v1 tools** (3–5) and **explicitly defer** everything else.
-4. Check overlap with `web-agent` / `extraction-agent`.
-5. Only then scaffold `ai/agents/<short>/` and follow the phase checklist.
+1. Read this file + [SKILL.md](../SKILL.md) + [implementation-workflow.md](implementation-workflow.md).
+2. **Phase 0:** Collect context (provider, prototype, requirements, commit preference).
+3. **Phase 1:** Write `ai/agents/<short>/SPEC.md` from [agent-spec-template.md](agent-spec-template.md); get approval.
+4. **Phase 2:** Implement SPEC todos in order; commit per todo when user requests.
+5. **Phase 3:** Verify, PR, deploy.
+
+Or invoke **`/add-agent`** in Cursor — it encodes the same flow.

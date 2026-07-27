@@ -1,6 +1,6 @@
 ---
 name: build-agent
-description: Build and ship a new installable agent in this repo, following the web-agent pattern from development to CLI to production. USE WHEN adding a new agent, adding tools to an agent, exposing an agent through the agentcn CLI/registry, writing agent docs, or wiring the docs demo. ALWAYS read references/agent-foundation-strategy.md first to scope v1 tools and avoid agent sprawl. Trigger words - new agent, add agent, add a tool, register agent, agent registry, agentcn add, agent docs demo, foundation agent, extension tools.
+description: Build and ship a new installable agent in this repo, following the web-agent pattern from development to CLI to production. USE WHEN adding a new agent, adding tools to an agent, exposing an agent through the agentcn CLI/registry, writing agent docs, or wiring the docs demo. ALWAYS read references/agent-foundation-strategy.md first, then write ai/agents/<short>/SPEC.md per references/agent-spec-template.md, get user approval, then implement one todo per commit per references/implementation-workflow.md. Trigger words - new agent, add agent, add a tool, register agent, agent registry, agentcn add, agent docs demo, foundation agent, extension tools, SPEC, commit each step.
 ---
 
 # Build an Agent (dev → CLI → prod)
@@ -13,6 +13,17 @@ Follow the checklist top-to-bottom. Each phase links to a deeper reference file
 under `references/`. Always copy the existing web-agent conventions instead of
 inventing new ones — consistency is what makes the registry + CLI work.
 
+## Workflow (new agents)
+
+For **new registry agents**, use [implementation-workflow.md](references/implementation-workflow.md):
+
+1. **Intake** — user provides providers, prototype, requirements (`/add-agent`)
+2. **Plan** — write `ai/agents/<short>/SPEC.md` ([template](references/agent-spec-template.md)); user approves
+3. **Build** — one SPEC todo at a time; one commit per todo when user requests commits
+4. **Ship** — verify, PR, deploy registry JSON with web app
+
+For **adding a tool to an existing agent**, skip SPEC; update source + docs in a focused PR.
+
 ## Before you scaffold (required)
 
 Read [references/agent-foundation-strategy.md](references/agent-foundation-strategy.md)
@@ -23,8 +34,7 @@ and pass the gate checklist:
 - Vendor demo categories → docs recipes, not separate registry agents.
 - Foundation = tools + workspace + extension docs; not a full UI port from `tmp/`.
 
-State the one-sentence job, lane, v1 tool list, and deferred extensions **before**
-creating files.
+Write `ai/agents/<short>/SPEC.md` and get user approval **before** `agent.ts` or tools.
 
 ## Mental model
 
@@ -70,11 +80,36 @@ An agent in this repo has **five layers**. Adding an agent means touching each:
 | File | Purpose |
 |------|---------|
 | [agent-foundation-strategy.md](references/agent-foundation-strategy.md) | **Product gate** — lanes, v1 scope, anti-patterns, extension contract |
+| [agent-spec-template.md](references/agent-spec-template.md) | **SPEC template** — `ai/agents/<short>/SPEC.md` before coding |
+| [implementation-workflow.md](references/implementation-workflow.md) | **Process** — intake → plan → todos → commits → ship |
 | [agent-anatomy.md](references/agent-anatomy.md) | Source layout and code templates |
 | [registry-cli-prod.md](references/registry-cli-prod.md) | Registry, CLI, production ship |
 | [docs-and-demo.md](references/docs-and-demo.md) | Docs page and simulated demo |
 
+## Commit discipline (new agents)
+
+When the user requests commits (or "commit each step"), use **one commit per SPEC
+todo** — do not mix source, registry, and docs in one commit.
+
+| Todo | Message pattern |
+|------|-----------------|
+| SPEC approved | `docs(agent): add <short>-agent spec` |
+| Source | `feat(agent): add <short>-agent source for …` |
+| Tests | `test(agent): add <short>-agent tests` |
+| Registry | `feat(registry): register <short>-agent` |
+| Docs + demo | `docs(agent): add <short>-agent docs and demo` |
+| Verify | `chore(agent): verify <short>-agent build` |
+| E2E template | `feat(examples): wire <short>-agent in agent-ui-template` |
+
+Only commit when the user asks. See [implementation-workflow.md](references/implementation-workflow.md).
+
 ## Checklist
+
+### Phase 0 — SPEC (before Phase 1 source)
+
+- [ ] `ai/agents/<short>/SPEC.md` created from [agent-spec-template.md](references/agent-spec-template.md).
+- [ ] User approved plan (Status: approved in SPEC).
+- [ ] Implementation plan table lists todos + commit messages.
 
 ### Phase 1 — Scaffold the source (`ai/agents/<short>/`)
 
@@ -150,5 +185,7 @@ npx agentcn@latest add <short>-agent     # what a user runs to install your agen
   fails at runtime. Keep `dependencies`/`envVars` in sync with the source.
 - **Too many v1 tools** — confuses users and the model; defer to extension docs
   (see `references/agent-foundation-strategy.md`).
+- **Skipping SPEC.md** for a new registry agent — no traceable plan or PR review anchor.
+- **One giant commit** for source + registry + docs — use per-todo commits when user asks.
 - **Shipping a vendor's full demo catalog as multiple agents** — use one foundation
   agent + doc recipes per use case instead.
