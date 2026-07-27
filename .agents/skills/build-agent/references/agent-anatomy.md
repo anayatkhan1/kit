@@ -4,6 +4,9 @@ Reference implementation: `ai/agents/web/` (distributed as `web-agent`). Copy th
 structure verbatim for a new agent, replacing the short folder name `web` and
 the tool set. Registry/docs/demo/CLI use `<short>-agent` (e.g. `web-agent`).
 
+**Before choosing tools:** read [agent-foundation-strategy.md](agent-foundation-strategy.md)
+— v1 should be 3–5 core tools, not a full vendor demo port.
+
 ## Directory layout
 
 ```
