@@ -1,6 +1,6 @@
 # ecommerce-agent — SPEC
 
-> Status: approved
+> Status: implemented
 > Approved by: @user | date: 2026-07-28
 
 ## Job
@@ -124,14 +124,14 @@ data/ecommerce-agent.local/
 
 ## Acceptance criteria
 
-- [ ] User can `npx agentcn add ecommerce-agent` and install all required files
-- [ ] `map_store` returns URLs with basic product/category classification
-- [ ] `extract_products` returns structured JSON using commerce schema
-- [ ] Outputs land under `data/ecommerce-agent.local/`
-- [ ] Clear error when `FIRECRAWL_API_KEY` is missing
-- [ ] Docs page + simulated demo with ≥2 scenarios
-- [ ] Tests pass: `pnpm jest ai/agents/ecommerce` (unit + gated live)
-- [ ] `pnpm agentcn:registry:build` + `pnpm exec nx run @kit/web:build` pass
+- [x] User can `npx agentcn add ecommerce-agent` and install all required files
+- [x] `map_store` returns URLs with basic product/category classification
+- [x] `extract_products` returns structured JSON using commerce schema
+- [x] Outputs land under `data/ecommerce-agent.local/`
+- [x] Clear error when `FIRECRAWL_API_KEY` is missing
+- [x] Docs page + simulated demo with ≥2 scenarios
+- [x] Tests pass: `pnpm jest ai/agents/ecommerce` (unit + gated live)
+- [x] `pnpm agentcn:registry:build` + `pnpm exec nx run @kit/web:build` pass
 
 ## Gate checklist
 
