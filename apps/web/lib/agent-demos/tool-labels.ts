@@ -16,6 +16,14 @@ function fileInput(input: Record<string, string>) {
   return input.file_path ?? "unknown"
 }
 
+function storeInput(input: Record<string, string>) {
+  return input.store_url ?? input.product_url ?? "unknown"
+}
+
+function catalogInput(input: Record<string, string>) {
+  return input.catalog_name ?? "unknown"
+}
+
 const toolLabelFormatters: Record<
   DemoToolPart["tool"],
   (part: DemoToolPart) => string
@@ -35,6 +43,12 @@ const toolLabelFormatters: Record<
   image_information_extraction: (part) =>
     `Extract image: ${fileInput(part.input)}`,
   save_extraction: (part) => `Save extraction: ${taskInput(part.input)}`,
+  map_store: (part) => `Map store: ${storeInput(part.input)}`,
+  infer_product_schema: (part) =>
+    `Infer product schema: ${storeInput(part.input)}`,
+  extract_products: (part) =>
+    `Extract products: ${part.input.urls ?? "urls"}`,
+  save_catalog: (part) => `Save catalog: ${catalogInput(part.input)}`,
 }
 
 export function getDemoToolLabel(part: DemoToolPart): string {

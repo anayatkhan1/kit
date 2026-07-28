@@ -1,4 +1,4 @@
 {
   "title": "Agents",
-  "pages": ["web-agent", "extraction-agent"]
+  "pages": ["web-agent", "extraction-agent", "ecommerce-agent"]
 }
