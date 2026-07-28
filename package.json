@@ -53,6 +53,7 @@
   ],
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
+    "@mendable/firecrawl-js": "^1.29.1",
     "ai": "^6.0.161",
     "anchorbrowser": "^0.16.3",
     "exa-js": "^1.8.27",
