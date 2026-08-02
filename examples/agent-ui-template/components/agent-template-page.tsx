@@ -185,6 +185,13 @@ export function AgentTemplatePage() {
 								<code>receipts/cafe.png</code>
 							</p>
 						) : null}
+						{agentId === "ecommerce-agent" ? (
+							<p className="mt-1 text-slate-500 text-xs">
+								Workspace: <code>data/ecommerce-agent.local/</code> — maps,
+								schemas, and catalogs. Use a public store URL (Shopify demos
+								work well).
+							</p>
+						) : null}
 					</div>
 					<form onSubmit={handleSubmit}>
 						<PromptInput
@@ -222,7 +229,9 @@ export function AgentTemplatePage() {
 								placeholder={
 									agentId === "extraction-agent"
 										? "Ask to extract from a PDF, spreadsheet, or image..."
-										: "Try the web agent in this template app..."
+										: agentId === "ecommerce-agent"
+											? "Ask to map a store or extract product pricing..."
+											: "Try the web agent in this template app..."
 								}
 								className="text-base text-slate-900 placeholder:text-slate-500 "
 							/>

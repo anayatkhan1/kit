@@ -45,6 +45,26 @@ const filePathToolInput = (part: ToolLikePart) => {
 	return "unknown";
 };
 
+const storeUrlToolInput = (part: ToolLikePart) => {
+	const input = asRecord(part.input);
+	const url = input?.store_url ?? input?.product_url;
+	if (typeof url === "string" && url.length > 0) return url;
+	return "unknown";
+};
+
+const catalogToolInput = (part: ToolLikePart) => {
+	const name = asRecord(part.input)?.catalog_name;
+	if (typeof name === "string" && name.length > 0) return name;
+	return "unknown";
+};
+
+const urlsToolInput = (part: ToolLikePart) => {
+	const urls = asRecord(part.input)?.urls;
+	if (Array.isArray(urls) && urls.length > 0) return `${urls.length} urls`;
+	if (typeof urls === "string" && urls.length > 0) return urls;
+	return "urls";
+};
+
 const toolLabelFormatters: Record<string, (part: ToolLikePart) => string> = {
 	"tool-writeFile": (part) => `Write: ${pathToolInput(part)}`,
 	"tool-readFile": (part) => `Read: ${pathToolInput(part)}`,
@@ -70,6 +90,12 @@ const toolLabelFormatters: Record<string, (part: ToolLikePart) => string> = {
 	"tool-image_information_extraction": (part) =>
 		`Extract image: ${filePathToolInput(part)}`,
 	"tool-save_extraction": (part) => `Save extraction: ${taskToolInput(part)}`,
+	"tool-map_store": (part) => `Map store: ${storeUrlToolInput(part)}`,
+	"tool-infer_product_schema": (part) =>
+		`Infer product schema: ${storeUrlToolInput(part)}`,
+	"tool-extract_products": (part) =>
+		`Extract products: ${urlsToolInput(part)}`,
+	"tool-save_catalog": (part) => `Save catalog: ${catalogToolInput(part)}`,
 };
 
 export function getToolLabel(part: ToolLikePart): string {

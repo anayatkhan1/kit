@@ -1,5 +1,7 @@
 import "server-only";
 import { anthropic } from "@ai-sdk/anthropic";
+import { SYSTEM_PROMPT as ECOMMERCE_AGENT_PROMPT } from "@kit-ai/agents/ecommerce/prompt";
+import { ecommerceToolset } from "@kit-ai/agents/ecommerce/tools/toolset";
 import { SYSTEM_PROMPT as EXTRACTION_AGENT_PROMPT } from "@kit-ai/agents/extraction/prompt";
 import { extractionToolset } from "@kit-ai/agents/extraction/tools/toolset";
 import { SYSTEM_PROMPT as WEB_AGENT_PROMPT } from "@kit-ai/agents/web/prompt";
@@ -44,6 +46,19 @@ export const agentRegistry: Record<AgentId, AgentConfig> = {
 		model: anthropic("claude-sonnet-4-5-20250929"),
 		stopWhen: [stepCountIs(25)],
 		localTools: extractionToolset,
+	},
+	"ecommerce-agent": {
+		id: "ecommerce-agent",
+		label: "E-commerce Agent",
+		description:
+			"Maps stores and extracts product, pricing, and inventory data with Firecrawl.",
+		starterPrompt:
+			"Map https://www.firecrawl.dev with limit 20, list product/category URLs, then explain what you found.",
+		env: ["ANTHROPIC_API_KEY", "FIRECRAWL_API_KEY"],
+		systemPrompt: ECOMMERCE_AGENT_PROMPT,
+		model: anthropic("claude-sonnet-4-5-20250929"),
+		stopWhen: [stepCountIs(25)],
+		localTools: ecommerceToolset,
 	},
 };
 

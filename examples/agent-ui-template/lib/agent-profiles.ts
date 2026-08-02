@@ -1,4 +1,4 @@
-export type AgentId = "web-agent" | "extraction-agent";
+export type AgentId = "web-agent" | "extraction-agent" | "ecommerce-agent";
 
 export type AgentProfile = {
 	id: AgentId;
@@ -25,6 +25,15 @@ export const agentProfiles: Record<AgentId, AgentProfile> = {
 		starterPrompt:
 			"Extract the invoice number, total due, and due date from invoices/acme.pdf. Cite pages.",
 		env: ["ANTHROPIC_API_KEY"],
+	},
+	"ecommerce-agent": {
+		id: "ecommerce-agent",
+		label: "E-commerce Agent",
+		description:
+			"Maps stores and extracts product, pricing, and inventory data with Firecrawl.",
+		starterPrompt:
+			"Map https://www.firecrawl.dev with limit 20, list product/category URLs, then explain what you found.",
+		env: ["ANTHROPIC_API_KEY", "FIRECRAWL_API_KEY"],
 	},
 };
 
