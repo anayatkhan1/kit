@@ -20,6 +20,15 @@
         "documents",
         "spreadsheets"
       ]
+    },
+    {
+      "name": "ecommerce-agent",
+      "description": "Extract structured product, pricing, and inventory data from any public e-commerce site with Firecrawl.",
+      "categories": [
+        "web",
+        "ecommerce",
+        "scraping"
+      ]
     }
   ]
 }

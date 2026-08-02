@@ -29,7 +29,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:web-agent": "jest ai/agents/web",
-    "test:extraction-agent": "jest ai/agents/extraction"
+    "test:extraction-agent": "jest ai/agents/extraction",
+    "test:ecommerce-agent": "jest ai/agents/ecommerce"
   },
   "private": true,
   "devDependencies": {
@@ -53,6 +54,7 @@
   ],
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
+    "@mendable/firecrawl-js": "^1.29.1",
     "ai": "^6.0.161",
     "anchorbrowser": "^0.16.3",
     "exa-js": "^1.8.27",

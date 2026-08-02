@@ -1,0 +1,133 @@
+---
+title: E-commerce Agent
+description: Extract structured product, pricing, and inventory data from any public e-commerce site with Firecrawl.
+component: true
+---
+
+<AgentDemoPreview agentId="ecommerce-agent" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx agentcn@latest add ecommerce-agent
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install ai @ai-sdk/anthropic zod @mendable/firecrawl-js
+```
+
+<Step>Set environment variables in your `.env` file. Get each key from its provider:</Step>
+
+- [ANTHROPIC_API_KEY](https://console.anthropic.com/settings/keys) — Anthropic Console
+- [FIRECRAWL_API_KEY](https://www.firecrawl.dev/app/api-keys) — Firecrawl Dashboard
+
+```bash
+ANTHROPIC_API_KEY=
+FIRECRAWL_API_KEY=
+```
+
+<Step>Copy the agent source into your project.</Step>
+
+<ComponentSource src="../../ai/agents/ecommerce/agent.ts" title="ai/agents/ecommerce/agent.ts" />
+
+<Step>Update import paths and add remaining files from the registry payload (`ai/agents/ecommerce/*`) to match your project layout.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Wire your API route
+
+Create `app/api/chat/route.ts` in your Next.js app:
+
+```tsx showLineNumbers
+import { ecommerceAgent } from "@/agents/ecommerce";
+import { convertToModelMessages, type UIMessage } from "ai";
+
+export async function POST(req: Request) {
+  const { messages }: { messages: UIMessage[] } = await req.json();
+  const result = ecommerceAgent(await convertToModelMessages(messages));
+  return result.toUIMessageStreamResponse();
+}
+```
+
+The CLI adds a `@/agents/*` path alias pointing at `./ai/agents/*` in your `tsconfig.json`.
+
+Catalogs, maps, and schemas are written under `data/ecommerce-agent.local/`.
+
+## API keys required
+
+The e-commerce agent needs live Anthropic and Firecrawl API keys — there is no mock or offline fallback for store scraping.
+
+- [ANTHROPIC_API_KEY](https://console.anthropic.com/settings/keys) — Claude model
+- [FIRECRAWL_API_KEY](https://www.firecrawl.dev/app/api-keys) — map + batch scrape
+
+## Configuration
+
+Environment variables required by `ecommerce-agent`.
+
+<TypeTable
+  type={{
+    ANTHROPIC_API_KEY: {
+      type: "string",
+      href: "https://console.anthropic.com/settings/keys",
+      description: "Required for the Claude model used by the agent.",
+    },
+    FIRECRAWL_API_KEY: {
+      type: "string",
+      href: "https://www.firecrawl.dev/app/api-keys",
+      description: "Required for mapping stores and extracting product pages.",
+    },
+  }}
+/>
+
+### Tools
+
+The agent exposes these tools (see `ai/agents/ecommerce/tools/toolset.ts`):
+
+- `map_store` — discover product and category URLs on a store (sitemap-style; best for Shopify)
+- `discover_products` — scrape a category/search page and extract product links (use for Amazon `/b/`, `/s?`)
+- `infer_product_schema` — sample one product page and suggest commerce fields
+- `extract_products` — batch-scrape product URLs with a JSON schema
+- `save_catalog` — write JSON or CSV under `data/ecommerce-agent.local/catalogs`
+
+### Default product schema
+
+When you omit a custom schema, `extract_products` uses commerce fields: title, SKU, description, price, currency, compare-at price, stock, category, image, rating, review count, variants, and URL. Works across Shopify, WooCommerce, Magento, BigCommerce, and custom stores — same tools, any public store URL.
+
+### Example prompts
+
+- "Map all product URLs on `https://example-shop.com` and save the list."
+- "Infer a product schema from this sample URL, then extract title, price, SKU, and stock from these 20 product links."
+- "Scrape this competitor category and save a catalog JSON for price comparison."
+
+## Extend this agent
+
+Add your own tools without forking:
+
+1. Create `tools/<new-tool>.ts` with `tool({ description, inputSchema, execute })`.
+2. Add a zod schema in `tools/schema.ts`.
+3. Register it in `tools/toolset.ts`.
+4. Update `prompt.ts` so the agent knows when to call it.
+5. If the tool needs new secrets, add them to the registry `envVars` (maintainers) or your `.env`.
+
+**Example extension:** `normalize_shopify_export` — transform a saved catalog into a Shopify CSV import format. Keep scheduling/price alerts outside the agent (cron or a job runner) and call `extract_products` + `save_catalog` on each run.

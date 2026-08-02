@@ -10,6 +10,11 @@ export type DemoToolName =
   | "spreadsheet_information_extraction"
   | "image_information_extraction"
   | "save_extraction"
+  | "map_store"
+  | "discover_products"
+  | "infer_product_schema"
+  | "extract_products"
+  | "save_catalog"
 
 export type DemoToolPart = {
   type: "tool"

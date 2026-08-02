@@ -122,4 +122,56 @@ export const agents: RegistryAgentItem[] = [
       providers: ["anthropic"],
     },
   },
+  {
+    name: "ecommerce-agent",
+    type: "registry:agent",
+    description:
+      "Extract structured product, pricing, and inventory data from any public e-commerce site with Firecrawl.",
+    title: "E-commerce Agent",
+    categories: ["web", "ecommerce", "scraping"],
+    dependencies: [
+      "ai",
+      "@ai-sdk/anthropic",
+      "zod",
+      "@mendable/firecrawl-js",
+    ],
+    envVars: {
+      ANTHROPIC_API_KEY: "",
+      FIRECRAWL_API_KEY: "",
+    },
+    files: [
+      { path: "ai/agents/ecommerce/index.ts", type: "registry:agent" },
+      { path: "ai/agents/ecommerce/agent.ts", type: "registry:agent" },
+      { path: "ai/agents/ecommerce/prompt.ts", type: "registry:agent" },
+      { path: "ai/agents/ecommerce/tools/index.ts", type: "registry:lib" },
+      { path: "ai/agents/ecommerce/tools/toolset.ts", type: "registry:lib" },
+      { path: "ai/agents/ecommerce/tools/schema.ts", type: "registry:lib" },
+      { path: "ai/agents/ecommerce/tools/types.ts", type: "registry:lib" },
+      { path: "ai/agents/ecommerce/tools/core.ts", type: "registry:lib" },
+      {
+        path: "ai/agents/ecommerce/tools/map-store.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/ecommerce/tools/discover-products.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/ecommerce/tools/infer-product-schema.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/ecommerce/tools/extract-products.ts",
+        type: "registry:lib",
+      },
+      {
+        path: "ai/agents/ecommerce/tools/save-catalog.ts",
+        type: "registry:lib",
+      },
+    ],
+    meta: {
+      hasMockMode: false,
+      providers: ["anthropic", "firecrawl"],
+    },
+  },
 ];
