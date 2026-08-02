@@ -10,7 +10,7 @@ import { mapStoreSchema } from "./schema";
 
 export const mapStoreTool = tool({
   description:
-    "Map an e-commerce store and discover product/category URLs using Firecrawl. Saves the map under data/ecommerce-agent.local/maps/ by default.",
+    "Map an e-commerce store via Firecrawl sitemap-style discovery. Best for Shopify and open catalogs. For Amazon category/search pages (/b/, /s?), use discover_products instead — map usually returns almost no product URLs.",
   inputSchema: mapStoreSchema,
   execute: async ({
     store_url,

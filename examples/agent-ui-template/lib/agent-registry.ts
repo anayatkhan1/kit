@@ -53,7 +53,7 @@ export const agentRegistry: Record<AgentId, AgentConfig> = {
 		description:
 			"Maps stores and extracts product, pricing, and inventory data with Firecrawl.",
 		starterPrompt:
-			"Map https://www.firecrawl.dev with limit 20, list product/category URLs, then explain what you found.",
+			"Discover product URLs from this Amazon mattresses browse page (limit 20), then list them: https://www.amazon.in/b/?node=76925265031",
 		env: ["ANTHROPIC_API_KEY", "FIRECRAWL_API_KEY"],
 		systemPrompt: ECOMMERCE_AGENT_PROMPT,
 		model: anthropic("claude-sonnet-4-5-20250929"),

@@ -104,7 +104,8 @@ Environment variables required by `ecommerce-agent`.
 
 The agent exposes these tools (see `ai/agents/ecommerce/tools/toolset.ts`):
 
-- `map_store` — discover product and category URLs on a store
+- `map_store` — discover product and category URLs on a store (sitemap-style; best for Shopify)
+- `discover_products` — scrape a category/search page and extract product links (use for Amazon `/b/`, `/s?`)
 - `infer_product_schema` — sample one product page and suggest commerce fields
 - `extract_products` — batch-scrape product URLs with a JSON schema
 - `save_catalog` — write JSON or CSV under `data/ecommerce-agent.local/catalogs`

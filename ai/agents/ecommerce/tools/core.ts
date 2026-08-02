@@ -122,25 +122,123 @@ export function buildTaskMetadata(taskName: string) {
   };
 }
 
+/** Shopify/Woo/custom product paths + Amazon /dp/ASIN and /gp/product/. */
 const PRODUCT_PATH_HINTS =
-  /\/(products?|product|p|item|sku|dp|gp\/product)(\/|$)/i;
+  /\/(products?|product|item|sku|gp\/product)(\/|$)|\/dp\/[A-Z0-9]{8,}(\/|$)|\/gp\/aw\/d\/[A-Z0-9]{8,}(\/|$)/i;
 const CATEGORY_PATH_HINTS =
-  /\/(collections?|categor(y|ies)|shop|catalog|search)(\/|$)/i;
+  /\/(collections?|categor(y|ies)|shop|catalog|b\/|zgbs|Best-Sellers)(\/|$)|\/s(\/|$|\?)/i;
 const NON_PRODUCT_HINTS =
-  /\/(cart|checkout|account|login|signup|blog|news|about|contact|policy|privacy|terms|faq|help)(\/|$)/i;
+  /\/(cart|checkout|account|login|signup|blog|news|about|contact|policy|privacy|terms|faq|help|customer|gp\/cart|gp\/css)(\/|$)/i;
 
 export type UrlClass = "product" | "category" | "other";
 
 export function classifyStoreUrl(url: string): UrlClass {
   try {
-    const pathname = new URL(url).pathname;
+    const parsed = new URL(url);
+    const pathname = parsed.pathname;
+    const search = parsed.search;
     if (NON_PRODUCT_HINTS.test(pathname)) return "other";
+    // Amazon search / browse nodes
+    if (
+      pathname === "/s" ||
+      pathname.startsWith("/s/") ||
+      pathname.includes("/b/") ||
+      search.includes("node=")
+    ) {
+      return "category";
+    }
     if (PRODUCT_PATH_HINTS.test(pathname)) return "product";
     if (CATEGORY_PATH_HINTS.test(pathname)) return "category";
     return "other";
   } catch {
     return "other";
   }
+}
+
+/** Normalize Amazon product URLs to canonical /dp/ASIN form when possible. */
+export function canonicalizeProductUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    const dp = parsed.pathname.match(/\/dp\/([A-Z0-9]{8,})/i);
+    if (dp) {
+      return `${parsed.origin}/dp/${dp[1]}`;
+    }
+    const gp = parsed.pathname.match(/\/gp\/(?:product|aw\/d)\/([A-Z0-9]{8,})/i);
+    if (gp) {
+      return `${parsed.origin}/dp/${gp[1]}`;
+    }
+    // Strip tracking query for Shopify-style product URLs
+    if (/\/products?\//i.test(parsed.pathname)) {
+      parsed.search = "";
+      parsed.hash = "";
+      return parsed.toString();
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Pull product-like hrefs from a scraped page (Firecrawl `links` format or markdown).
+ * Used when map_store fails on JS-heavy marketplaces (Amazon category/search pages).
+ */
+export function extractProductLinksFromPage(
+  links: unknown,
+  options?: { limit?: number; sameHostAs?: string }
+): string[] {
+  const limit = options?.limit ?? 50;
+  const raw: string[] = [];
+
+  if (Array.isArray(links)) {
+    for (const item of links) {
+      if (typeof item === "string") raw.push(item);
+      else if (item && typeof item === "object" && "url" in item) {
+        const u = (item as { url?: unknown }).url;
+        if (typeof u === "string") raw.push(u);
+      } else if (item && typeof item === "object" && "href" in item) {
+        const u = (item as { href?: unknown }).href;
+        if (typeof u === "string") raw.push(u);
+      }
+    }
+  }
+
+  let sameHost: string | undefined;
+  if (options?.sameHostAs) {
+    try {
+      sameHost = new URL(normalizeUrl(options.sameHostAs)).hostname;
+    } catch {
+      sameHost = undefined;
+    }
+  }
+
+  const seen = new Set<string>();
+  const products: string[] = [];
+
+  for (const href of raw) {
+    let absolute: string;
+    try {
+      absolute = normalizeUrl(href);
+    } catch {
+      continue;
+    }
+    try {
+      const host = new URL(absolute).hostname;
+      if (sameHost && host !== sameHost && !host.endsWith(`.${sameHost}`)) {
+        continue;
+      }
+    } catch {
+      continue;
+    }
+    if (classifyStoreUrl(absolute) !== "product") continue;
+    const canonical = canonicalizeProductUrl(absolute);
+    if (seen.has(canonical)) continue;
+    seen.add(canonical);
+    products.push(canonical);
+    if (products.length >= limit) break;
+  }
+
+  return products;
 }
 
 export function classifyUrls(urls: string[]) {

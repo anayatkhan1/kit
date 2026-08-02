@@ -11,14 +11,14 @@ export const ecommerceAgentDemo: AgentDemoConfig = {
       id: "catalog",
       label: "Catalog extraction",
       prompt:
-        "Map https://demo-shop.example and extract title, price, and stock for the first product URLs. Save as demo-catalog.",
+        "Discover products on https://demo-shop.example/collections/all then extract title, price, and stock. Save as demo-catalog.",
       assistantParts: [
         {
           type: "tool",
-          tool: "map_store",
+          tool: "discover_products",
           input: {
-            store_url: "https://demo-shop.example",
-            limit: "50",
+            listing_url: "https://demo-shop.example/collections/all",
+            limit: "20",
           },
         },
         {
@@ -38,7 +38,7 @@ export const ecommerceAgentDemo: AgentDemoConfig = {
         },
         {
           type: "text",
-          text: `Mapped **demo-shop.example** and extracted 2 products:
+          text: `Found product links on the collection page and extracted 2 products:
 
 • **Classic Tee** — $29 · in stock · [/products/tee](https://demo-shop.example/products/tee)
 • **Zip Hoodie** — $68 · low stock · [/products/hoodie](https://demo-shop.example/products/hoodie)

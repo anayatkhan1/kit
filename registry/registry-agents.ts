@@ -153,6 +153,10 @@ export const agents: RegistryAgentItem[] = [
         type: "registry:lib",
       },
       {
+        path: "ai/agents/ecommerce/tools/discover-products.ts",
+        type: "registry:lib",
+      },
+      {
         path: "ai/agents/ecommerce/tools/infer-product-schema.ts",
         type: "registry:lib",
       },

@@ -45,7 +45,8 @@ describe("ecommerce workspace helpers", () => {
   });
 
   it("classifies product and category URLs", async () => {
-    const { classifyUrls, classifyStoreUrl } = await import("../tools/core");
+    const { classifyUrls, classifyStoreUrl, canonicalizeProductUrl } =
+      await import("../tools/core");
     expect(classifyStoreUrl("https://shop.example/products/blue-shirt")).toBe(
       "product"
     );
@@ -53,6 +54,21 @@ describe("ecommerce workspace helpers", () => {
       "category"
     );
     expect(classifyStoreUrl("https://shop.example/cart")).toBe("other");
+    expect(
+      classifyStoreUrl(
+        "https://www.amazon.in/Softness-Orthopedic-Mattress/dp/B0DXXXX123"
+      )
+    ).toBe("product");
+    expect(
+      classifyStoreUrl(
+        "https://www.amazon.in/b/ref=MATTRESSES/?node=76925265031"
+      )
+    ).toBe("category");
+    expect(
+      canonicalizeProductUrl(
+        "https://www.amazon.in/Name/dp/B0DXXXX123/ref=sr_1_1?keywords=x"
+      )
+    ).toBe("https://www.amazon.in/dp/B0DXXXX123");
 
     const analysis = classifyUrls([
       "https://shop.example/products/a",
@@ -63,6 +79,23 @@ describe("ecommerce workspace helpers", () => {
     expect(analysis.product_count).toBe(2);
     expect(analysis.category_count).toBe(1);
     expect(analysis.other_count).toBe(1);
+  });
+
+  it("extracts Amazon product links from a link list", async () => {
+    const { extractProductLinksFromPage } = await import("../tools/core");
+    const products = extractProductLinksFromPage(
+      [
+        "https://www.amazon.in/Foo-Mattress/dp/B0AAAA1111/ref=sr_1_1",
+        "https://www.amazon.in/b/ref=MATTRESSES/",
+        "https://www.amazon.in/Bar/dp/B0BBBB2222",
+        "https://other.com/dp/B0CCCC3333",
+      ],
+      { limit: 10, sameHostAs: "https://www.amazon.in/b/" }
+    );
+    expect(products).toEqual([
+      "https://www.amazon.in/dp/B0AAAA1111",
+      "https://www.amazon.in/dp/B0BBBB2222",
+    ]);
   });
 
   it("infers commerce fields from sample content", async () => {

@@ -44,6 +44,8 @@ const toolLabelFormatters: Record<
     `Extract image: ${fileInput(part.input)}`,
   save_extraction: (part) => `Save extraction: ${taskInput(part.input)}`,
   map_store: (part) => `Map store: ${storeInput(part.input)}`,
+  discover_products: (part) =>
+    `Discover products: ${part.input.listing_url ?? storeInput(part.input)}`,
   infer_product_schema: (part) =>
     `Infer product schema: ${storeInput(part.input)}`,
   extract_products: (part) =>

@@ -31,6 +31,27 @@ const mapStoreSchema = z.object({
     .describe("Save the URL map under data/ecommerce-agent.local/maps/."),
 });
 
+const discoverProductsSchema = z.object({
+  listing_url: z
+    .string()
+    .describe(
+      "Category, search, or browse-node URL (e.g. Amazon /b/ or /s?, Shopify /collections/). Scrapes the page and extracts product links."
+    ),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .optional()
+    .default(20)
+    .describe("Max product URLs to return. Default 20."),
+  save_map: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Save discovered URLs under data/ecommerce-agent.local/maps/."),
+});
+
 const inferProductSchemaSchema = z.object({
   product_url: z
     .string()
@@ -89,6 +110,7 @@ const saveCatalogSchema = z.object({
 
 export {
   mapStoreSchema,
+  discoverProductsSchema,
   inferProductSchemaSchema,
   extractProductsSchema,
   saveCatalogSchema,

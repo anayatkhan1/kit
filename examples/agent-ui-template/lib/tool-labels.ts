@@ -91,6 +91,13 @@ const toolLabelFormatters: Record<string, (part: ToolLikePart) => string> = {
 		`Extract image: ${filePathToolInput(part)}`,
 	"tool-save_extraction": (part) => `Save extraction: ${taskToolInput(part)}`,
 	"tool-map_store": (part) => `Map store: ${storeUrlToolInput(part)}`,
+	"tool-discover_products": (part) => {
+		const listing = asRecord(part.input)?.listing_url;
+		if (typeof listing === "string" && listing.length > 0) {
+			return `Discover products: ${listing}`;
+		}
+		return `Discover products: ${storeUrlToolInput(part)}`;
+	},
 	"tool-infer_product_schema": (part) =>
 		`Infer product schema: ${storeUrlToolInput(part)}`,
 	"tool-extract_products": (part) =>
