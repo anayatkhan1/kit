@@ -56,7 +56,7 @@ export async function generateMetadata({
       title,
       description,
       images: [absoluteUrl(siteConfig.ogImage)],
-      creator: "@shadcn",
+      creator: `@${siteConfig.social.twitterHandle}`,
     },
   }
 }

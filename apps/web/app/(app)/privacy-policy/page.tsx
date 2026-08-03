@@ -8,8 +8,11 @@ const description =
   "How AgentCN collects and uses information when you visit agentcn.dev and use our docs and registry."
 
 export const metadata: Metadata = {
-  ...createStaticOGMetadata(`AgentCN • ${title}`, description),
-  metadataBase: new URL(siteConfig.url),
+  ...createStaticOGMetadata(
+    `AgentCN • ${title}`,
+    description,
+    "/privacy-policy"
+  ),
 }
 
 export default function PrivacyPolicyPage() {

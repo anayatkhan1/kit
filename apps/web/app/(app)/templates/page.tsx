@@ -25,7 +25,7 @@ const title = "Production Ready Templates"
 const description =
   "Complete starter templates for AI agents and modern web apps. Open source and production-ready — clone, customize, and ship fast."
 
-export const metadata = createStaticOGMetadata(title, description)
+export const metadata = createStaticOGMetadata(title, description, "/templates")
 
 export default async function TemplatesPage() {
   const templates = getAllTemplates()
