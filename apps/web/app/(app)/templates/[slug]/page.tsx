@@ -2,7 +2,6 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { mdxComponents } from "@/mdx-components"
 
-import { siteConfig } from "@/lib/config"
 import { createStaticOGMetadata } from "@/lib/metadata"
 import { getAllTemplates } from "@/lib/templates"
 import { templatesSource } from "@/lib/templates-source"
@@ -45,15 +44,14 @@ export async function generateMetadata(props: {
   }
 
   return {
-    ...createStaticOGMetadata(doc.title, doc.description),
+    ...createStaticOGMetadata(doc.title, doc.description, page.url),
     openGraph: {
-      ...createStaticOGMetadata(doc.title, doc.description).openGraph,
+      ...createStaticOGMetadata(doc.title, doc.description, page.url).openGraph,
       type: "article",
       url: absoluteUrl(page.url),
     },
     twitter: {
-      ...createStaticOGMetadata(doc.title, doc.description).twitter,
-      creator: `@${siteConfig.social.twitterHandle}`,
+      ...createStaticOGMetadata(doc.title, doc.description, page.url).twitter,
     },
   }
 }

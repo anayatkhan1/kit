@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "AgentCN",
-      url: "https://agentcn.dev",
+      url: siteUrl,
     },
   ],
   creator: "AgentCN",
@@ -81,7 +81,8 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
-  manifest: `${siteConfig.url}/site.webmanifest`,
+  // Prefer relative so metadataBase (www) resolves correctly
+  manifest: "/site.webmanifest",
 }
 
 export default function RootLayout({

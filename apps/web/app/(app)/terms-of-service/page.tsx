@@ -8,8 +8,11 @@ const description =
   "Terms for using the AgentCN website, documentation, and open source agent registry."
 
 export const metadata: Metadata = {
-  ...createStaticOGMetadata(`AgentCN • ${title}`, description),
-  metadataBase: new URL(siteConfig.url),
+  ...createStaticOGMetadata(
+    `AgentCN • ${title}`,
+    description,
+    "/terms-of-service"
+  ),
 }
 
 export default function TermsOfServicePage() {

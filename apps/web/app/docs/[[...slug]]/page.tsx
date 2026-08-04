@@ -45,15 +45,14 @@ export async function generateMetadata(props: {
   }
 
   return {
-    ...createStaticOGMetadata(doc.title, doc.description),
+    ...createStaticOGMetadata(doc.title, doc.description, page.url),
     openGraph: {
-      ...createStaticOGMetadata(doc.title, doc.description).openGraph,
+      ...createStaticOGMetadata(doc.title, doc.description, page.url).openGraph,
       type: "article",
       url: absoluteUrl(page.url),
     },
     twitter: {
-      ...createStaticOGMetadata(doc.title, doc.description).twitter,
-      creator: `@${siteConfig.social.twitterHandle}`,
+      ...createStaticOGMetadata(doc.title, doc.description, page.url).twitter,
     },
   }
 }

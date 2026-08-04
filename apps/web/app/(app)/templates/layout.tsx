@@ -4,7 +4,7 @@ const title = "Production Ready Templates"
 const description =
   "Open source starter templates for AI agents and modern web apps. Clone, customize, and ship with AgentCN."
 
-export const metadata = createStaticOGMetadata(title, description)
+export const metadata = createStaticOGMetadata(title, description, "/templates")
 
 export default function BlocksLayout({
   children,

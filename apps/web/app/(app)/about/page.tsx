@@ -9,8 +9,7 @@ const description =
   "AgentCN is an open source kit for installable AI agents: CLI, registry, docs, and editable source in your repo."
 
 export const metadata: Metadata = {
-  ...createStaticOGMetadata(`AgentCN • ${title}`, description),
-  metadataBase: new URL(siteConfig.url),
+  ...createStaticOGMetadata(`AgentCN • ${title}`, description, "/about"),
 }
 
 export default function AboutPage() {

@@ -1,7 +1,9 @@
 export const siteConfig = {
   name: "AgentCN",
-  url: "https://agentcn.dev",
-  ogImage: "/opengraph-image",
+  // Primary production host (apex redirects to www — OG URLs must not 307).
+  url: "https://www.agentcn.dev",
+  // Static PNG in /public — extension + cache-friendly for Twitter/LinkedIn/Slack.
+  ogImage: "/og.png",
   description:
     "Open source kit for installable AI agents. CLI, registry, docs, and editable agent source in your repo.",
   links: {

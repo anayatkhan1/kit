@@ -28,7 +28,7 @@ const description =
 export const dynamic = "force-static"
 export const revalidate = false
 
-export const metadata = createStaticOGMetadata(title, description)
+export const metadata = createStaticOGMetadata(title, description, "/")
 
 const stackSignals = [
   { name: "TypeScript", icon: <TypeScriptIcon /> },
