@@ -1,67 +1,98 @@
 # AgentCN
 
-AgentCN is an open source kit for **installable AI agents**. Use the CLI to pull agent source into your project, run agents locally, and customize prompts and tools in your own codebase as the library grows.
+**Installable AI agents for your stack.**
 
-<img width="980" alt="AgentCN — Installable AI agents for your workflow" src="./assets/readme-hero.jpg" />
+Add an agent with one CLI command. Source lands in your repo as real TypeScript — prompts, tools, and runtime you can edit and own.
 
-**Docs:** [agentcn.dev/docs](https://agentcn.dev/docs) · **Registry:** [agentcn.dev/r](https://agentcn.dev/r) · **GitHub:** [anayatkhan1/kit](https://github.com/anayatkhan1/kit)
+<p align="center">
+  <img
+    src="./assets/readme-hero.png"
+    alt="AgentCN — Installable AI agents for your stack"
+    width="980"
+  />
+</p>
 
-## Features
+<p align="center">
+  <a href="https://agentcn.dev/docs"><strong>Docs</strong></a>
+  ·
+  <a href="https://agentcn.dev/r"><strong>Registry</strong></a>
+  ·
+  <a href="https://www.npmjs.com/package/agentcn"><strong>npm</strong></a>
+  ·
+  <a href="https://github.com/anayatkhan1/kit"><strong>GitHub</strong></a>
+</p>
 
-- **CLI install** — Add agents to any project with `npx agentcn@latest add web-agent` (pnpm, yarn, bun supported).
-- **Agent registry** — Hosted JSON manifests at `https://agentcn.dev/r` with local override for development.
-- **Editable source** — Agents land in your repo as real TypeScript you can change, not opaque SDK calls.
-- **Web Agent** — Browser automation, web search, deep research, and Q&A tools built on the Vercel AI SDK.
-- **Docs & previews** — Documentation site with live agent previews and setup guides.
-- **Starter template** — [`agentkit-starter`](https://github.com/anayatkhan1/agentkit-starter) for shipping a full agent product fast.
-- **TypeScript** — Full type safety across agents, tools, and the CLI.
-- **Open source** — MIT licensed. CLI published as [`agentcn`](https://www.npmjs.com/package/agentcn) on npm.
+```bash
+npx agentcn@latest add web-agent
+```
 
-## Built with
+---
 
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vercel AI SDK](https://sdk.vercel.ai/)
-- [Anthropic](https://www.anthropic.com/) (Claude)
-- [Next.js](https://nextjs.org/) (docs site & demo)
-- [Nx](https://nx.dev/) (monorepo tooling)
-- [Fumadocs](https://fumadocs.dev/) (documentation)
-- [Playwright](https://playwright.dev/) / [Anchor Browser](https://anchorbrowser.io/) (web agent browser tools)
-- [Exa](https://exa.ai/) (web search)
+## Why AgentCN?
 
-### Tools
+Most AI kits ship opaque SDKs. AgentCN ships **agents you install like components**:
 
-- [pnpm](https://pnpm.io/) (package manager)
-- [Nx release](https://nx.dev/features/manage-releases) (versioning & changelogs)
-- [Jest](https://jestjs.io/) (agent tests)
-- [Prettier](https://prettier.io/) (formatting)
+| What you get | Why it matters |
+| --- | --- |
+| **CLI install** | `npx agentcn add <agent>` pulls files into your project |
+| **Hosted registry** | Manifests at [agentcn.dev/r](https://agentcn.dev/r) (local override for dev) |
+| **Editable source** | Real TypeScript under `ai/agents/` — change prompts and tools |
+| **Docs + demos** | Guides and simulated previews on [agentcn.dev](https://agentcn.dev) |
+
+Built on the [Vercel AI SDK](https://sdk.vercel.ai/), TypeScript, and Anthropic Claude.
+
+---
+
+Agents include web, extraction, and ecommerce — run `npx agentcn@latest list` or see the [docs](https://agentcn.dev/docs).
+
+---
 
 ## Quick start
 
-Install the **web agent** into your project:
+**1. Install an agent into your app**
 
 ```bash
 pnpm dlx agentcn@latest add web-agent
 # or
 npx agentcn@latest add web-agent
+# yarn / bun also work
 ```
 
-List available agents:
+**2. Set API keys** (agent-specific — see docs)
+
+```env
+ANTHROPIC_API_KEY=...
+# Web Agent also needs:
+# EXA_API_KEY=...
+# ANCHOR_API_KEY=...
+```
+
+**3. Call the agent from your code**
+
+After install, import from the generated path (typically `ai/agents/<name>`). Full wiring guides:
+
+- [Web Agent](https://agentcn.dev/docs/agents/web-agent)
+- [Extraction Agent](https://agentcn.dev/docs/agents/extraction-agent)
+- [Ecommerce Agent](https://agentcn.dev/docs/agents/ecommerce-agent)
+
+Useful flags:
 
 ```bash
-npx agentcn@latest list
+npx agentcn@latest add web-agent --dry-run   # preview files
+npx agentcn@latest add web-agent --yes       # skip prompts
 ```
 
-Set your API key and run the agent in your app. Full setup is in the [Web Agent docs](https://agentcn.dev/docs/agents/web-agent).
+---
 
-## Getting Started
+## Develop this monorepo
 
 ### Prerequisites
 
-- Node.js 18+ (recommended: 20+)
+- Node.js 20+ (18+ may work)
 - pnpm 9+
-- Anthropic API key (for running agents locally)
+- Anthropic API key (to run agents locally)
 
-### Clone & install
+### Install
 
 ```bash
 git clone https://github.com/anayatkhan1/kit.git
@@ -69,88 +100,42 @@ cd kit
 pnpm install
 ```
 
-### Run the docs site locally
+### Docs / marketing site
 
 ```bash
 cp apps/web/.env.example apps/web/.env
 pnpm web
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the marketing site and docs.
+Open [http://localhost:3000](http://localhost:3000).
 
-### Run the agent demo app (optional)
+`apps/web/.env`:
 
-For live agent testing with your API keys, run the demo app on port **3001**:
+```env
+# Local
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Production should match the host that serves 200 without redirect
+# NEXT_PUBLIC_APP_URL=https://www.agentcn.dev
+```
+
+### Live agent UI (optional)
+
+Docs pages use simulated demos. For real runs with your keys:
 
 ```bash
 cd examples/agent-ui-template
 pnpm install
-pnpm dev:embed    # port 3001
+pnpm dev:embed    # http://localhost:3001
 ```
 
-Docs agent pages use simulated examples and do not require this app.
-
-### Build for production
+### Production build
 
 ```bash
-pnpm deploy:build
+pnpm deploy:build   # registry JSON + Next.js build for @kit/web
 ```
 
-Runs agent registry generation and the Next.js production build for `@kit/web`.
-
-## Environment Variables
-
-Create a `.env` file at the repo root for agent development:
-
-```env
-# Required for running agents locally
-ANTHROPIC_API_KEY=your_anthropic_api_key
-
-# Optional: override default registry URL
-AGENTCN_REGISTRY_URL=https://agentcn.dev/r
-```
-
-For the docs site (`apps/web/.env`):
-
-```env
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### Getting API keys
-
-- **Anthropic:** [console.anthropic.com](https://console.anthropic.com/)
-
-## Project Structure
-
-```text
-kit/
-├── ai/
-│   └── agents/
-│       └── web/              # Web agent (browser, search, research tools)
-├── apps/
-│   └── web/                  # agentcn.dev — docs, registry host, marketing
-│       ├── content/docs/     # Documentation (MDX)
-│       └── public/r/         # Agent registry JSON (generated)
-├── packages/
-│   └── agentcn/cli/          # `agentcn` npm CLI
-├── examples/
-│   └── agent-ui-template/    # Local demo app for agent previews
-├── scripts/
-│   ├── build-agent-registry.mts
-│   └── verify-agentcn-registry-live.sh
-└── nx.json                   # Nx workspace & release config
-```
-
-## Usage
-
-### Install an agent
-
-```bash
-npx agentcn@latest add web-agent --dry-run   # preview files
-npx agentcn@latest add web-agent --yes       # install without prompts
-```
-
-### Develop against a local registry
+### Local registry (CLI against this repo)
 
 ```bash
 pnpm agentcn:registry:build
@@ -158,11 +143,7 @@ npx agentcn@latest list -r ./apps/web/public/r
 npx agentcn@latest add web-agent -r ./apps/web/public/r --dry-run --yes
 ```
 
-### Customize an agent
-
-After install, agent source lives in your project (typically under `ai/agents/`). Edit prompts, tools, and model settings directly in TypeScript.
-
-## Developing the monorepo
+### Common commands
 
 | Task | Command |
 | --- | --- |
@@ -171,55 +152,91 @@ After install, agent source lives in your project (typically under `ai/agents/`)
 | Build agent registry | `pnpm agentcn:registry:build` |
 | Build CLI | `pnpm agentcn:build` |
 | Test web agent | `pnpm test:web-agent` |
+| Test extraction agent | `pnpm test:extraction-agent` |
+| Test ecommerce agent | `pnpm test:ecommerce-agent` |
 | Verify live registry | `pnpm agentcn:registry:verify-live` |
-| CLI runner smoke tests | `pnpm agentcn:runner-matrix-smoke` |
-
-Explore projects and tasks:
 
 ```bash
 pnpm nx show projects
 pnpm nx show project agentcn --json
 ```
 
-## Releasing
+---
 
-The `agentcn` CLI uses [Nx release](https://nx.dev/features/manage-releases) with conventional commits. Changelog entries include PR links, dates, and author credits.
+## Project structure
 
-```bash
-pnpm release --dry-run --skip-publish   # preview
-pnpm release                            # version, changelog, tag, publish
+```text
+kit/
+├── ai/agents/
+│   ├── web/              # Web Agent
+│   ├── extraction/       # Extraction Agent
+│   └── ecommerce/        # Ecommerce Agent
+├── apps/web/             # agentcn.dev — docs, registry host, marketing
+│   ├── content/docs/     # MDX documentation
+│   └── public/r/         # Generated agent registry JSON
+├── packages/agentcn/cli/ # `agentcn` npm package
+├── examples/
+│   └── agent-ui-template/  # Local embed UI for live agent testing
+├── registry/             # Registry declarations (source of manifests)
+└── scripts/              # Registry build & verify helpers
 ```
 
-Maintainer checklist: [`packages/agentcn/cli/RELEASE.md`](packages/agentcn/cli/RELEASE.md)
-
-## Feature Requests
-
-Open a [GitHub discussion](https://github.com/anayatkhan1/kit/discussions/categories/agent-suggestions) or [issue](https://github.com/anayatkhan1/kit/issues).
-
-## Contribution Guidelines
-
-1. Fork the repository.
-2. Clone your fork and create a branch:
-
-```bash
-git checkout -b feat/your-feature-name
-```
-
-3. Make your changes and test locally (`pnpm test:web-agent`, `pnpm web:build`).
-4. Commit with [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) — required for Nx release changelogs.
-5. Push and open a pull request against `main`.
-
-### Code style
-
-- Match existing TypeScript and file layout conventions.
-- Run formatting in `apps/web` before committing: `pnpm web:format:check`
-
-## License
-
-AgentCN is licensed under the [MIT License](./LICENSE) with an additional clause restricting resale of unmodified or minimally modified versions.
-
-See [LICENSE](./LICENSE) for the full text.
+**Flow:** agent source in `ai/agents/` → registry build → `apps/web/public/r/<agent>.json` → `npx agentcn add` installs into a consumer repo.
 
 ---
 
-Built with ❤️ by [Anayat Khan](https://anayat.xyz)
+## Environment variables
+
+**Repo root** (running agents / tests):
+
+```env
+ANTHROPIC_API_KEY=your_anthropic_api_key
+AGENTCN_REGISTRY_URL=https://agentcn.dev/r   # optional override
+```
+
+**Keys by agent**
+
+| Agent | Required |
+| --- | --- |
+| Web | `ANTHROPIC_API_KEY`, `EXA_API_KEY`, `ANCHOR_API_KEY` |
+| Extraction | `ANTHROPIC_API_KEY` |
+| Ecommerce | `ANTHROPIC_API_KEY`, `FIRECRAWL_API_KEY` |
+
+Get an Anthropic key: [console.anthropic.com](https://console.anthropic.com/)
+
+---
+
+## Releasing the CLI
+
+The `agentcn` package uses [Nx release](https://nx.dev/features/manage-releases) and conventional commits.
+
+```bash
+pnpm release --dry-run --skip-publish
+pnpm release
+```
+
+Maintainer notes: [`packages/agentcn/cli/RELEASE.md`](packages/agentcn/cli/RELEASE.md)
+
+---
+
+## Contributing
+
+1. Fork and clone.
+2. Branch: `git checkout -b feat/your-feature-name`
+3. Test locally (`pnpm test:web-agent`, `pnpm web:build`, etc.).
+4. Commit with [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, …).
+5. Open a PR against `main`.
+
+Ideas and bugs: [Discussions](https://github.com/anayatkhan1/kit/discussions) · [Issues](https://github.com/anayatkhan1/kit/issues)
+
+Match existing TypeScript style. In `apps/web`: `pnpm web:format:check`.
+
+---
+
+## License
+
+MIT with an additional clause restricting resale of unmodified or minimally modified versions. See [LICENSE](./LICENSE).
+
+---
+
+Built by [Anayat Khan](https://anayat.xyz) · [agentcn.dev](https://agentcn.dev)
