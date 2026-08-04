@@ -6,8 +6,8 @@ Add an agent with one CLI command. Source lands in your repo as real TypeScript 
 
 <p align="center">
   <img
-    src="./assets/readme-hero.jpg"
-    alt="AgentCN — Installable AI agents for your workflow"
+    src="./assets/readme-hero.png"
+    alt="AgentCN — Installable AI agents for your stack"
     width="980"
   />
 </p>
